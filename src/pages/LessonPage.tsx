@@ -84,6 +84,7 @@ export function LessonPage() {
           }}
         >
           Lesson {String(lesson.number).padStart(2, '0')} · {lesson.estMinutes} min
+          {lesson.optional ? ' · optional · level up' : ''}
         </p>
         <h1
           className="display"
@@ -107,21 +108,42 @@ export function LessonPage() {
         </p>
 
         <div
-          className="mt-8 rounded-lg border p-5"
-          style={{ borderColor: 'var(--edge)', background: 'var(--bg-2)' }}
+          className="mt-8 grid gap-3 sm:grid-cols-2"
         >
-          <p
-            className="mb-2 uppercase"
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: 10,
-              letterSpacing: '0.22em',
-              color: 'var(--ink-dim)',
-            }}
+          <div
+            className="rounded-lg border p-5"
+            style={{ borderColor: 'var(--edge)', background: 'var(--bg-2)' }}
           >
-            Goal
-          </p>
-          <p style={{ color: 'var(--ink)', fontSize: 17, lineHeight: 1.55 }}>{lesson.goal}</p>
+            <p
+              className="mb-2 uppercase"
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: 10,
+                letterSpacing: '0.22em',
+                color: 'var(--ink-dim)',
+              }}
+            >
+              Goal
+            </p>
+            <p style={{ color: 'var(--ink)', fontSize: 16, lineHeight: 1.55 }}>{lesson.goal}</p>
+          </div>
+          <div
+            className="rounded-lg border p-5"
+            style={{ borderColor: 'var(--accent)', background: 'var(--bg-2)' }}
+          >
+            <p
+              className="mb-2 uppercase"
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: 10,
+                letterSpacing: '0.22em',
+                color: 'var(--accent)',
+              }}
+            >
+              End of this lesson
+            </p>
+            <p style={{ color: 'var(--ink)', fontSize: 16, lineHeight: 1.55 }}>{lesson.endState}</p>
+          </div>
         </div>
       </header>
 

@@ -1,9 +1,12 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import { lessons, sampleApp } from '../content/course'
+import { LessonBody } from '../components/course/LessonBody'
 
 export function LandingPage() {
-  const totalMinutes = lessons.reduce((n, l) => n + l.estMinutes, 0)
+  const critical = lessons.filter((l) => !l.optional)
+  const optional = lessons.filter((l) => l.optional)
+  const criticalMinutes = critical.reduce((n, l) => n + l.estMinutes, 0)
 
   return (
     <>
@@ -30,11 +33,9 @@ export function LandingPage() {
         </h1>
 
         <p className="lead mt-10" style={{ maxWidth: '62ch' }}>
-          Ten short lessons. You will install Node.js, learn the vocabulary to describe what you
-          actually want, write a one-page brief, hand it to ChatGPT&rsquo;s Codex or
-          Anthropic&rsquo;s Claude Code, save the files it produces to a folder on your Desktop, and
-          run the result in PowerShell &mdash; step by step, with every command and every expected
-          output shown. By the end, a working prototype is live on your desktop at{' '}
+          Seven lessons. About 30 minutes. Zero code written by you. You install two free tools,
+          fill in a 5-field brief, paste it to an AI called Claude Code, run three commands in
+          PowerShell. A working prototype opens in your browser at{' '}
           <code style={{ color: 'var(--ink)', fontFamily: 'var(--font-mono)' }}>
             http://localhost:5173
           </code>
@@ -59,7 +60,7 @@ export function LandingPage() {
             color: 'var(--ink-dim)',
           }}
         >
-          <span>~{totalMinutes} minutes</span>
+          <span>~{criticalMinutes} minutes</span>
           <span style={{ color: 'var(--edge)' }}>•</span>
           <span>Windows + PowerShell</span>
           <span style={{ color: 'var(--edge)' }}>•</span>
@@ -106,10 +107,13 @@ export function LandingPage() {
                 {sampleApp.oneLiner}
               </p>
               <p className="mt-6" style={{ color: 'var(--paper)', lineHeight: 1.7 }}>
-                You'll follow this exact example end to end. Every prompt in the course is filled in
-                for TaskBoard, every PowerShell command is the real one you'll type. When you
-                finish, you'll know how to do the same thing with your own idea.
+                You'll follow this exact example end to end. Every prompt is filled in for
+                TaskBoard, every PowerShell command is the real one you'll type. When you finish,
+                you'll know how to do the same thing with your own idea.
               </p>
+              <div className="mt-8">
+                <LessonBody blocks={[{ type: 'preview', caption: 'This is what will be running on your computer.' }]} />
+              </div>
             </div>
           </div>
         </div>
@@ -138,8 +142,20 @@ export function LandingPage() {
                 letterSpacing: '-0.02em',
               }}
             >
-              Ten lessons, one working prototype.
+              Seven lessons, one working prototype.
             </h2>
+            <p
+              className="mt-3"
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: 11,
+                letterSpacing: '0.2em',
+                color: 'var(--accent)',
+                textTransform: 'uppercase',
+              }}
+            >
+              Critical path · {criticalMinutes} min total
+            </p>
           </div>
         </div>
 
@@ -147,7 +163,7 @@ export function LandingPage() {
           className="grid gap-px overflow-hidden rounded-lg"
           style={{ background: 'var(--edge)' }}
         >
-          {lessons.map((l) => (
+          {critical.map((l) => (
             <li key={l.id} style={{ background: 'var(--bg)' }}>
               <Link
                 to={`/course/${l.id}`}
@@ -197,6 +213,76 @@ export function LandingPage() {
             </li>
           ))}
         </ol>
+
+        {optional.length > 0 && (
+          <>
+            <p
+              className="mt-12 mb-3 uppercase"
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: 11,
+                letterSpacing: '0.22em',
+                color: 'var(--ink-dim)',
+              }}
+            >
+              Level up — optional, after you've shipped once
+            </p>
+            <ol
+              className="grid gap-px overflow-hidden rounded-lg"
+              style={{ background: 'var(--edge)' }}
+            >
+              {optional.map((l) => (
+                <li key={l.id} style={{ background: 'var(--bg)' }}>
+                  <Link
+                    to={`/course/${l.id}`}
+                    className="group flex items-baseline gap-6 px-5 py-6 transition-colors hover:bg-[color:var(--bg-2)] sm:gap-8"
+                  >
+                    <span
+                      className="tabular-nums"
+                      style={{
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: 12,
+                        color: 'var(--ink-dim)',
+                        width: 32,
+                        letterSpacing: '0.1em',
+                      }}
+                    >
+                      {String(l.number).padStart(2, '0')}
+                    </span>
+                    <div className="flex-1">
+                      <h3
+                        style={{
+                          fontFamily: 'var(--font-display)',
+                          fontSize: 'clamp(1.15rem, 1vw + 0.7rem, 1.5rem)',
+                          color: 'var(--ink)',
+                          marginBottom: 4,
+                        }}
+                      >
+                        {l.title}
+                      </h3>
+                      <p style={{ color: 'var(--paper)', fontSize: 14 }}>{l.subtitle}</p>
+                    </div>
+                    <span
+                      className="hidden shrink-0 tabular-nums sm:block"
+                      style={{
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: 11,
+                        color: 'var(--ink-dim)',
+                        letterSpacing: '0.18em',
+                      }}
+                    >
+                      {l.estMinutes} MIN
+                    </span>
+                    <ArrowRight
+                      className="h-4 w-4 shrink-0 translate-x-0 opacity-40 transition group-hover:translate-x-1 group-hover:opacity-100"
+                      style={{ color: 'var(--accent)' }}
+                    />
+                  </Link>
+                </li>
+              ))}
+            </ol>
+          </>
+        )}
 
         <div className="mt-12 flex flex-wrap gap-4">
           <Link to="/course/what-is-vibe-coding" className="btn btn-primary">
