@@ -3,6 +3,7 @@ export type LessonId =
   | 'pick-agent'
   | 'setup'
   | 'pick-idea'
+  | 'design-vocabulary'
   | 'build-brief'
   | 'generate'
   | 'save-files'
@@ -47,94 +48,129 @@ export const sampleApp = {
     'A shared task board for a small maintenance crew — the shift lead posts jobs, technicians claim and complete them.',
 }
 
-export const briefTemplate = `# Build Brief — <Your App Name>
+export const briefTemplate = `# Build Brief — <APP NAME>
 
-## 1. The idea, in one sentence
-<Audience> uses this to <outcome> so that <change in their day>.
+## 1. Pitch (fill the blanks literally)
+Design an app that **<ONE PRIMARY ACTION>** for **<ONE SPECIFIC PERSON>**, so they can **<OUTCOME THAT CHANGES THEIR DAY>**.
 
-## 2. The user
-- Who (one role, be specific):
-- When they open the app:
-- The one thing they must be able to do:
+## 2. The user (one paragraph)
+<ONE ROLE — be specific, e.g. "night-shift maintenance technician", not "users"> opens this <WHEN — time of day / moment of day> on a <DEVICE — phone / laptop / shop tablet>. Right before they open it they are <CONTEXT>. Right after they close it they go <NEXT ACTION>. The single thing they must be able to do in under 10 seconds is <PRIMARY ACTION>.
 
-## 3. Three user stories
-1. As a <role>, I can <action>, so that <outcome>.
-2. As a <role>, I can <action>, so that <outcome>.
-3. As a <role>, I can <action>, so that <outcome>.
+## 3. Ship list — v1 only (pick 3 to 5)
+- [ ] <NOUN> I can <VERB>  (e.g. "a task I can add")
+- [ ] <NOUN> I can <VERB>
+- [ ] <NOUN> I can <VERB>
+- [ ] <NOUN> I can <VERB>
+- [ ] <NOUN> I can <VERB>
 
-## 4. Features — ship first
-- [ ]
-- [ ]
-- [ ]
+## 4. Cut list — NOT in v1 (list at least 3)
+- <THING YOU ARE CHOOSING NOT TO BUILD>
+- <THING YOU ARE CHOOSING NOT TO BUILD>
+- <THING YOU ARE CHOOSING NOT TO BUILD>
 
-## 5. Features — later (do NOT build yet)
-- auth / login
-- payments
-- multi-user realtime
-- <other things you want but do not need for v1>
+## 5. Pages / screens
+- \`/\` <ONE-LINE PURPOSE>
+- \`/<ROUTE>\` <ONE-LINE PURPOSE>
+- \`/<ROUTE>\` <ONE-LINE PURPOSE>
 
-## 6. Stack
-- Framework: React + TypeScript + Vite
-- Storage: browser localStorage (no backend)
-- Styling: plain CSS or Tailwind
-- Deploy: none for now (run locally in PowerShell)
+## 6. Layout (pick ONE per row)
+- Navigation: **top bar** | **left sidebar** | **bottom tab bar** | **none (single screen)**
+- Primary surface: **single column** | **sidebar + content** | **kanban columns** | **dashboard grid** | **feed** | **split pane** | **wizard / stepper**
+- Density: **airy** (lots of whitespace) | **balanced** | **dense** (info-rich, small paddings)
+- Primary input pattern: **inline form** | **modal dialog** | **slideout panel** | **command menu (Cmd+K)**
 
-## 7. Look & feel (be specific, avoid "modern/clean")
-- Density: airy | balanced | dense
-- Tone words (2–4):
-- Rhythm notes:
+## 7. Visual tone (pick 2 to 4 adjectives from the menu in lesson 5)
+- Adjectives: <ADJ>, <ADJ>, <ADJ>
 
-## 8. Done means
-- [ ] The app loads at http://localhost:5173/
-- [ ] I can <primary action> without errors
+## 8. Color, type, radius (pick one of each)
+- Background: **off-white** | **pure white** | **warm cream** | **near-black** | **dark slate** | **sepia**
+- Single accent color (name or hex): <PICK ONE COLOR>
+- Body font style: **geometric sans** | **humanist sans** | **grotesk** | **serif** | **mono**
+- Display / heading style: **same as body** | **serif display** | **oversized grotesk** | **mono all-caps**
+- Corner radius: **sharp (0px)** | **subtle (4px)** | **friendly (10px)** | **pill (999px on buttons)**
+
+## 9. Motion & feel (pick one option per row — vocabulary from lesson 5)
+- On first page load: **no animation** | **fade in** | **slide up and fade** | **stagger list items in**
+- On hover (buttons / cards): **no change** | **subtle color shift** | **lift + shadow** | **underline wipe**
+- On primary action (submit / add / save): **no animation** | **inline checkmark** | **toast notification slides in**
+- Between screens / views: **instant** | **crossfade** | **slide**
+- Easing character: **linear / none** | **crisp (inOutQuad)** | **smooth (inOutExpo)** | **bouncy (spring)**
+- Overall motion feel: **none / instant** | **restrained** | **playful**
+
+## 10. Components the AI must use (check what you need)
+- Inputs: [ ] button  [ ] text input  [ ] textarea  [ ] select  [ ] checkbox  [ ] toggle  [ ] slider  [ ] date picker  [ ] file uploader
+- Display: [ ] card  [ ] table  [ ] list  [ ] badge  [ ] tag  [ ] avatar  [ ] metric / stat  [ ] empty state  [ ] loading indicator  [ ] progress steps
+- Overlay: [ ] modal  [ ] slideout / drawer  [ ] tooltip  [ ] toast / notification  [ ] alert  [ ] dropdown menu  [ ] command menu
+- Navigation: [ ] top nav  [ ] sidebar nav  [ ] tabs  [ ] breadcrumbs  [ ] pagination
+
+## 11. Done means
+- [ ] The app loads at http://localhost:5173/ with no red errors in the browser console
+- [ ] I can <PRIMARY ACTION> in under 10 seconds, starting from a cold reload
 - [ ] Data I enter is still there after I refresh
-- [ ] Empty states are visible (not blank screens)
+- [ ] Every empty list / empty state shows a short message, not a blank box
+- [ ] The tone words in section 7 actually describe what I see
 `
 
 export const briefExample = `# Build Brief — TaskBoard
 
-## 1. The idea, in one sentence
-A small maintenance crew uses this to track who is fixing what, so the shift lead stops chasing people on group text.
+## 1. Pitch
+Design an app that **tracks who is fixing what** for **the shift lead of a 6-person maintenance crew**, so they can **stop chasing people on group text at the start of every shift**.
 
 ## 2. The user
-- Who: shift-lead technician at one facility.
-- When they open the app: start of shift, on a phone or a laptop in the shop.
-- The one thing they must be able to do: see every open task and who owns it, in one screen.
+A shift-lead technician at one facility opens this at the start of shift, on a laptop in the shop (and occasionally on a phone in the field). Right before they open it they are reading overnight alarm emails. Right after they close it they head to the floor to brief the crew. The single thing they must be able to do in under 10 seconds is see every open task and who owns it, on one screen.
 
-## 3. Three user stories
-1. As a shift lead, I can add a new task with a title and priority, so the crew sees it immediately.
-2. As a technician, I can claim an open task, so everyone knows I'm on it.
-3. As a technician, I can mark my task done, so it disappears from the open list.
+## 3. Ship list — v1 only
+- [ ] A task I can add (title + priority: low / med / high)
+- [ ] A list of tasks grouped by status: Open / In Progress / Done
+- [ ] A task I can claim (sets owner = "me", status = In Progress)
+- [ ] A task I can mark done
 
-## 4. Features — ship first
-- [ ] Add task (title + priority: low/med/high)
-- [ ] List tasks grouped by status: Open / In Progress / Done
-- [ ] Claim a task (sets owner = "me" and status = In Progress)
-- [ ] Mark a task done
+## 4. Cut list — NOT in v1
+- Login / user accounts
+- Multi-user realtime sync
+- Comments on tasks
+- Photo attachments
+- Push notifications
 
-## 5. Features — later (do NOT build yet)
-- login / user accounts
-- multi-user realtime sync
-- comments on tasks
-- photo attachments
-- push notifications
+## 5. Pages / screens
+- \`/\` The board — three columns (Open / In Progress / Done) with an "Add task" button at the top
 
-## 6. Stack
-- Framework: React + TypeScript + Vite
-- Storage: browser localStorage (no backend)
-- Styling: plain CSS
-- Deploy: none for now (run locally in PowerShell)
+## 6. Layout
+- Navigation: **none (single screen)**
+- Primary surface: **kanban columns**
+- Density: **balanced**
+- Primary input pattern: **inline form** (the "Add task" row sits at the top of the Open column)
 
-## 7. Look & feel
-- Density: balanced
-- Tone words: utilitarian, readable, calm
-- Rhythm notes: 3 columns on desktop, stacked on mobile. Priority shown as a colored dot. No animation. Sans-serif.
+## 7. Visual tone
+- Adjectives: utilitarian, calm, technical
 
-## 8. Done means
-- [ ] The app loads at http://localhost:5173/
-- [ ] I can add a task, claim it, and mark it done without errors
-- [ ] Refreshing the page keeps my tasks
-- [ ] An empty "Open" column shows a short empty-state message, not a blank box
+## 8. Color, type, radius
+- Background: off-white
+- Single accent color: one warm orange (#E6A15C) — used ONLY on the priority dot and the primary button
+- Body font style: humanist sans (system-ui is fine)
+- Display / heading style: same as body, just bolder
+- Corner radius: subtle (4px)
+
+## 9. Motion & feel
+- On first page load: stagger list items in (each task card fades + slides up, 40ms apart)
+- On hover (cards): subtle color shift (background goes from white to very light gray)
+- On primary action (add / claim / complete): toast notification slides in from bottom-right
+- Between screens / views: n/a, single screen
+- Easing character: crisp (inOutQuad), ~180ms
+- Overall motion feel: restrained
+
+## 10. Components the AI must use
+- Inputs: [x] button  [x] text input  [x] select (for priority)
+- Display: [x] card  [x] badge (for priority)  [x] empty state
+- Overlay: [x] toast / notification
+- Navigation: (none)
+
+## 11. Done means
+- [ ] The app loads at http://localhost:5173/ with no red errors in the console
+- [ ] I can add a task in under 10 seconds from a cold reload
+- [ ] Refreshing the page keeps my tasks (localStorage)
+- [ ] An empty "Open" column shows "No open tasks — add one above." — not a blank box
+- [ ] The board actually feels utilitarian, calm, and technical (no gradients, no drop shadows on cards, no rounded-pill buttons)
 `
 
 export const codexPrompt = `I want to build a small web app. Below is my Build Brief.
@@ -431,16 +467,255 @@ export const lessons: LessonDef[] = [
     ],
   },
   {
-    id: 'build-brief',
+    id: 'design-vocabulary',
     number: 5,
-    title: 'Write the Build Brief',
-    subtitle: 'One markdown file. This is the real work.',
-    goal: "You have a filled-in Build Brief in a plain text file or directly ready to paste.",
-    estMinutes: 10,
+    title: 'Design vocabulary: name what you want',
+    subtitle: 'Layout, components, tone, motion — in words the AI understands.',
+    goal: "You can describe any app's look, layout, and feel using specific terms — not 'modern' or 'clean.'",
+    estMinutes: 14,
     blocks: [
       {
         type: 'p',
-        body: "The Build Brief is one markdown file with eight short sections. Copy the template, fill every section with concrete detail, save it. You'll paste this whole thing into Codex or Claude Code in the next lesson.",
+        body: "The fastest way to get a generic app is to write a generic brief. Words like 'modern', 'clean', 'sleek', 'intuitive', and 'AI-powered' tell the AI nothing — it has to guess, and it guesses average. This lesson gives you a real vocabulary: the four things every app's look is made of (layout, components, visual tone, motion), with a menu of choices for each. You will literally pick from these menus in the next lesson's brief.",
+      },
+      {
+        type: 'callout',
+        callout: {
+          kind: 'note',
+          title: 'Where this vocabulary comes from',
+          body: "The component names and groupings come from Untitled UI React (untitledui.com/react/components) — the largest open-source catalog of real-world UI components. The motion vocabulary comes from anime.js (animejs.com) — a small animation library whose terms (stagger, easing, spring, timeline, scroll observer) are the industry-standard way to describe web motion. You do not need to install either library. You just need to know the words.",
+        },
+      },
+
+      { type: 'h', body: '1. Layout — where things sit on the screen' },
+      {
+        type: 'p',
+        body: "Pick ONE primary surface. This single decision drives 80% of how the app looks.",
+      },
+      {
+        type: 'list',
+        items: [
+          "**Single column** — one vertical stack, centered. Best for: reading, one-task apps, forms. Think: Notion page, blog post.",
+          "**Sidebar + content** — nav on the left, main area on the right. Best for: apps with many sections (settings, docs, multi-entity CRUDs). Think: Slack, Linear.",
+          "**Top bar + content** — horizontal nav at top, everything below. Best for: simple apps with 2–4 sections. Think: GitHub, Stripe dashboard.",
+          "**Kanban columns** — 2–5 vertical columns of cards. Best for: anything with status (tasks, leads, applications). Think: Trello.",
+          "**Dashboard grid** — a page of cards/metrics in a responsive grid. Best for: monitoring, analytics, home pages. Think: Vercel dashboard.",
+          "**Feed** — one infinite vertical list of posts/items. Best for: content you scroll through. Think: Twitter/X, Instagram.",
+          "**Split pane** — list on the left, detail of the selected item on the right. Best for: email, message inboxes, record browsers. Think: Apple Mail, Gmail.",
+          "**Wizard / stepper** — one step at a time, Next / Back buttons. Best for: onboarding, checkout, anything with a required order. Think: Stripe Checkout, TurboTax.",
+        ],
+      },
+
+      { type: 'h', body: '2. Components — the parts an app is built from' },
+      {
+        type: 'p',
+        body: "This is the menu. Check what your app actually needs. The AI will skip anything you don't list — which is the point, it stops inventing features.",
+      },
+      {
+        type: 'code',
+        block: {
+          kind: 'markdown',
+          title: 'Component menu (grouped)',
+          body: `Inputs — how the user tells the app things
+  button, text input, textarea, select, checkbox, toggle (on/off switch),
+  slider, date picker, file uploader, verification code input
+
+Display — how the app shows things
+  card, table, list, badge, tag, avatar, metric / stat tile,
+  activity feed, empty state, loading indicator, progress steps,
+  chart (line / bar / pie)
+
+Overlay — things that appear on top of the page
+  modal (blocks the page), slideout / drawer (from the side),
+  tooltip, toast / notification (corner popup), alert (inline banner),
+  dropdown menu, command menu (Cmd+K palette)
+
+Navigation — how the user moves
+  top nav, sidebar nav, tabs, breadcrumbs, pagination`,
+        },
+      },
+      {
+        type: 'callout',
+        callout: {
+          kind: 'tip',
+          title: 'The empty-state rule',
+          body: "Always check 'empty state' in section 10 of your brief. It is the #1 thing AI-generated apps forget, and the #1 thing that makes a prototype feel broken the first time you open it.",
+        },
+      },
+
+      { type: 'h', body: '3. Visual tone — how it should feel' },
+      {
+        type: 'p',
+        body: "Pick 2 to 4 adjectives from this menu. Together they define the personality. Each implies real design choices the AI will make.",
+      },
+      {
+        type: 'list',
+        items: [
+          "**Utilitarian** — dense info, tight spacing, small UI. Linear, early GitHub.",
+          "**Editorial** — large serif headlines, generous whitespace, text-first. The New Yorker online, Stripe Press.",
+          "**Playful** — saturated colors, rounded corners, friendly illustrations, micro-interactions. Duolingo, Notion marketing.",
+          "**Brutalist** — mono font, sharp corners, visible borders, stark black/white, no shadows. Are.na, Hacker News.",
+          "**Soft** — pastels, rounded corners, subtle shadows, generous padding. Figma, Headspace.",
+          "**Warm** — cream backgrounds, earth accents, serif display type. Craigslist-for-humans, indie SaaS.",
+          "**Calm** — restrained palette, no animations on idle, muted accent. Apple Notes, iA Writer.",
+          "**Technical** — mono font for data, terminal-green or amber accents, visible grid. Vercel, dev dashboards.",
+          "**Premium** — near-black background, one metallic accent, oversized display serif, lots of negative space. Luxury brand landing pages.",
+          "**Documentarian** — serif body, sidebar TOC, high-contrast text, no decoration. Wikipedia, academic reading apps.",
+          "**Retro-terminal** — monospace everything, dark bg, single neon accent, no rounded corners. CLI tool landing pages.",
+          "**Magazine** — asymmetric grid, mixed type sizes, photographic hero, editorial captions. Apple Newsroom.",
+          "**Corporate-clean** — blue accent, sans-serif, equal padding, card everything. Most B2B SaaS.",
+          "**Handmade** — off-grid layouts, handwritten accent font, slightly wonky spacing. Small indie apps, craft sites.",
+        ],
+      },
+      {
+        type: 'callout',
+        callout: {
+          kind: 'warn',
+          title: "Avoid these banned words",
+          body: "Modern, clean, sleek, intuitive, seamless, beautiful, AI-powered, next-gen, elegant, user-friendly. They all mean 'I haven't decided yet.' If you catch one in your brief, replace it with a word from the list above.",
+        },
+      },
+
+      { type: 'h', body: '4. Color, type, corner radius' },
+      {
+        type: 'p',
+        body: "Pick one of each. Keep it boring and specific — the personality comes from the tone words, not from stacking six colors.",
+      },
+      {
+        type: 'list',
+        items: [
+          "**Background** — off-white (#F8F7F4), pure white, warm cream (#FAF7F0), near-black (#0E1014), dark slate (#1A1D24), sepia (#F4EDD8). Pick one.",
+          "**Accent color** — ONE color for v1. Used only on the primary button, links, and key highlights. Name it plainly ('warm orange', 'navy', 'terminal green') or give a hex.",
+          "**Body font style** — geometric sans (Inter, Manrope), humanist sans (system-ui is fine), grotesk (Space Grotesk), serif (Fraunces, Georgia), mono (JetBrains Mono, SF Mono). The AI will pick a specific font in that family.",
+          "**Display / heading style** — same as body (just bolder), serif display (big statement headings), oversized grotesk, or mono all-caps.",
+          "**Corner radius** — sharp (0px), subtle (4px), friendly (10px), or pill (999px on buttons only). Pick one; apply it everywhere for consistency.",
+        ],
+      },
+
+      { type: 'h', body: '5. Motion — how it moves' },
+      {
+        type: 'p',
+        body: "Most beginner apps either have no motion (feels dead) or too much motion (feels like a toy). The fix is to name exactly WHEN motion happens and how it feels. These five rows are enough — each pulls from anime.js's vocabulary, which is what the AI already knows.",
+      },
+      {
+        type: 'code',
+        block: {
+          kind: 'markdown',
+          title: 'Motion vocabulary (pick one per row)',
+          body: `On first page load:
+  none | fade in | slide up and fade | STAGGER list items in
+  (stagger = each item animates 40-80ms after the previous one)
+
+On hover (buttons, cards, links):
+  no change | subtle color shift | lift + shadow | underline wipe
+
+On primary action (add / save / submit):
+  no animation | inline checkmark | toast slides in from corner
+  | confetti (don't — unless tone is 'playful')
+
+Between screens / views:
+  instant | crossfade | slide (horizontal for wizards, vertical for modals)
+
+Easing character (the "feel" curve):
+  linear (robotic)        — use sparingly, only for progress bars
+  inOutQuad (crisp)       — default. ~180ms. Feels decisive.
+  inOutExpo (smooth)      — ~400ms. Feels premium / cinematic.
+  spring (bouncy)         — rubber-band feel. Only if tone is 'playful'.
+
+Overall motion feel:
+  none | restrained | playful`,
+        },
+      },
+      {
+        type: 'callout',
+        callout: {
+          kind: 'tip',
+          title: 'How motion maps to feel',
+          body: "Utilitarian / technical / documentarian → 'none' or 'restrained', linear or inOutQuad easing. Premium / editorial → 'restrained', inOutExpo easing, crossfades between views. Playful / soft → 'playful', spring easing, stagger on load. If you pick 'playful' but your tone is 'utilitarian', the AI will ignore the tone and you'll get a toy.",
+        },
+      },
+      {
+        type: 'p',
+        body: "You can also ask for specific motion tricks from the anime.js toolkit if they fit. Use the exact word — the AI understands these:",
+      },
+      {
+        type: 'list',
+        items: [
+          "**Stagger** — animate a list so each item starts after the last. Great for task lists, grids, feeds on first load.",
+          "**Scroll-triggered reveal** — things fade/slide into view as you scroll past them. Good for long marketing pages; do NOT use on dashboards.",
+          "**Motion path** — an element follows a drawn path. Rarely useful in utility apps; good for playful onboarding.",
+          "**Shape morph** — one SVG shape smoothly becomes another. Good for icon state changes (play → pause, hamburger → X).",
+          "**Draggable with spring release** — the user can throw an element; it springs back on release. Good for reorderable lists.",
+        ],
+      },
+
+      { type: 'h', body: 'Generic vs. specific — same app, two briefs' },
+      {
+        type: 'code',
+        block: {
+          kind: 'markdown',
+          title: '❌ Generic (what the AI gets and has to guess on)',
+          body: `Design an app for tracking tasks. It should be modern and clean,
+with a nice UI and smooth animations. Easy to use.`,
+        },
+      },
+      {
+        type: 'code',
+        block: {
+          kind: 'markdown',
+          title: '✅ Specific (what the AI can actually build)',
+          body: `Design an app that tracks who is fixing what for a 6-person
+maintenance crew's shift lead.
+
+Layout: kanban columns, no nav, inline "Add task" form at the top
+of the Open column. Density: balanced.
+
+Tone: utilitarian, calm, technical. Background: off-white.
+Accent: one warm orange (#E6A15C), used only on the priority dot
+and the primary button. Body font: humanist sans. Corner radius:
+subtle (4px). No drop shadows on cards.
+
+Components: button, text input, select, card, badge, empty state,
+toast. Nothing else.
+
+Motion: stagger list items in on load (40ms apart, inOutQuad,
+~180ms). Subtle color shift on card hover. Toast from bottom-right
+on add/claim/complete. No animations elsewhere. Overall feel:
+restrained.`,
+        },
+      },
+      {
+        type: 'callout',
+        callout: {
+          kind: 'tip',
+          title: 'That second brief IS the answer key',
+          body: "Every line is a pick from a menu in this lesson. You are not being creative — you are being specific. Creativity is the idea itself (section 1 of the brief). The rest is just checking boxes.",
+        },
+      },
+
+      {
+        type: 'checklist',
+        items: [
+          'I can name my layout in one word (kanban, split pane, sidebar + content, …)',
+          'I can pick 2–4 tone adjectives from the menu without using "modern" or "clean"',
+          'I can list the components my app needs and leave out the ones it doesn\'t',
+          'I can describe motion in one sentence ("stagger on load, crisp easing, restrained overall")',
+          'I have picked ONE accent color, ONE background, ONE corner radius, ONE font style',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'build-brief',
+    number: 6,
+    title: 'Write the Build Brief',
+    subtitle: 'One markdown file. This is the real work.',
+    goal: "You have a filled-in Build Brief in a plain text file or directly ready to paste.",
+    estMinutes: 12,
+    blocks: [
+      {
+        type: 'p',
+        body: "The Build Brief is one markdown file with eleven short sections. Every section is a concrete pick — no open-ended prose. Copy the template, replace every <BRACKETED PLACEHOLDER> with a specific choice (pulling from the vocabulary you just learned), save it. You'll paste this whole thing into Codex or Claude Code in the next lesson.",
       },
       { type: 'h', body: 'The template — copy this' },
       {
@@ -477,7 +752,7 @@ export const lessons: LessonDef[] = [
   },
   {
     id: 'generate',
-    number: 6,
+    number: 7,
     title: 'Design it in Codex or Claude Code',
     subtitle: 'One prompt. Every file back.',
     goal: 'The AI has produced every source file for the app — either as a set of labeled code blocks (Codex) or written directly to your Desktop (Claude Code).',
@@ -550,7 +825,7 @@ export const lessons: LessonDef[] = [
   },
   {
     id: 'save-files',
-    number: 7,
+    number: 8,
     title: 'Save the files to your Desktop',
     subtitle: 'Only for the Codex path. Claude Code users skip ahead.',
     goal: "You have a 'taskboard' folder on your Desktop containing every file Codex gave you, each with the correct name and contents.",
@@ -656,7 +931,7 @@ export const lessons: LessonDef[] = [
   },
   {
     id: 'run-locally',
-    number: 8,
+    number: 9,
     title: 'Run it in PowerShell',
     subtitle: 'Three commands. Your prototype on localhost.',
     goal: 'Your app is running at http://localhost:5173/ and you can interact with it in a browser.',
@@ -737,7 +1012,7 @@ export const lessons: LessonDef[] = [
   },
   {
     id: 'iterate',
-    number: 9,
+    number: 10,
     title: 'Fix it. Then add one feature.',
     subtitle: 'The real loop.',
     goal: "You know how to hand an error back to your AI, apply the fix, and request a single new feature without breaking the app.",

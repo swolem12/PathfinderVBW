@@ -30,11 +30,11 @@ export function LandingPage() {
         </h1>
 
         <p className="lead mt-10" style={{ maxWidth: '62ch' }}>
-          Nine short lessons. You will install Node.js, write a one-page brief, hand it to
-          ChatGPT&rsquo;s Codex or Anthropic&rsquo;s Claude Code, save the files it produces to a
-          folder on your Desktop, and run the result in PowerShell &mdash; step by step, with every
-          command and every expected output shown. By the end, a working prototype is live on your
-          desktop at{' '}
+          Ten short lessons. You will install Node.js, learn the vocabulary to describe what you
+          actually want, write a one-page brief, hand it to ChatGPT&rsquo;s Codex or
+          Anthropic&rsquo;s Claude Code, save the files it produces to a folder on your Desktop, and
+          run the result in PowerShell &mdash; step by step, with every command and every expected
+          output shown. By the end, a working prototype is live on your desktop at{' '}
           <code style={{ color: 'var(--ink)', fontFamily: 'var(--font-mono)' }}>
             http://localhost:5173
           </code>
@@ -138,7 +138,7 @@ export function LandingPage() {
                 letterSpacing: '-0.02em',
               }}
             >
-              Nine lessons, one working prototype.
+              Ten lessons, one working prototype.
             </h2>
           </div>
         </div>
