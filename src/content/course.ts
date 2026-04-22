@@ -338,7 +338,52 @@ export const lessons: LessonDef[] = [
       { type: 'h', body: '1. Install Node.js' },
       {
         type: 'p',
-        body: "Go to nodejs.org, click the big LTS download button, run the installer with the default options. Node.js is what runs JavaScript/TypeScript outside the browser — every React project needs it.",
+        body: "Node.js is what runs JavaScript/TypeScript outside the browser — every React project needs it. You have two options. Pick one.",
+      },
+      { type: 'h', body: 'Option A — Install from nodejs.org (click-through installer)' },
+      {
+        type: 'list',
+        items: [
+          'Open nodejs.org in your browser.',
+          "Click the big LTS download button (not 'Current' — LTS is the stable one).",
+          'Run the downloaded .msi installer. Accept the license. Leave every option at its default and click Next → Next → Install.',
+          'When it finishes, close any PowerShell windows you had open before the install.',
+        ],
+      },
+      { type: 'h', body: 'Option B — Install from PowerShell (no browser)' },
+      {
+        type: 'p',
+        body: "If you prefer not to touch the browser, you can install Node from PowerShell using winget, which ships with Windows 10/11. Open PowerShell (Windows key → type 'powershell' → Enter), then run:",
+      },
+      {
+        type: 'shellSession',
+        lines: [
+          { prompt: 'PS C:\\Users\\you>', command: 'winget install OpenJS.NodeJS.LTS' },
+          {
+            output:
+              "Found Node.js LTS [OpenJS.NodeJS.LTS] Version 22.11.0\nDownloading https://nodejs.org/dist/v22.11.0/node-v22.11.0-x64.msi\n  ██████████████████████████████  30.4 MB / 30.4 MB\nSuccessfully verified installer hash\nStarting package install...\nSuccessfully installed",
+          },
+        ],
+      },
+      {
+        type: 'callout',
+        callout: {
+          kind: 'note',
+          title: "If winget asks you to accept source agreements",
+          body: "Type Y and press Enter. That is winget asking permission to talk to the Microsoft and winget-community package sources — it only prompts the first time.",
+        },
+      },
+      {
+        type: 'callout',
+        callout: {
+          kind: 'warn',
+          title: "If winget is not recognized",
+          body: "Your Windows is older than 10 version 1809, or App Installer is not installed. Either update Windows, install 'App Installer' from the Microsoft Store, or use Option A above.",
+        },
+      },
+      {
+        type: 'p',
+        body: "After winget finishes, CLOSE that PowerShell window completely and open a new one. The installer adds Node to your PATH, but only new shells see the change.",
       },
       { type: 'h', body: '2. Open PowerShell and verify' },
       {
@@ -359,7 +404,7 @@ export const lessons: LessonDef[] = [
         callout: {
           kind: 'warn',
           title: "If you see 'node is not recognized'",
-          body: "Close PowerShell completely and open a new window. The installer only updates environment variables for shells opened after it finishes.",
+          body: "Close PowerShell completely and open a new window. The installer only updates environment variables for shells opened after it finishes. If a fresh window still fails, re-run the installer (Option A or B) and try again.",
         },
       },
       { type: 'h', body: '3. Go to your Desktop in PowerShell' },
