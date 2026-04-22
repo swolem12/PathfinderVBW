@@ -33,6 +33,14 @@ export type LessonBlock =
   | { type: 'jargon'; term: string; plain: string }
   | { type: 'details'; summary: string; blocks: LessonBlock[] }
   | { type: 'preview'; caption: string }
+  | { type: 'loopDiagram'; caption?: string }
+  | { type: 'powershellDiagram'; caption?: string }
+  | {
+      type: 'visualRef'
+      title: string
+      columns: 2 | 3 | 4
+      items: { label: string; sub?: string; swatch: 'layout' | 'tone' | 'radius' | 'accent'; variant: string }[]
+    }
 
 export interface LessonDef {
   id: LessonId
@@ -240,6 +248,7 @@ export const lessons: LessonDef[] = [
       },
       { type: 'preview', caption: 'TaskBoard — the sample app you will build' },
       { type: 'h', body: 'The six steps' },
+      { type: 'loopDiagram', caption: 'The whole loop. You spend your time on the orange steps.' },
       {
         type: 'list',
         items: [
@@ -282,6 +291,7 @@ export const lessons: LessonDef[] = [
         type: 'p',
         body: 'You need exactly two tools: Node.js (runs the app) and Claude Code (the AI that writes the code). Both install from PowerShell with one command each.',
       },
+      { type: 'powershellDiagram', caption: "What a PowerShell window looks like. Don't worry — you only type two commands total." },
       {
         type: 'jargon',
         term: 'PowerShell',
@@ -881,6 +891,21 @@ export const lessons: LessonDef[] = [
 
       { type: 'h', body: 'Layout — where things sit' },
       {
+        type: 'visualRef',
+        title: 'Layout patterns — pick one',
+        columns: 4,
+        items: [
+          { label: 'Single column', sub: 'Notion page', swatch: 'layout', variant: 'single' },
+          { label: 'Sidebar + content', sub: 'Linear, Slack', swatch: 'layout', variant: 'sidebar' },
+          { label: 'Top bar', sub: 'GitHub', swatch: 'layout', variant: 'topbar' },
+          { label: 'Kanban', sub: 'Trello', swatch: 'layout', variant: 'kanban' },
+          { label: 'Dashboard grid', sub: 'Vercel', swatch: 'layout', variant: 'grid' },
+          { label: 'Feed', sub: 'Twitter', swatch: 'layout', variant: 'feed' },
+          { label: 'Split pane', sub: 'Gmail', swatch: 'layout', variant: 'split' },
+          { label: 'Wizard', sub: 'Checkout', swatch: 'layout', variant: 'wizard' },
+        ],
+      },
+      {
         type: 'list',
         items: [
           'Single column — one stack. Reading, one-task apps. (Notion page.)',
@@ -895,6 +920,21 @@ export const lessons: LessonDef[] = [
       },
 
       { type: 'h', body: 'Visual tone — pick 2 to 4 adjectives' },
+      {
+        type: 'visualRef',
+        title: 'Tone swatches — the feel your words create',
+        columns: 4,
+        items: [
+          { label: 'Utilitarian', sub: 'Linear', swatch: 'tone', variant: 'utilitarian' },
+          { label: 'Editorial', sub: 'Stripe Press', swatch: 'tone', variant: 'editorial' },
+          { label: 'Playful', sub: 'Duolingo', swatch: 'tone', variant: 'playful' },
+          { label: 'Brutalist', sub: 'Hacker News', swatch: 'tone', variant: 'brutalist' },
+          { label: 'Soft', sub: 'Headspace', swatch: 'tone', variant: 'soft' },
+          { label: 'Warm', sub: 'Cream + earth', swatch: 'tone', variant: 'warm' },
+          { label: 'Technical', sub: 'Vercel', swatch: 'tone', variant: 'technical' },
+          { label: 'Premium', sub: 'Dark + metallic', swatch: 'tone', variant: 'premium' },
+        ],
+      },
       {
         type: 'list',
         items: [
@@ -958,6 +998,32 @@ Navigation: top nav, sidebar nav, tabs, breadcrumbs, pagination`,
             },
           },
           { type: 'h', body: 'Color, type, radius' },
+          {
+            type: 'visualRef',
+            title: 'Corner radius — pick one',
+            columns: 4,
+            items: [
+              { label: 'Sharp', sub: '0px — brutalist', swatch: 'radius', variant: '0' },
+              { label: 'Subtle', sub: '4px — default', swatch: 'radius', variant: '4' },
+              { label: 'Friendly', sub: '10px — soft', swatch: 'radius', variant: '10' },
+              { label: 'Pill', sub: '999px — playful', swatch: 'radius', variant: '999' },
+            ],
+          },
+          {
+            type: 'visualRef',
+            title: 'Accent colors — pick exactly one',
+            columns: 4,
+            items: [
+              { label: 'Warm orange', sub: '#E6A15C', swatch: 'accent', variant: '#E6A15C' },
+              { label: 'Navy', sub: '#1E3A8A', swatch: 'accent', variant: '#1E3A8A' },
+              { label: 'Emerald', sub: '#047857', swatch: 'accent', variant: '#047857' },
+              { label: 'Crimson', sub: '#B91C1C', swatch: 'accent', variant: '#B91C1C' },
+              { label: 'Violet', sub: '#6D28D9', swatch: 'accent', variant: '#6D28D9' },
+              { label: 'Teal', sub: '#0E7490', swatch: 'accent', variant: '#0E7490' },
+              { label: 'Graphite', sub: '#374151', swatch: 'accent', variant: '#374151' },
+              { label: 'Goldenrod', sub: '#CA8A04', swatch: 'accent', variant: '#CA8A04' },
+            ],
+          },
           {
             type: 'list',
             items: [

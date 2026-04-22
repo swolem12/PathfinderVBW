@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { lessons } from '../content/course'
 import { LessonBody } from '../components/course/LessonBody'
@@ -39,7 +40,7 @@ export function LessonPage() {
 
   return (
     <article className="mx-auto w-full max-w-[820px] px-6 pb-32 pt-20 sm:px-10 md:pt-24">
-      {/* Progress bar */}
+      {/* Lesson map — visual stepper */}
       <div className="mb-10">
         <div
           className="flex items-center justify-between"
@@ -49,7 +50,7 @@ export function LessonPage() {
             letterSpacing: '0.22em',
             color: 'var(--ink-dim)',
             textTransform: 'uppercase',
-            marginBottom: 8,
+            marginBottom: 12,
           }}
         >
           <span>
@@ -57,17 +58,77 @@ export function LessonPage() {
           </span>
           <span>{progressPct}%</span>
         </div>
-        <div
-          className="h-px w-full"
-          style={{ background: 'var(--edge)', position: 'relative' }}
+        <nav
+          aria-label="Course map"
+          className="flex items-center gap-1 overflow-x-auto"
         >
-          <div
+          {lessons.map((l, i) => {
+            const state: 'done' | 'current' | 'todo' =
+              i < index ? 'done' : i === index ? 'current' : 'todo'
+            const bg =
+              state === 'current'
+                ? 'var(--accent)'
+                : state === 'done'
+                  ? 'rgba(230,161,92,0.5)'
+                  : 'var(--bg-2)'
+            const border =
+              state === 'todo' ? 'var(--edge)' : state === 'done' ? 'rgba(230,161,92,0.5)' : 'var(--accent)'
+            const fg =
+              state === 'current' ? 'var(--bg)' : state === 'done' ? 'var(--bg)' : 'var(--ink-dim)'
+            return (
+              <div key={l.id} className="flex flex-1 items-center">
+                <Link
+                  to={`/course/${l.id}`}
+                  title={`${String(l.number).padStart(2, '0')} · ${l.title}${l.optional ? ' (optional)' : ''}`}
+                  className="group relative flex shrink-0 items-center justify-center"
+                  style={{
+                    width: 28,
+                    height: 28,
+                    borderRadius: 999,
+                    background: bg,
+                    border: `1.5px solid ${border}`,
+                    color: fg,
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 11,
+                    fontWeight: 600,
+                    borderStyle: l.optional ? 'dashed' : 'solid',
+                  }}
+                >
+                  {state === 'current' ? (
+                    <motion.span
+                      aria-hidden
+                      initial={{ scale: 1, opacity: 0.6 }}
+                      animate={{ scale: 2.1, opacity: 0 }}
+                      transition={{ duration: 1.8, repeat: Infinity, ease: 'easeOut' }}
+                      className="absolute inset-0 rounded-full"
+                      style={{ border: `1.5px solid var(--accent)` }}
+                    />
+                  ) : null}
+                  <span style={{ position: 'relative' }}>{l.number}</span>
+                </Link>
+                {i < lessons.length - 1 && (
+                  <div
+                    className="h-px flex-1"
+                    style={{
+                      background:
+                        i < index
+                          ? 'rgba(230,161,92,0.5)'
+                          : 'var(--edge)',
+                      minWidth: 8,
+                    }}
+                  />
+                )}
+              </div>
+            )
+          })}
+        </nav>
+        <div className="mt-3 h-px w-full" style={{ background: 'var(--edge)', position: 'relative' }}>
+          <motion.div
             className="h-px"
-            style={{
-              width: `${progressPct}%`,
-              background: 'var(--accent)',
-              transition: 'width 400ms var(--ease-out)',
-            }}
+            initial={{ width: 0 }}
+            animate={{ width: `${progressPct}%` }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            style={{ background: 'var(--accent)' }}
           />
         </div>
       </div>
