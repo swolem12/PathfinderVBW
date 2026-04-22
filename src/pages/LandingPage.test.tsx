@@ -1,17 +1,19 @@
+import { describe, expect, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { describe, expect, it } from 'vitest'
 import { LandingPage } from './LandingPage'
+import { BuildPackageProvider } from '../state/buildPackage'
 
 describe('LandingPage', () => {
-  it('renders key call to action content', () => {
+  it('renders the hero headline and primary CTA', () => {
     render(
-      <MemoryRouter>
-        <LandingPage />
-      </MemoryRouter>,
+      <BuildPackageProvider>
+        <MemoryRouter>
+          <LandingPage />
+        </MemoryRouter>
+      </BuildPackageProvider>,
     )
-
-    expect(screen.getByText(/Learn how to turn rough ideas/i)).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /Start guided lesson/i })).toBeInTheDocument()
+    expect(screen.getByLabelText(/Turn rough ideas/i)).toBeInTheDocument()
+    expect(screen.getAllByRole('link', { name: /start the guide/i }).length).toBeGreaterThan(0)
   })
 })

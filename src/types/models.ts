@@ -1,45 +1,63 @@
-export interface LessonSection {
-  id: string
+export type ChapterId =
+  | 'mission'
+  | 'problem'
+  | 'user'
+  | 'mvp'
+  | 'map'
+  | 'look'
+  | 'stack'
+  | 'acceptance'
+  | 'assemble'
+  | 'handoff'
+
+export interface BuildPackage {
+  mission: string
+  problem: {
+    who: string
+    pain: string
+    workaround: string
+    outcome: string
+  }
+  user: {
+    persona: string
+    primaryJob: string
+    stories: string[]
+  }
+  mvp: {
+    now: string[]
+    next: string[]
+    later: string[]
+  }
+  map: {
+    routes: string[]
+    matrix: { page: string; features: string }[]
+  }
+  look: {
+    tone: string[]
+    density: 'airy' | 'balanced' | 'dense'
+    motion: 'minimal' | 'present' | 'cinematic'
+    notes: string
+  }
+  stack: {
+    framework: string
+    data: string
+    auth: string
+    deploy: string
+    nonGoals: string[]
+  }
+  acceptance: string[]
+  handoff: {
+    agent: string
+    firstPrompt: string
+  }
+}
+
+export interface ChapterDef {
+  id: ChapterId
+  number: number
   title: string
-  beginnerExplanation: string
-  whyItMatters: string
-  analogy: string
-  goodLooksLike: string
-  badLooksLike: string
-  examplePrompt: string
-  exercise: string
-  checklist: string[]
-}
-
-export interface LessonModule {
-  id: string
-  title: string
-  objective: string
-  visualExplainer: string
-  guidedNarrative: string
-  antiExample: string
-  miniDeliverable: string
-  reflectionPrompt: string
-  sections: LessonSection[]
-}
-
-export interface PromptTemplate {
-  id: string
-  name: string
-  description: string
-  template: string
-}
-
-export interface UserArtifact {
-  id: string
-  title: string
-  type: 'idea-brief' | 'structure-brief' | 'ui-brief' | 'prompt-package' | 'validation-plan'
-  content: string
-  updatedAt: string
-}
-
-export interface PowerShellStep {
-  command: string
-  description: string
-  expectedOutput: string
+  question: string
+  why: string
+  microDeliverable: string
+  antiExample?: string
 }

@@ -1,0 +1,122 @@
+import type { BuildPackage, ChapterDef } from '../types/models'
+
+export const chapters: ChapterDef[] = [
+  {
+    id: 'mission',
+    number: 1,
+    title: 'Mission',
+    question: 'What are you actually building, in one sentence?',
+    why: 'A mission line is the compass. Every later choice — features, UI, stack — is measured against it. Without it, AI agents pattern-match to the average app on the internet.',
+    microDeliverable: 'One sentence: audience + outcome + the change it creates.',
+    antiExample: '"A modern productivity app with AI."',
+  },
+  {
+    id: 'problem',
+    number: 2,
+    title: 'The Problem',
+    question: 'Who hurts, where, and what does "better" look like?',
+    why: 'AI can implement anything. It cannot decide what matters. A four-part problem statement forces you to diagnose before you prescribe.',
+    microDeliverable: 'Who / current pain / current workaround / desired outcome.',
+    antiExample: '"Everyone is disorganized."',
+  },
+  {
+    id: 'user',
+    number: 3,
+    title: 'The User',
+    question: 'Who is this for, and what job are they hiring it to do?',
+    why: 'One primary user beats three generic ones. Concrete stories generate concrete UI.',
+    microDeliverable: 'A persona, a primary job-to-be-done, and 3 user stories.',
+    antiExample: '"Users can do anything they want from one page."',
+  },
+  {
+    id: 'mvp',
+    number: 4,
+    title: 'The MVP Line',
+    question: 'What ships first, what ships next, what waits?',
+    why: 'Tight scope produces stable architecture. A triage board draws the line you have to defend against feature creep.',
+    microDeliverable: 'Now / Next / Later columns with every feature placed.',
+    antiExample: 'Auth + payments + social feed + admin + AI chat, all in v1.',
+  },
+  {
+    id: 'map',
+    number: 5,
+    title: 'The Map',
+    question: 'What routes exist and what does each page do?',
+    why: 'Explicit routes and a page-to-feature matrix turn fuzzy requirements into code the agent can generate predictably.',
+    microDeliverable: 'Route list + a page → features matrix.',
+    antiExample: '"Just a dashboard and some other pages."',
+  },
+  {
+    id: 'look',
+    number: 6,
+    title: 'The Look',
+    question: 'How should it feel — not "clean and modern," specifically?',
+    why: 'Adjectives are vapor. Density, motion intensity, and tone words are the things an agent can actually render.',
+    microDeliverable: 'Tone words + density + motion intensity + rhythm notes.',
+    antiExample: '"Clean, minimal, with smooth animations."',
+  },
+  {
+    id: 'stack',
+    number: 7,
+    title: 'Stack & Constraints',
+    question: 'What is it built with, and what are you explicitly not doing?',
+    why: 'Defaults save time; non-goals save sanity. A named non-goal is a feature you will not have to delete later.',
+    microDeliverable: 'Stack choices + a non-goals list.',
+  },
+  {
+    id: 'acceptance',
+    number: 8,
+    title: 'Acceptance',
+    question: 'How will you know it works?',
+    why: 'Acceptance criteria are how you grade the AI\'s output. No criteria means endless "almost."',
+    microDeliverable: 'A checklist derived from your mission, users, and MVP.',
+  },
+  {
+    id: 'assemble',
+    number: 9,
+    title: 'Assemble',
+    question: 'Does the whole package read like a single, sharp brief?',
+    why: 'Read it as the agent will read it. Cut anything generic. Keep anything decisive.',
+    microDeliverable: 'A complete, readable Build Prompt Package.',
+  },
+  {
+    id: 'handoff',
+    number: 10,
+    title: 'Handoff',
+    question: 'Which agent gets it, and what is your first iteration prompt?',
+    why: 'A package is only useful if it gets handed off. Pick your agent, copy the package, plan the first iteration before you start one.',
+    microDeliverable: 'Chosen agent + opening prompt + run checklist.',
+  },
+]
+
+export const emptyPackage: BuildPackage = {
+  mission: '',
+  problem: { who: '', pain: '', workaround: '', outcome: '' },
+  user: { persona: '', primaryJob: '', stories: ['', '', ''] },
+  mvp: { now: [], next: [], later: [] },
+  map: { routes: [], matrix: [] },
+  look: { tone: [], density: 'balanced', motion: 'present', notes: '' },
+  stack: {
+    framework: 'React + TypeScript + Vite',
+    data: 'local (localStorage)',
+    auth: 'none',
+    deploy: 'static (GitHub Pages / Vercel)',
+    nonGoals: [],
+  },
+  acceptance: [],
+  handoff: { agent: 'Claude Code', firstPrompt: '' },
+}
+
+export const toneOptions = [
+  'editorial',
+  'mission-control',
+  'brutalist',
+  'cinematic',
+  'playful',
+  'utilitarian',
+  'monospaced',
+  'archival',
+  'soft-minimal',
+]
+
+export const agentOptions = ['Claude Code', 'Cursor', 'GitHub Copilot', 'Codex CLI', 'Windsurf']

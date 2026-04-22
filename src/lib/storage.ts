@@ -1,24 +1,35 @@
-import type { UserArtifact } from '../types/models'
+import type { BuildPackage } from '../types/models'
+import { emptyPackage } from '../content/guide'
 
-const STORAGE_KEY = 'pathfinder-vbw-artifacts'
+const KEY = 'pathfinder.package.v1'
 
-export function readArtifacts(): UserArtifact[] {
-  const raw = localStorage.getItem(STORAGE_KEY)
-  if (!raw) {
-    return []
-  }
-
+export function loadPackage(): BuildPackage {
+  if (typeof window === 'undefined') return emptyPackage
   try {
-    const parsed = JSON.parse(raw) as UserArtifact[]
-    return Array.isArray(parsed) ? parsed : []
+    const raw = window.localStorage.getItem(KEY)
+    if (!raw) return emptyPackage
+    const parsed = JSON.parse(raw) as Partial<BuildPackage>
+    return { ...emptyPackage, ...parsed } as BuildPackage
   } catch {
-    return []
+    return emptyPackage
   }
 }
 
-export function saveArtifact(artifact: UserArtifact): UserArtifact[] {
-  const existing = readArtifacts().filter((item) => item.id !== artifact.id)
-  const next = [artifact, ...existing]
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
-  return next
+let writeTimer: ReturnType<typeof setTimeout> | null = null
+
+export function savePackage(pkg: BuildPackage): void {
+  if (typeof window === 'undefined') return
+  if (writeTimer) clearTimeout(writeTimer)
+  writeTimer = setTimeout(() => {
+    try {
+      window.localStorage.setItem(KEY, JSON.stringify(pkg))
+    } catch {
+      /* storage unavailable */
+    }
+  }, 200)
+}
+
+export function resetPackage(): void {
+  if (typeof window === 'undefined') return
+  window.localStorage.removeItem(KEY)
 }
