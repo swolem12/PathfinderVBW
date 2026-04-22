@@ -14,7 +14,8 @@ import {
   TextField,
   TriageBoard,
 } from '../components/guide/inputs'
-import { chapters, toneOptions, agentOptions } from '../content/guide'
+import { chapters, toneOptions, agentOptions, runSteps } from '../content/guide'
+import { PowerShellWalkthrough } from '../components/guide/PowerShellWalkthrough'
 import { useBuildPackage } from '../state/useBuildPackage'
 import { assemblePackage } from '../lib/promptGenerator'
 
@@ -39,23 +40,40 @@ export function GuidePage() {
       {/* Intro */}
       <section className="relative flex min-h-[80svh] items-end overflow-hidden">
         <div className="mx-auto w-full max-w-[1400px] px-6 pb-24 pt-44 sm:px-10">
-          <p className="eyebrow mb-8">The Guide / 10 chapters</p>
-          <SplitText as="h1" className="display" text="Ten questions," stagger={0.06} />
+          <p className="eyebrow mb-8">The course / 10 chapters</p>
+          <SplitText as="h1" className="display" text="From an idea in your head," stagger={0.05} />
           <SplitText
             as="h1"
             className="display display-italic"
-            text="one package."
+            text="to a prototype in your browser."
             delay={0.2}
-            stagger={0.06}
+            stagger={0.05}
           />
-          <Reveal delay={0.6} className="mt-8">
+          <Reveal delay={0.6} className="mt-8 max-w-3xl">
             <p className="lead">
-              Answer each chapter in the right-hand panel. Your answers flow into a single Build
-              Prompt Package on the <Link to="/package" className="link" data-cursor="magnet">
-                Package page
+              Each chapter is a short lesson plus one concrete exercise. Read the teaching on the
+              left, do the deliverable on the right. Your answers compose one downloadable{' '}
+              <Link to="/package" className="link" data-cursor="magnet">
+                Build Prompt Package
               </Link>
-              . Scroll to begin.
+              . Chapter ten takes you all the way to{' '}
+              <span style={{ color: 'var(--accent)', fontStyle: 'italic' }}>
+                npm run dev
+              </span>{' '}
+              — your prototype, live on your desktop, served by PowerShell.
             </p>
+          </Reveal>
+          <Reveal delay={0.8} className="mt-10">
+            <div
+              className="flex flex-wrap items-center gap-6"
+              style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-dim)', letterSpacing: '0.18em' }}
+            >
+              <span className="uppercase">01–08 design the brief</span>
+              <span style={{ color: 'var(--accent)' }}>/</span>
+              <span className="uppercase">09 assemble &amp; copy</span>
+              <span style={{ color: 'var(--accent)' }}>/</span>
+              <span className="uppercase">10 launch locally</span>
+            </div>
           </Reveal>
         </div>
       </section>
@@ -281,10 +299,10 @@ export function GuidePage() {
         </div>
       </ChapterShell>
 
-      {/* Chapter 10: Handoff */}
+      {/* Chapter 10: Launch locally */}
       <ChapterShell chapter={chapters[9]}>
-        <div className="space-y-8">
-          <FieldWrap label="Target agent">
+        <div className="space-y-10">
+          <FieldWrap label="Target agent" hint="Where you'll paste the package.">
             <ChipsField
               options={agentOptions}
               value={[pkg.handoff.agent]}
@@ -296,42 +314,32 @@ export function GuidePage() {
               }
             />
           </FieldWrap>
+
           <FieldWrap
             label="Opening prompt"
-            hint="Often: 'Build the project described above. Start with routes and landing. Do not implement Next or Later.'"
+            hint="The message you send with the package attached."
           >
             <LongField
-              rows={5}
+              rows={4}
               value={pkg.handoff.firstPrompt}
-              placeholder="Use the attached Build Prompt Package. Scaffold routes and components. Stop before implementing any Next or Later features. Summarize what you generated."
+              placeholder="Use the attached Build Prompt Package. Scaffold routes and components. Stop before implementing any Next or Later features. Tell me exactly where you wrote the files."
               onChange={(e) =>
                 update((p) => ({ ...p, handoff: { ...p.handoff, firstPrompt: e.target.value } }))
               }
             />
           </FieldWrap>
 
-          <div
-            className="rounded-sm border p-6"
-            style={{ borderColor: 'var(--edge)', background: 'var(--bg-2)' }}
-          >
-            <p className="eyebrow mb-4">Run checklist</p>
-            <ol
-              className="space-y-2 text-[13px]"
-              style={{ fontFamily: 'var(--font-mono)', color: 'var(--paper)' }}
-            >
-              <li>01 &nbsp; cd into the generated folder</li>
-              <li>02 &nbsp; npm install</li>
-              <li>03 &nbsp; npm run dev — verify the landing renders</li>
-              <li>04 &nbsp; npm run build — catches type errors early</li>
-            </ol>
+          <div>
+            <p className="eyebrow mb-4">The four-command ladder</p>
+            <PowerShellWalkthrough steps={runSteps} />
           </div>
 
           <div className="flex flex-wrap gap-4">
             <Link to="/package" className="btn btn-primary" data-cursor="magnet">
-              Assemble the package <ArrowRight className="h-4 w-4" />
+              Open the package <ArrowRight className="h-4 w-4" />
             </Link>
             <Link to="/library" className="btn" data-cursor="magnet">
-              Reference library
+              Debug &amp; iterate templates
             </Link>
           </div>
         </div>

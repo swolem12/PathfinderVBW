@@ -7,7 +7,7 @@ const tenets = [
   ['Diagnose before you prescribe', 'The problem statement is worth more than the wireframe.'],
   ['Now / Next / Later', 'Tight MVPs produce stable architectures.'],
   ['Constraints are a feature', 'A named non-goal is a feature you will not delete later.'],
-  ['One artifact, one handoff', 'The Build Prompt Package is the deliverable. Everything else is scaffolding.'],
+  ['Finish at localhost', 'A course is not finished until the prototype runs on your desktop.'],
 ]
 
 export function AboutPage() {
@@ -38,8 +38,10 @@ export function AboutPage() {
             acceptance.
           </p>
           <p className="lead">
-            Pathfinder VBW is a ten-chapter cinematic guide that forces that structure, and outputs
-            a single markdown package you can hand to any agent. That is the whole product.
+            Pathfinder VBW is a fully interactive course. Ten chapters, each with a lesson and a
+            single concrete exercise. You finish with one markdown package, one AI-generated
+            prototype, and four PowerShell commands away from seeing it live at{' '}
+            <em style={{ color: 'var(--ink)' }}>http://localhost:5173</em>.
           </p>
         </div>
       </Reveal>

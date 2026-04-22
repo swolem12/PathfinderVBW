@@ -12,19 +12,41 @@ const IcebergScene = lazy(() =>
 
 const manifesto = [
   'Vibe coding is not random prompting.',
-  'It is direction, scope, and acceptance criteria — translated.',
+  'It is direction, scope, and a prototype running on your desktop.',
   'The prompt is the tip. The structure beneath is the iceberg.',
-  'We teach the structure, not the tricks.',
-  'One idea. Ten chapters. One package. One handoff.',
+  'We teach the whole loop — idea to localhost — in ten chapters.',
+]
+
+const courseBeats = [
+  {
+    n: '01',
+    label: 'Lesson',
+    body: 'Read a short, opinionated teaching — what the chapter is, why it matters, how agents react.',
+  },
+  {
+    n: '02',
+    label: 'Exercise',
+    body: 'Do one concrete thing: a sentence, a chips selection, a triage of features, a page-to-feature matrix.',
+  },
+  {
+    n: '03',
+    label: 'Package',
+    body: 'Your answers assemble live into one markdown file — the Build Prompt Package your AI agent reads first.',
+  },
+  {
+    n: '04',
+    label: 'Launch',
+    body: 'Chapter ten walks you through four PowerShell commands: cd, install, dev, build. Prototype live on your desktop.',
+  },
 ]
 
 const quotes = [
+  'idea to localhost',
   'specificity over surface',
   'diagnose before you prescribe',
   'now / next / later',
-  'constraints are a feature',
   'the package is the artifact',
-  'one user beats three personas',
+  'npm run dev',
 ]
 
 export function LandingPage() {
@@ -52,35 +74,30 @@ export function LandingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
-            Pathfinder — Vibe Code Wednesday
+            Pathfinder — An interactive course in vibe coding
           </motion.p>
 
-          <SplitText
-            as="h1"
-            className="display"
-            text="Turn rough ideas"
-            stagger={0.06}
-          />
+          <SplitText as="h1" className="display" text="Vibe-code an idea," stagger={0.05} />
           <SplitText
             as="h1"
             className="display display-italic"
-            text="into shippable apps."
+            text="launch it on your desktop."
             delay={0.25}
-            stagger={0.06}
+            stagger={0.05}
           />
 
           <Reveal delay={0.8} className="mt-10 flex flex-wrap items-end justify-between gap-8">
             <p className="lead">
-              A cinematic, ten-chapter guide that takes a first-time builder from a vague idea
-              to a ready-to-paste <em style={{ color: 'var(--ink)' }}>Build Prompt Package</em>
-              &nbsp;— the single artifact you hand to an AI coding agent.
+              Ten chapters that teach you how to turn a rough idea into a{' '}
+              <em style={{ color: 'var(--ink)' }}>Build Prompt Package</em>, hand it to an AI
+              coding agent, and run the resulting prototype in PowerShell — all in one sitting.
             </p>
             <div className="flex items-center gap-4">
               <Link to="/guide" className="btn btn-primary" data-cursor="magnet">
-                Start the guide <ArrowRight className="h-4 w-4" />
+                Start chapter one <ArrowRight className="h-4 w-4" />
               </Link>
-              <Link to="/package" className="btn" data-cursor="magnet">
-                See the artifact
+              <Link to="/guide/run" className="btn" data-cursor="magnet">
+                Jump to the launch
               </Link>
             </div>
           </Reveal>
@@ -91,7 +108,7 @@ export function LandingPage() {
       <section className="relative mx-auto w-full max-w-[1400px] px-6 py-32 sm:px-10">
         <div className="hairline mb-20" />
         <div className="grid gap-16 md:grid-cols-[220px_1fr]">
-          <p className="eyebrow">§ 01 / manifesto</p>
+          <p className="eyebrow">§ 01 / why this exists</p>
           <div className="space-y-6">
             {manifesto.map((line, i) => (
               <SplitText
@@ -107,14 +124,60 @@ export function LandingPage() {
         </div>
       </section>
 
+      {/* How the course works */}
+      <section className="relative mx-auto w-full max-w-[1400px] px-6 py-32 sm:px-10">
+        <div className="hairline mb-20" />
+        <div className="grid gap-16 md:grid-cols-[220px_1fr]">
+          <p className="eyebrow">§ 02 / how it works</p>
+          <div>
+            <h2 className="h2 mb-10">
+              Every chapter is a lesson <span className="display-italic">and</span> an exercise.
+            </h2>
+            <ol className="grid gap-px overflow-hidden rounded-sm sm:grid-cols-2" style={{ background: 'var(--edge)' }}>
+              {courseBeats.map((b) => (
+                <li key={b.n} className="p-8" style={{ background: 'var(--bg)' }}>
+                  <div className="flex items-baseline gap-4">
+                    <span
+                      className="tabular-nums"
+                      style={{
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: 11,
+                        color: 'var(--accent)',
+                        letterSpacing: '0.22em',
+                      }}
+                    >
+                      {b.n}
+                    </span>
+                    <span
+                      className="uppercase"
+                      style={{
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: 11,
+                        letterSpacing: '0.22em',
+                        color: 'var(--ink)',
+                      }}
+                    >
+                      {b.label}
+                    </span>
+                  </div>
+                  <p className="mt-4" style={{ color: 'var(--paper)', lineHeight: 1.6 }}>
+                    {b.body}
+                  </p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </section>
+
       {/* Chapter ribbon */}
       <section className="relative mx-auto w-full max-w-[1400px] px-6 py-24 sm:px-10">
         <div className="hairline mb-12" />
         <div className="mb-12 flex items-end justify-between gap-6">
           <div>
-            <p className="eyebrow mb-3">§ 02 / the path</p>
+            <p className="eyebrow mb-3">§ 03 / the syllabus</p>
             <h2 className="h2">
-              Ten chapters. <span className="display-italic">One artifact.</span>
+              Ten chapters. <span className="display-italic">One running prototype.</span>
             </h2>
           </div>
           <Link to="/guide" className="link mono" data-cursor="magnet">
@@ -122,7 +185,8 @@ export function LandingPage() {
           </Link>
         </div>
 
-        <ol className="grid grid-cols-1 gap-px overflow-hidden rounded-sm"
+        <ol
+          className="grid grid-cols-1 gap-px overflow-hidden rounded-sm"
           style={{ background: 'var(--edge)' }}
         >
           {chapters.map((c) => (
@@ -160,57 +224,90 @@ export function LandingPage() {
         </ol>
       </section>
 
-      {/* What you leave with */}
+      {/* PowerShell preview */}
       <section className="relative mx-auto w-full max-w-[1400px] px-6 py-32 sm:px-10">
         <div className="hairline mb-20" />
         <div className="grid gap-16 md:grid-cols-[220px_1fr]">
-          <p className="eyebrow">§ 03 / the artifact</p>
+          <p className="eyebrow">§ 04 / the finish line</p>
           <div>
             <h2 className="h2 mb-6">
-              Leave with one <span className="display-italic">readable</span> brief.
+              Chapter ten ends in <span className="display-italic">PowerShell</span>.
             </h2>
             <p className="lead mb-10">
-              Not a dashboard, not a course certificate. A single markdown file with your mission,
-              users, MVP line, map, UI brief, stack, and acceptance criteria — ready to paste into
-              Claude Code, Cursor, Copilot, or Codex.
+              Not a certificate. Not a preview. The four commands that turn whatever your AI agent
+              wrote into a running prototype on your machine — with the exact expected output and
+              the most common errors pre-debugged.
             </p>
 
-            <Reveal className="rounded-sm border p-8" style={{ borderColor: 'var(--edge)', background: 'var(--bg-2)' }}>
+            <Reveal
+              className="rounded-sm border"
+              style={{ borderColor: 'var(--edge)', background: 'var(--bg-2)' }}
+            >
+              <div
+                className="flex items-center justify-between border-b px-4 py-2"
+                style={{ borderColor: 'var(--edge)' }}
+              >
+                <span
+                  className="uppercase"
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 10,
+                    letterSpacing: '0.22em',
+                    color: 'var(--ink-dim)',
+                  }}
+                >
+                  Windows PowerShell — C:\projects\my-app
+                </span>
+                <span
+                  className="h-2 w-2 rounded-full"
+                  style={{ background: 'var(--accent)' }}
+                  aria-hidden
+                />
+              </div>
               <pre
-                className="overflow-x-auto text-[13px] leading-relaxed"
+                className="overflow-x-auto p-6 text-[13px] leading-relaxed"
                 style={{ fontFamily: 'var(--font-mono)', color: 'var(--paper)' }}
               >
-{`# Build Prompt Package
+{`PS C:\\projects\\my-app> npm install
+added 312 packages in 14s
 
-## 1. Mission
-A maintenance tracker for one facility manager and five technicians.
+PS C:\\projects\\my-app> npm run dev
 
-## 2. Problem
-- Who: field techs losing tasks in scattered spreadsheets
-- Pain: no shared state, no priority signal
-- Workaround: group text + memory
-- Outcome: one list, current status, assigned owner
+  VITE v6.0.0  ready in 412 ms
 
-## 3. User
-- Persona: shift-lead technician, mobile-first
-- Primary job: "show me what to fix next"
-- Stories: triage, log, handoff
-
-...`}
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+  ➜  press h + enter to show help`}
               </pre>
             </Reveal>
+
+            <div className="mt-10 flex flex-wrap gap-4">
+              <Link to="/guide/run" className="btn btn-primary" data-cursor="magnet">
+                See the full walkthrough <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link to="/package" className="btn" data-cursor="magnet">
+                See the package artifact
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Marquee */}
-      <section className="relative overflow-hidden py-16" style={{ borderTop: '1px solid var(--edge)', borderBottom: '1px solid var(--edge)' }}>
+      <section
+        className="relative overflow-hidden py-16"
+        style={{ borderTop: '1px solid var(--edge)', borderBottom: '1px solid var(--edge)' }}
+      >
         <div className="marquee">
           {[...quotes, ...quotes].map((q, i) => (
             <span
               key={i}
               className="inline-flex items-center gap-8"
-              style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 5vw, 4rem)', color: 'var(--paper)' }}
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 'clamp(2rem, 5vw, 4rem)',
+                color: 'var(--paper)',
+              }}
             >
               <em>{q}</em>
               <span style={{ color: 'var(--accent)' }}>✦</span>
@@ -223,7 +320,9 @@ A maintenance tracker for one facility manager and five technicians.
       <section className="relative mx-auto w-full max-w-[1400px] px-6 py-40 text-center sm:px-10">
         <SplitText as="h2" className="display" text="Ready when you are." stagger={0.05} />
         <Reveal delay={0.3}>
-          <p className="lead mx-auto mt-8">One idea. Ten chapters. One package.</p>
+          <p className="lead mx-auto mt-8">
+            One idea. Ten chapters. One package. One command: <em>npm run dev</em>.
+          </p>
           <Link to="/guide" className="btn btn-primary mt-10 inline-flex" data-cursor="magnet">
             Begin chapter one <ArrowRight className="h-4 w-4" />
           </Link>

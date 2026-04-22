@@ -13,7 +13,7 @@ describe('LandingPage', () => {
         </MemoryRouter>
       </BuildPackageProvider>,
     )
-    expect(screen.getByLabelText(/Turn rough ideas/i)).toBeInTheDocument()
-    expect(screen.getAllByRole('link', { name: /start the guide/i }).length).toBeGreaterThan(0)
+    expect(screen.getByLabelText(/Vibe-code an idea/i)).toBeInTheDocument()
+    expect(screen.getAllByRole('link', { name: /start chapter one/i }).length).toBeGreaterThan(0)
   })
 })

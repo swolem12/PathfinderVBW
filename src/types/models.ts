@@ -8,7 +8,7 @@ export type ChapterId =
   | 'stack'
   | 'acceptance'
   | 'assemble'
-  | 'handoff'
+  | 'run'
 
 export interface BuildPackage {
   mission: string
@@ -52,12 +52,34 @@ export interface BuildPackage {
   }
 }
 
+export interface LessonExample {
+  bad: string
+  good: string
+}
+
+export interface LessonStep {
+  heading: string
+  body: string
+}
+
 export interface ChapterDef {
   id: ChapterId
   number: number
   title: string
   question: string
   why: string
+  lesson: LessonStep[]
+  example: LessonExample
   microDeliverable: string
-  antiExample?: string
+  youKnowThisWhen: string[]
+}
+
+export interface PowerShellCommand {
+  command: string
+  explanation: string
+  expected: string
+  commonError?: {
+    error: string
+    fix: string
+  }
 }
