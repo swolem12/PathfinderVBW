@@ -1,9 +1,11 @@
 export type LessonId =
   | 'what-is-vibe-coding'
+  | 'pick-agent'
   | 'setup'
   | 'pick-idea'
   | 'build-brief'
   | 'generate'
+  | 'save-files'
   | 'run-locally'
   | 'iterate'
 
@@ -135,15 +137,29 @@ A small maintenance crew uses this to track who is fixing what, so the shift lea
 - [ ] An empty "Open" column shows a short empty-state message, not a blank box
 `
 
-export const generatePrompt = `I want to build a small web app. Below is my Build Brief.
+export const codexPrompt = `I want to build a small web app. Below is my Build Brief.
+
+Do all of the following, in this order:
+1. Design the app based on the brief — but ONLY the items under "Features — ship first". Do NOT implement anything from the "later" list.
+2. Write the full source code for a React + TypeScript + Vite project, using browser localStorage for persistence (no backend) and plain CSS (no UI libraries).
+3. Present the complete file list at the top of your reply.
+4. Then give me every file's full contents in its own clearly labeled code block, with the file's full relative path as the label (for example: \`taskboard/package.json\`, \`taskboard/src/App.tsx\`).
+5. Include package.json, tsconfig.json, vite.config.ts, index.html, src/main.tsx, src/App.tsx, src/index.css, and any additional files needed.
+6. End with the exact PowerShell commands I need to run to install and start the app.
+
+Here is the brief:
+
+<PASTE THE FILLED-IN BUILD BRIEF HERE>`
+
+export const claudeCodePrompt = `I want to build a small web app. Below is my Build Brief.
 
 Please do the following:
-1. Scaffold a new React + TypeScript + Vite project in a folder called \`taskboard\`.
-2. Implement ONLY the features under "Features — ship first". Do NOT implement anything from the "later" list.
-3. Use browser localStorage for persistence. No backend.
-4. Use plain CSS (no UI libraries). Keep it readable.
-5. Handle empty states, so the app never looks broken.
-6. After writing the files, print a short summary: (a) the list of files you created, (b) the exact PowerShell commands I should run to install and start the app.
+1. Create a folder named \`taskboard\` in the current working directory (my Desktop).
+2. Scaffold a React + TypeScript + Vite project inside it.
+3. Implement ONLY the items under "Features — ship first". Do NOT implement anything from the "later" list.
+4. Use browser localStorage for persistence. No backend. Plain CSS, no UI libraries.
+5. Make sure empty states render, so the app never looks broken when there is no data.
+6. After you finish writing files, tell me: (a) the full file tree you created, (b) the exact PowerShell commands I should run from inside the \`taskboard\` folder to install and start the app.
 
 Here is the brief:
 
@@ -157,7 +173,7 @@ export const debugPrompt = `The dev server printed this error:
 
 Please:
 1. Explain in one sentence what is wrong.
-2. Propose the smallest possible fix (which file, which lines).
+2. Propose the smallest possible fix (which file, which lines, and the full replacement snippet).
 3. Do not refactor anything unrelated.
 4. After I apply the fix, tell me how to verify it worked.`
 
@@ -168,6 +184,7 @@ export const addFeaturePrompt = `The app is working. I want to add ONE feature:
 Constraints:
 - Change as few files as possible.
 - Do not touch unrelated features.
+- Give me the full updated contents of every file you change, labeled with its path.
 - After the change, tell me exactly what to test in the browser to confirm it works.`
 
 export const lessons: LessonDef[] = [
@@ -175,34 +192,42 @@ export const lessons: LessonDef[] = [
     id: 'what-is-vibe-coding',
     number: 1,
     title: 'What vibe coding actually is',
-    subtitle: 'And what it is not.',
-    goal: 'You can explain, in your own words, what you give the AI and what you expect back.',
+    subtitle: 'Design with AI. Run locally.',
+    goal: 'You can explain, in one sentence, the loop: design in the AI, save files to your Desktop, run in PowerShell.',
     estMinutes: 4,
     blocks: [
       {
         type: 'p',
-        body: 'Vibe coding is using an AI coding agent (Cursor, GitHub Copilot, Claude Code, Codex, etc.) to write most of the code for you, while you stay in the role of director. You describe what you want. It writes files. You run them.',
+        body: "Vibe coding is using an AI — specifically ChatGPT's Codex or Anthropic's Claude Code — to design and write a small web app for you, while you stay in the director's chair. You describe what you want. It produces the source files. You save them to a folder on your desktop and run them in PowerShell.",
       },
-      {
-        type: 'p',
-        body: "It is not 'type a sentence and get a finished app.' The agent needs three things from you, every time: a clear brief, a place to put the files, and a way to run the result. This course teaches all three.",
-      },
-      { type: 'h', body: 'What you provide' },
+      { type: 'h', body: 'The loop' },
       {
         type: 'list',
         items: [
-          'A Build Brief: one page describing the app, the user, and what ships first.',
-          'A project folder on your computer where files can be created.',
-          'A terminal (PowerShell) to install dependencies and run the app.',
+          '1. Write a one-page Build Brief.',
+          '2. Paste it into Codex or Claude Code.',
+          '3. Get back the full source code for a small React app.',
+          '4. Save the files into a folder on your Desktop (or let Claude Code write them directly).',
+          '5. Run three commands in PowerShell — the app opens in your browser.',
+          '6. Test it. Break it. Paste errors back into the AI. Apply fixes. Repeat.',
         ],
       },
       { type: 'h', body: 'What the AI provides' },
       {
         type: 'list',
         items: [
-          'Source files (.tsx, .ts, .css, package.json, etc.).',
-          'The exact commands to install and run the project.',
-          'Fixes when you paste an error back to it.',
+          'Every source file you need: package.json, index.html, vite.config.ts, src/App.tsx, src/main.tsx, src/index.css.',
+          'The exact PowerShell commands to install and start the project.',
+          'Fixes when you paste errors back to it.',
+        ],
+      },
+      { type: 'h', body: 'What stays with you' },
+      {
+        type: 'list',
+        items: [
+          'The brief. If yours is vague, the output will be vague.',
+          'Running and testing the app on your own machine.',
+          'Deciding what to ship now vs. later.',
         ],
       },
       {
@@ -210,28 +235,79 @@ export const lessons: LessonDef[] = [
         callout: {
           kind: 'tip',
           title: 'The one rule',
-          body: "If you cannot describe the app in a paragraph, the AI cannot build it. The brief isn't bureaucracy — it is the work.",
+          body: "If you cannot describe the app in a paragraph, the AI cannot build it. The brief isn't bureaucracy — it is the actual job.",
         },
       },
     ],
   },
   {
-    id: 'setup',
+    id: 'pick-agent',
     number: 2,
-    title: 'One-time setup',
-    subtitle: 'Node.js, a folder, a terminal, an AI.',
-    goal: "Your computer has Node.js, a project folder you'll use, and an AI agent you can paste prompts into.",
+    title: 'Pick your AI — Codex or Claude Code',
+    subtitle: 'Two good paths. Pick the one you have access to.',
+    goal: 'You have chosen either ChatGPT Codex or Claude Code, and you know how that choice changes the workflow.',
+    estMinutes: 4,
+    blocks: [
+      {
+        type: 'p',
+        body: "This course supports two AIs. They produce similar quality output. The difference is how the files get onto your desktop.",
+      },
+      { type: 'h', body: 'Option A — ChatGPT Codex' },
+      {
+        type: 'list',
+        items: [
+          'Open chatgpt.com, sign in, select a model capable of long code output (GPT-5 Codex, or whatever ChatGPT labels its coding-focused model).',
+          'You paste the brief in the browser. It replies with every file\'s contents in code blocks, plus a download link or a "Canvas" you can copy from.',
+          'You manually save each file to a folder on your Desktop. This course shows you exactly how (lesson 7).',
+          'Best if: you already use ChatGPT Plus and are comfortable copy-pasting or downloading files.',
+        ],
+      },
+      { type: 'h', body: 'Option B — Claude Code' },
+      {
+        type: 'list',
+        items: [
+          'A CLI tool from Anthropic. Runs inside PowerShell.',
+          'Install once with: npm install -g @anthropic-ai/claude-code',
+          'Run: claude (in the folder where you want the project). Paste the brief. It writes every file directly to disk.',
+          'No copy-pasting. No downloads. The files just appear on your Desktop.',
+          'Best if: you want the fastest possible loop and are comfortable with PowerShell.',
+        ],
+      },
+      {
+        type: 'callout',
+        callout: {
+          kind: 'note',
+          title: "You can try both",
+          body: "The Build Brief you write in the next lessons is identical for both. You can do a run with Codex, then a run with Claude Code, and compare.",
+        },
+      },
+      {
+        type: 'checklist',
+        items: [
+          "I picked one: Codex (ChatGPT) or Claude Code",
+          "I am signed in / have a working API key for whichever I picked",
+          "I can open a new conversation and paste a long message into it",
+        ],
+      },
+    ],
+  },
+  {
+    id: 'setup',
+    number: 3,
+    title: 'One-time PC setup',
+    subtitle: 'Node.js, a Desktop folder, a terminal.',
+    goal: "Your PC has Node.js, a clean projects folder on your Desktop, and PowerShell working.",
     estMinutes: 8,
     blocks: [
       { type: 'h', body: '1. Install Node.js' },
       {
         type: 'p',
-        body: "Go to nodejs.org, download the LTS installer, run it with default options. Node.js is what runs JavaScript/TypeScript outside the browser — every React project needs it.",
+        body: "Go to nodejs.org, click the big LTS download button, run the installer with the default options. Node.js is what runs JavaScript/TypeScript outside the browser — every React project needs it.",
       },
       { type: 'h', body: '2. Open PowerShell and verify' },
       {
         type: 'p',
-        body: "Press the Windows key, type 'powershell', press Enter. Then run the two commands below. You should see version numbers (not errors).",
+        body: "Press the Windows key, type 'powershell', press Enter. Run the two commands below. You should see version numbers, not errors.",
       },
       {
         type: 'shellSession',
@@ -247,34 +323,51 @@ export const lessons: LessonDef[] = [
         callout: {
           kind: 'warn',
           title: "If you see 'node is not recognized'",
-          body: "Close PowerShell completely and open a new window. The installer only updates environment variables for new shells.",
+          body: "Close PowerShell completely and open a new window. The installer only updates environment variables for shells opened after it finishes.",
         },
       },
-      { type: 'h', body: '3. Create a projects folder' },
+      { type: 'h', body: '3. Go to your Desktop in PowerShell' },
       {
         type: 'p',
-        body: "Pick a simple path like C:\\projects. Avoid OneDrive-synced folders — file watchers misbehave there, and your dev server will randomly reload.",
+        body: "Your Desktop is a real folder on disk: C:\\Users\\<your-username>\\Desktop. PowerShell has a shortcut for it — $HOME\\Desktop. Run:",
       },
       {
         type: 'shellSession',
         lines: [
-          { prompt: 'PS C:\\Users\\you>', command: 'mkdir C:\\projects' },
-          { prompt: 'PS C:\\Users\\you>', command: 'cd C:\\projects' },
-          { prompt: 'PS C:\\projects>' },
+          { prompt: 'PS C:\\Users\\you>', command: 'cd $HOME\\Desktop' },
+          { prompt: 'PS C:\\Users\\you\\Desktop>' },
         ],
       },
-      { type: 'h', body: '4. Pick an AI coding agent' },
       {
         type: 'p',
-        body: "Any of these work for this course. Pick the one you already have access to:",
+        body: "That's where your project folder will live. You'll see it as an icon on your actual desktop as soon as it's created.",
       },
       {
-        type: 'list',
-        items: [
-          'Cursor (editor) — writes files directly into your project. Easiest.',
-          'GitHub Copilot Chat (inside VS Code) — writes files directly.',
-          'Claude Code (CLI) — runs in PowerShell, edits files in place.',
-          'ChatGPT / Claude.ai (browser) — you copy/paste files manually. Works, just slower.',
+        type: 'callout',
+        callout: {
+          kind: 'warn',
+          title: "Careful with OneDrive",
+          body: "If your Desktop is synced to OneDrive (common on Windows 11), file watchers can misbehave and the dev server may reload at random. If you hit weird reload loops later, move the project folder to C:\\projects instead.",
+        },
+      },
+      { type: 'h', body: '4. (Claude Code path only) Install the CLI' },
+      {
+        type: 'p',
+        body: "Skip this step if you chose Codex. If you chose Claude Code, install it once — globally — with npm:",
+      },
+      {
+        type: 'shellSession',
+        lines: [
+          {
+            prompt: 'PS C:\\Users\\you\\Desktop>',
+            command: 'npm install -g @anthropic-ai/claude-code',
+          },
+          {
+            output:
+              'added 42 packages in 3s\n\nclaude -> C:\\Users\\you\\AppData\\Roaming\\npm\\claude.cmd',
+          },
+          { prompt: 'PS C:\\Users\\you\\Desktop>', command: 'claude --version' },
+          { output: '0.x.x' },
         ],
       },
       {
@@ -282,18 +375,18 @@ export const lessons: LessonDef[] = [
         items: [
           'node -v prints a version',
           'npm -v prints a version',
-          'I have a C:\\projects folder',
-          'I can open an AI chat where I can paste a long message',
+          'I can cd to $HOME\\Desktop and the prompt updates',
+          'If I picked Claude Code: claude --version prints a version',
         ],
       },
     ],
   },
   {
     id: 'pick-idea',
-    number: 3,
+    number: 4,
     title: 'Pick an idea',
     subtitle: 'One sentence. One user. One main action.',
-    goal: "You have a one-sentence pitch for your app with an audience, an outcome, and a 'why this helps them.'",
+    goal: "You have a one-sentence pitch for your app with an audience, an outcome, and a reason it helps them.",
     estMinutes: 5,
     blocks: [
       {
@@ -331,23 +424,23 @@ export const lessons: LessonDef[] = [
         type: 'callout',
         callout: {
           kind: 'tip',
-          title: 'You can use our example',
-          body: 'If you just want to follow along and learn the workflow first, use TaskBoard as your idea. Come back with your own idea on pass two.',
+          title: 'Use our example for your first pass',
+          body: 'If you just want to learn the workflow, use TaskBoard as your idea. Come back with your own idea on pass two — same steps, different brief.',
         },
       },
     ],
   },
   {
     id: 'build-brief',
-    number: 4,
+    number: 5,
     title: 'Write the Build Brief',
-    subtitle: 'One markdown file. This is the whole job.',
-    goal: "You have a filled-in Build Brief saved as brief.md on your computer.",
+    subtitle: 'One markdown file. This is the real work.',
+    goal: "You have a filled-in Build Brief in a plain text file or directly ready to paste.",
     estMinutes: 10,
     blocks: [
       {
         type: 'p',
-        body: "The Build Brief is one markdown file with eight short sections. You copy the template, fill it in, save it. Every later step pastes this file into the AI.",
+        body: "The Build Brief is one markdown file with eight short sections. Copy the template, fill every section with concrete detail, save it. You'll paste this whole thing into Codex or Claude Code in the next lesson.",
       },
       { type: 'h', body: 'The template — copy this' },
       {
@@ -357,7 +450,7 @@ export const lessons: LessonDef[] = [
       { type: 'h', body: 'A filled-in example — TaskBoard' },
       {
         type: 'p',
-        body: "Here is the template filled in for our sample app. Notice how every field is concrete. No 'modern', no 'clean', no 'intuitive'.",
+        body: "Notice: every field is concrete. No 'modern', no 'clean', no 'intuitive'. This is the brief we will use in the generation step.",
       },
       {
         type: 'code',
@@ -368,7 +461,7 @@ export const lessons: LessonDef[] = [
         callout: {
           kind: 'note',
           title: 'Where to save it',
-          body: 'Save as C:\\projects\\brief.md. Use VS Code, Notepad, or the editor in your AI agent — any plain text will do.',
+          body: "Paste the filled template into Notepad or VS Code and save as brief.md somewhere you'll find it (your Desktop is fine). You can also just keep it in a text file or a sticky note — as long as you can copy it later.",
         },
       },
       {
@@ -384,69 +477,186 @@ export const lessons: LessonDef[] = [
   },
   {
     id: 'generate',
-    number: 5,
-    title: 'Generate the project',
-    subtitle: 'Hand the brief to the AI.',
-    goal: 'The AI has produced a folder with a package.json and source files, and you know where they live.',
-    estMinutes: 8,
+    number: 6,
+    title: 'Design it in Codex or Claude Code',
+    subtitle: 'One prompt. Every file back.',
+    goal: 'The AI has produced every source file for the app — either as a set of labeled code blocks (Codex) or written directly to your Desktop (Claude Code).',
+    estMinutes: 10,
     blocks: [
       {
         type: 'p',
-        body: "Open your AI agent. Start a fresh conversation. Paste the prompt below, replacing the placeholder with your filled-in brief from the previous lesson.",
+        body: "Open your AI. Start a fresh conversation. Paste the prompt below for your chosen path, with your filled-in brief replacing the placeholder at the bottom.",
       },
-      { type: 'h', body: 'The generation prompt' },
+      { type: 'h', body: 'Path A — ChatGPT Codex' },
       {
         type: 'code',
-        block: { kind: 'prompt', title: 'Paste into your AI', body: generatePrompt },
+        block: { kind: 'prompt', title: 'Paste into ChatGPT', body: codexPrompt },
       },
-      { type: 'h', body: 'What you should get back' },
+      { type: 'h', body: 'What Codex should reply with' },
       {
         type: 'list',
         items: [
-          'A list of files the AI created (or file contents to paste, if your agent can\'t write directly).',
-          'A package.json with the project\'s dependencies.',
-          'At minimum: src/App.tsx (or similar), src/main.tsx, index.html, vite.config.ts.',
-          'A short summary ending with the commands to install and run it.',
+          'A file tree listing every file it is about to give you.',
+          'One code block per file, each labeled with the file path (e.g. "taskboard/src/App.tsx").',
+          'At minimum: package.json, tsconfig.json, vite.config.ts, index.html, src/main.tsx, src/App.tsx, src/index.css.',
+          'A short block of PowerShell commands at the end to install and run.',
         ],
       },
-      { type: 'h', body: 'If your agent writes files directly (Cursor / Copilot / Claude Code)' },
+      {
+        type: 'callout',
+        callout: {
+          kind: 'tip',
+          title: 'If Codex gets cut off',
+          body: "Sometimes a long reply gets truncated. If the last file is incomplete, reply with: 'Please continue from <filename>. Only give me the rest of that file and any remaining files.'",
+        },
+      },
+      { type: 'h', body: 'Path B — Claude Code' },
       {
         type: 'p',
-        body: "You're done with this lesson. Verify the folder exists with `dir` in PowerShell:",
+        body: "Open PowerShell, cd to your Desktop, then start Claude Code. It will ask what to do. Paste the prompt below (with your brief at the bottom). Claude Code writes every file to disk automatically, inside a new taskboard folder.",
       },
       {
         type: 'shellSession',
         lines: [
-          { prompt: 'PS C:\\projects>', command: 'dir taskboard' },
+          { prompt: 'PS C:\\Users\\you>', command: 'cd $HOME\\Desktop' },
+          { prompt: 'PS C:\\Users\\you\\Desktop>', command: 'claude' },
           {
             output:
-              'Mode    LastWriteTime    Name\n----    -------------    ----\nd----   <today>          node_modules (maybe)\nd----   <today>          src\n-a---   <today>          package.json\n-a---   <today>          index.html\n-a---   <today>          vite.config.ts',
+              'Claude Code — ready.\nTell me what you want to build, paste instructions, or drop in a file.',
           },
         ],
       },
-      { type: 'h', body: "If your agent can't write files (ChatGPT / Claude.ai web)" },
+      {
+        type: 'code',
+        block: { kind: 'prompt', title: 'Paste into Claude Code', body: claudeCodePrompt },
+      },
       {
         type: 'list',
         items: [
-          'Create the folder manually: mkdir C:\\projects\\taskboard',
-          'For each file the AI gave you, create it: New-Item -Path "C:\\projects\\taskboard\\src\\App.tsx" -ItemType File -Force',
-          "Open the file in Notepad or VS Code and paste the contents. Save.",
-          'Repeat until all the files the AI listed exist.',
+          "Claude Code will ask before writing each file — confirm with 'y' (or 'a' to approve all).",
+          'When it finishes, you will see a new taskboard folder on your Desktop.',
+          "If you're on Path B, you can skip the next lesson — your files are already on disk.",
+        ],
+      },
+      {
+        type: 'checklist',
+        items: [
+          "I pasted my brief into my chosen AI",
+          "I got back (Codex) labeled code blocks for every file, OR (Claude Code) a taskboard folder on my Desktop",
+          "The reply ended with PowerShell commands to run",
+        ],
+      },
+    ],
+  },
+  {
+    id: 'save-files',
+    number: 7,
+    title: 'Save the files to your Desktop',
+    subtitle: 'Only for the Codex path. Claude Code users skip ahead.',
+    goal: "You have a 'taskboard' folder on your Desktop containing every file Codex gave you, each with the correct name and contents.",
+    estMinutes: 10,
+    blocks: [
+      {
+        type: 'callout',
+        callout: {
+          kind: 'note',
+          title: 'Claude Code path — skip this lesson',
+          body: "If you used Claude Code, the files are already on your Desktop. Go to lesson 8.",
+        },
+      },
+      {
+        type: 'p',
+        body: "Codex gave you every file's contents in the chat. Now you need to put them on disk, in the right folder, with the right names. There are two ways. Pick one.",
+      },
+      { type: 'h', body: 'Way 1 — Download the files (if Codex offered it)' },
+      {
+        type: 'list',
+        items: [
+          'Some Codex replies include a "Download project" button or a downloadable .zip.',
+          'Click it. Save the .zip to your Desktop.',
+          'Right-click the .zip → "Extract All…" → choose Desktop → Extract.',
+          'You should now see a taskboard folder on your Desktop.',
+        ],
+      },
+      { type: 'h', body: 'Way 2 — Create the files by hand (always works)' },
+      {
+        type: 'p',
+        body: "Open PowerShell and make the project folder on your Desktop:",
+      },
+      {
+        type: 'shellSession',
+        lines: [
+          { prompt: 'PS C:\\Users\\you>', command: 'cd $HOME\\Desktop' },
+          { prompt: 'PS C:\\Users\\you\\Desktop>', command: 'mkdir taskboard' },
+          { prompt: 'PS C:\\Users\\you\\Desktop>', command: 'cd taskboard' },
+          { prompt: 'PS C:\\Users\\you\\Desktop\\taskboard>' },
+        ],
+      },
+      {
+        type: 'p',
+        body: "Now, for each file Codex gave you, create it and paste its contents. You can do this two ways — VS Code is easier:",
+      },
+      { type: 'h', body: 'Easier: use VS Code' },
+      {
+        type: 'list',
+        items: [
+          'If you don\'t have it, install VS Code from code.visualstudio.com (free).',
+          'In PowerShell, inside the taskboard folder, run: code .',
+          'VS Code opens the folder. In the left sidebar, right-click → New File → type the file path (e.g. src/App.tsx) → Enter.',
+          'Copy the file\'s contents from the ChatGPT reply, paste into the editor, press Ctrl+S to save.',
+          'Repeat for every file Codex listed.',
+        ],
+      },
+      { type: 'h', body: 'Or: Notepad + PowerShell' },
+      {
+        type: 'list',
+        items: [
+          'In PowerShell, create a file: New-Item -Path "src\\App.tsx" -ItemType File -Force',
+          'Open it in Notepad: notepad src\\App.tsx',
+          'Paste the contents from ChatGPT, save (Ctrl+S), close Notepad.',
+          'Repeat for each file.',
         ],
       },
       {
         type: 'callout',
         callout: {
           kind: 'warn',
-          title: "Don't skim this step",
-          body: "If a file is missing or you pasted only half of it, the next lesson will fail with a confusing error. It's faster to verify now than debug later.",
+          title: "Watch the file paths",
+          body: "If Codex labeled a file 'taskboard/src/App.tsx' and you are already inside the taskboard folder, create it as 'src/App.tsx' (without the leading taskboard/). You do not want nested taskboard/taskboard folders.",
         },
+      },
+      { type: 'h', body: 'Verify everything is there' },
+      {
+        type: 'p',
+        body: "Before moving on, check that the folder structure matches what Codex listed. Minimum you should see:",
+      },
+      {
+        type: 'shellSession',
+        lines: [
+          {
+            prompt: 'PS C:\\Users\\you\\Desktop\\taskboard>',
+            command: 'Get-ChildItem -Recurse -Name',
+          },
+          {
+            output:
+              'index.html\npackage.json\ntsconfig.json\nvite.config.ts\nsrc\nsrc\\App.tsx\nsrc\\index.css\nsrc\\main.tsx',
+          },
+        ],
+      },
+      {
+        type: 'checklist',
+        items: [
+          'I have a taskboard folder on my Desktop',
+          'package.json and index.html are inside taskboard (not inside a nested subfolder)',
+          'src\\App.tsx and src\\main.tsx exist',
+          "If I open any file I pasted, I see the full contents (not half of it)",
+        ],
       },
     ],
   },
   {
     id: 'run-locally',
-    number: 6,
+    number: 8,
     title: 'Run it in PowerShell',
     subtitle: 'Three commands. Your prototype on localhost.',
     goal: 'Your app is running at http://localhost:5173/ and you can interact with it in a browser.',
@@ -454,25 +664,25 @@ export const lessons: LessonDef[] = [
     blocks: [
       {
         type: 'p',
-        body: "Open PowerShell. You're going to run three commands, in order. Each one either works or fails visibly — there's no 'silently wrong' state to worry about.",
+        body: "Your files are in C:\\Users\\you\\Desktop\\taskboard. Open PowerShell and run three commands in order. Each one either works or fails visibly.",
       },
-      { type: 'h', body: '1. Go into the project' },
+      { type: 'h', body: '1. Go into the project folder' },
       {
         type: 'shellSession',
         lines: [
-          { prompt: 'PS C:\\projects>', command: 'cd taskboard' },
-          { prompt: 'PS C:\\projects\\taskboard>' },
+          { prompt: 'PS C:\\Users\\you>', command: 'cd $HOME\\Desktop\\taskboard' },
+          { prompt: 'PS C:\\Users\\you\\Desktop\\taskboard>' },
         ],
       },
       {
         type: 'p',
-        body: "The prompt changes to show you're inside the project. If it says 'Cannot find path', the folder name is wrong — run `dir C:\\projects` to see real names.",
+        body: "The prompt now shows you are inside the project. If you see 'Cannot find path', the folder name is wrong — run Get-ChildItem $HOME\\Desktop to see what is actually there.",
       },
       { type: 'h', body: '2. Install dependencies' },
       {
         type: 'shellSession',
         lines: [
-          { prompt: 'PS C:\\projects\\taskboard>', command: 'npm install' },
+          { prompt: 'PS C:\\Users\\you\\Desktop\\taskboard>', command: 'npm install' },
           {
             output:
               'added 287 packages, and audited 288 packages in 14s\n\nfound 0 vulnerabilities',
@@ -481,13 +691,13 @@ export const lessons: LessonDef[] = [
       },
       {
         type: 'p',
-        body: "This reads package.json and downloads everything the project needs into a `node_modules` folder. You only run this once per project (plus whenever you pull new code).",
+        body: "This reads package.json and downloads everything the project needs into a node_modules folder. You run this once per project (and again whenever package.json changes).",
       },
       { type: 'h', body: '3. Start the dev server' },
       {
         type: 'shellSession',
         lines: [
-          { prompt: 'PS C:\\projects\\taskboard>', command: 'npm run dev' },
+          { prompt: 'PS C:\\Users\\you\\Desktop\\taskboard>', command: 'npm run dev' },
           {
             output:
               '  VITE v6.0.0  ready in 412 ms\n\n  ➜  Local:   http://localhost:5173/\n  ➜  Network: use --host to expose\n  ➜  press h + enter to show help',
@@ -496,51 +706,51 @@ export const lessons: LessonDef[] = [
       },
       {
         type: 'p',
-        body: "Ctrl+click that http://localhost:5173/ link, or paste it into your browser. You should see your app. Congratulations — you have vibe-coded a prototype onto your desktop.",
+        body: "Ctrl+click the http://localhost:5173/ link in PowerShell (or paste it into any browser). You should see your app. Congratulations — you have vibe-coded a prototype onto your Desktop.",
       },
       {
         type: 'callout',
         callout: {
           kind: 'tip',
           title: 'Leave this terminal running',
-          body: "The dev server is a process; it needs to stay alive for the app to keep working. Every time you save a file, it auto-reloads the page. To stop it, press Ctrl+C.",
+          body: "The dev server is a live process. Keep this PowerShell window open while you use the app. Every time you change a file, the page auto-reloads. To stop it, press Ctrl+C.",
         },
       },
-      { type: 'h', body: 'Common errors you might hit' },
+      { type: 'h', body: 'Common errors' },
       {
         type: 'list',
         items: [
-          "'npm is not recognized' → Node.js isn't installed, or you opened PowerShell before installing it. Close, reinstall, open a fresh window.",
-          "'Port 5173 is already in use' → another dev server is running. Either close that terminal, or run: npm run dev -- --port 5174",
-          "A red wall of TypeScript errors → don't panic. Copy the first error. Jump to the next lesson.",
+          "'npm is not recognized' → Node.js isn't installed, or you opened PowerShell before installing it. Close, reinstall if needed, open a fresh window.",
+          "'Port 5173 is already in use' → another dev server is running somewhere. Either close that window, or run: npm run dev -- --port 5174",
+          "A red wall of TypeScript errors → don't panic. Copy the first error verbatim. Go to the next lesson.",
         ],
       },
       {
         type: 'checklist',
         items: [
-          'PowerShell shows "Local: http://localhost:5173/"',
+          'PowerShell prints "Local: http://localhost:5173/"',
           'The page loads in my browser',
-          'I can see the UI the AI described',
+          "I can see the UI my AI described",
         ],
       },
     ],
   },
   {
     id: 'iterate',
-    number: 7,
+    number: 9,
     title: 'Fix it. Then add one feature.',
     subtitle: 'The real loop.',
-    goal: "You know how to hand an error back to the AI, and how to request a single new feature without breaking the app.",
+    goal: "You know how to hand an error back to your AI, apply the fix, and request a single new feature without breaking the app.",
     estMinutes: 10,
     blocks: [
       {
         type: 'p',
-        body: "Nothing runs the first time forever. You will see errors. The skill is not 'never break things' — it is 'break things, copy the error, hand it back, apply the fix.' That loop is vibe coding.",
+        body: "Nothing runs the first time forever. You will see errors. The skill is not 'never break things' — it is 'break things, copy the error, paste it back, apply the fix, verify.' That loop is vibe coding.",
       },
       { type: 'h', body: 'When PowerShell shows an error' },
       {
         type: 'p',
-        body: "Copy the first error message exactly. Do not paraphrase it. Paste it into the debug prompt below.",
+        body: "Copy the first error message exactly. Do not paraphrase it. Paste it into the debug prompt below, back into the same AI conversation you used to generate the project.",
       },
       {
         type: 'code',
@@ -550,11 +760,11 @@ export const lessons: LessonDef[] = [
         type: 'callout',
         callout: {
           kind: 'warn',
-          title: 'Why this matters',
-          body: "If you describe the error ('it says something about a module'), the AI has to guess. If you paste the exact text, it sees the line number and the symbol name. The fix rate is wildly different.",
+          title: 'Why exact text matters',
+          body: "If you describe the error ('it says something about a module'), the AI has to guess. If you paste the exact text, it sees the line number and the symbol name. The fix rate is dramatically different.",
         },
       },
-      { type: 'h', body: 'An example error and a real fix' },
+      { type: 'h', body: 'Example: a real error and a real fix' },
       {
         type: 'code',
         block: {
@@ -565,12 +775,20 @@ export const lessons: LessonDef[] = [
       },
       {
         type: 'p',
-        body: "Paste the debug prompt. The AI replies: 'You forgot to import useState from react.' It tells you to change line 1 of src/App.tsx from `import React from \"react\"` to `import React, { useState } from \"react\"`. You save. PowerShell auto-reloads. Error gone.",
+        body: "Paste the debug prompt with this error. The AI replies: 'You forgot to import useState from react.' It tells you to change line 1 of src/App.tsx from `import React from \"react\"` to `import React, { useState } from \"react\"`. You open the file in VS Code, change the line, save. PowerShell auto-reloads. Error gone.",
+      },
+      {
+        type: 'callout',
+        callout: {
+          kind: 'tip',
+          title: 'Codex vs Claude Code on fixes',
+          body: "With Codex, the AI gives you a snippet — you edit the file yourself. With Claude Code, you can just say 'apply that fix' and it will edit the file on disk. Both work. Claude Code is faster.",
+        },
       },
       { type: 'h', body: 'When the app works and you want more' },
       {
         type: 'p',
-        body: "Resist asking for five features at once. Ask for one. Verify. Ask for the next.",
+        body: "Resist asking for five features at once. Ask for one. Test it in the browser. Ask for the next.",
       },
       {
         type: 'code',
@@ -580,9 +798,9 @@ export const lessons: LessonDef[] = [
       {
         type: 'list',
         items: [
-          'Save. See the reload in the browser. Tap around the app.',
-          'If it broke, copy the error → debug prompt.',
-          'If it works, mark the brief checklist item done.',
+          'Save a file → watch the browser reload → click around.',
+          'If it broke, copy the error → paste into debug prompt → apply fix.',
+          'If it works, tick a checklist item in your brief.',
           'Want more? Pick ONE item from your "later" list, move it to the top, use the add-feature prompt.',
         ],
       },
@@ -599,7 +817,7 @@ export const lessons: LessonDef[] = [
         callout: {
           kind: 'note',
           title: "That's the whole loop",
-          body: "Brief → generate → run → iterate. Every real app you vibe-code uses this same cycle. The rest is practice.",
+          body: "Brief → Codex or Claude Code → Desktop folder → npm install → npm run dev → iterate. Every app you vibe-code uses this same cycle. The rest is practice.",
         },
       },
     ],

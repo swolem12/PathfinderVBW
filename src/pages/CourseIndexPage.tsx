@@ -20,7 +20,7 @@ export function CourseIndexPage() {
         Idea → brief → prototype.
       </h1>
       <p className="lead mt-8">
-        Seven lessons, in order. Each one is short, concrete, and ends with a checklist you can tick
+        Nine lessons, in order. Each one is short, concrete, and ends with a checklist you can tick
         off. You can always jump back to a lesson later — everything is accessible directly from
         this page.
       </p>
