@@ -5,9 +5,9 @@ import { StartButton } from '../ui/StartButton'
 
 const NAV_LINKS = [
   { to: '/course', label: 'Beginner' },
-  { to: '/palantir', label: 'Palantir' },
-  { to: '/powerapps', label: 'Power Apps' },
   { to: '/advanced', label: 'Advanced' },
+  { to: '/powerapps', label: 'Microsoft' },
+  { to: '/palantir', label: 'Palantir' },
 ]
 
 export function AppShell() {
