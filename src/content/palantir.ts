@@ -68,12 +68,55 @@ export const palantirLessons: LessonDef[] = [
           { label: 'Slate', sub: 'UI canvas', swatch: 'tone', variant: 'warm' },
         ],
       },
+      { type: 'h', body: 'The request path for one Slate page load' },
+      {
+        type: 'p',
+        body:
+          "When a user opens your Slate app, here is what actually happens on the wire: (1) browser downloads the Slate bundle + your document's config, (2) each Function-backed variable fires its query over HTTPS to the Functions service, (3) each Function executes under the caller's identity, queries the Ontology, and returns typed JSON, (4) Slate renders widgets bound to those variables. Nothing in Slate hits a dataset directly. Understanding this request path is 80% of Slate debugging.",
+      },
+      {
+        type: 'visualRef',
+        title: 'The Slate request path, left-to-right',
+        columns: 4,
+        items: [
+          { label: 'Browser', sub: 'Slate bundle + doc config', swatch: 'tone', variant: 'browser' },
+          { label: 'Function', sub: 'Server-side TS, caller identity', swatch: 'accent', variant: 'fn' },
+          { label: 'Ontology', sub: 'Typed query → Spark SQL', swatch: 'layout', variant: 'onto' },
+          { label: 'Datasets', sub: 'Immutable backing store', swatch: 'radius', variant: 'ds' },
+        ],
+      },
+      { type: 'h', body: 'Quick glossary you will reuse' },
+      {
+        type: 'jargon',
+        term: 'Compass',
+        plain: "Foundry's file browser. Every artifact has a path like /Projects/Maintenance/TaskBoard/taskboard-slate.",
+      },
+      {
+        type: 'jargon',
+        term: 'Tenant',
+        plain: "Your org's Foundry instance. The URL looks like https://<tenant>.palantirfoundry.com. Different tenants never share data.",
+      },
+      {
+        type: 'jargon',
+        term: 'Release',
+        plain: 'An immutable version of a Function or Slate doc. Consumers pin to a specific release; bumping it is how you ship changes.',
+      },
+      {
+        type: 'callout',
+        callout: {
+          kind: 'note',
+          title: 'Why not talk to datasets directly?',
+          body:
+            "Dataset rows are immutable append-only. A raw 'Task' row from yesterday may not match today's schema, may include unpublished columns, and has no permission scoping beyond the file. The Ontology layer gives you: typed access, row-level permission enforcement, a schema that only evolves via review, and cross-type joins. Every production Slate/Workshop app talks to Ontology via Functions; skip this and you build something that breaks the first time the upstream dataset shape shifts.",
+        },
+      },
       {
         type: 'checklist',
         items: [
           "I can name all four Foundry layers.",
           "I know Slate is the UI layer.",
           "I understand Slate talks to Functions, and Functions talk to the Ontology.",
+          "I can describe the Slate request path: browser → Function → Ontology.",
           "I accept that I won't open a Slate doc until lesson 4.",
         ],
       },
@@ -145,6 +188,66 @@ export const palantirLessons: LessonDef[] = [
         body:
           'Inside your folder: New → Application → Slate document. Name it taskboard-slate. Save. You now see a blank Slate canvas with three panels: widget tray on the left, canvas in the middle, inspector on the right.',
       },
+      { type: 'h', body: 'The 3 apps you will live in, side by side' },
+      {
+        type: 'visualRef',
+        title: 'Star these; ignore the rest for now',
+        columns: 3,
+        items: [
+          { label: 'Slate', sub: 'UI canvas + widgets', swatch: 'accent', variant: 'slate' },
+          { label: 'Functions', sub: 'TS repos for queries + mutations', swatch: 'accent', variant: 'fn' },
+          { label: 'Ontology Manager', sub: 'Object Types + Actions', swatch: 'accent', variant: 'ont' },
+          { label: 'Compass', sub: 'File browser (always pinned)', swatch: 'tone', variant: 'compass' },
+          { label: 'Notepad / Quiver', sub: 'Docs & embed targets', swatch: 'tone', variant: 'notes' },
+          { label: 'Data Lineage', sub: 'Graph view (for debugging)', swatch: 'tone', variant: 'lineage' },
+        ],
+      },
+      { type: 'h', body: 'Access troubleshooting — the usual suspects' },
+      {
+        type: 'details',
+        summary: "I can log in but Slate isn't in the launcher",
+        blocks: [
+          {
+            type: 'list',
+            items: [
+              'Your tenant has Slate disabled for your role — ask your Foundry admin to add you to the Slate Users group.',
+              'Your tenant migrated to Workshop-only; Slate is still installable but hidden by default. Admin → Applications → install Slate for your role.',
+              'You are on a sandbox tenant without Slate provisioned. Different URL, different app list.',
+            ],
+          },
+        ],
+      },
+      {
+        type: 'details',
+        summary: "I can open Slate but can't create a new document",
+        blocks: [
+          {
+            type: 'p',
+            body:
+              "You lack Write permission on the folder you are in. Navigate up until you find a folder you own or have Editor access to, then create there. 'New → Application → Slate' is greyed out if the current folder denies Write.",
+          },
+        ],
+      },
+      {
+        type: 'details',
+        summary: 'I created a folder but nobody else can see it',
+        blocks: [
+          {
+            type: 'p',
+            body:
+              "New folders default to 'only you can read'. Right-click → Share → add the group that should see it. Remember: permissions cascade down, so set them on the folder, not the document.",
+          },
+        ],
+      },
+      {
+        type: 'callout',
+        callout: {
+          kind: 'tip',
+          title: 'Use two browser profiles',
+          body:
+            "During development, keep one profile logged in as you (editor) and another as a test user (view-only). You will catch 90% of permission bugs before ever publishing because the test-user window shows the world as your users see it.",
+        },
+      },
       {
         type: 'checklist',
         items: [
@@ -152,6 +255,7 @@ export const palantirLessons: LessonDef[] = [
           'I have starred Slate, Functions, and Ontology Manager.',
           'I have a project folder I can write to.',
           'I have an empty Slate document named taskboard-slate.',
+          'I have a second browser profile for test-user verification.',
         ],
       },
     ],
@@ -301,12 +405,131 @@ export class SlateHelpers {
             "1) There are no Task objects in 'Open' status. 2) Your Function repo's Ontology branch is different from your Slate doc's branch — set both to 'main'. 3) You don't have Read permission on the Task Object Type — ask your ontology lead.",
         },
       },
+      { type: 'h', body: 'Ontology reference — the surface area you will use' },
+      {
+        type: 'visualRef',
+        title: 'What lives on an Object Type',
+        columns: 4,
+        items: [
+          { label: 'Properties', sub: 'title, priority, status…', swatch: 'accent', variant: 'props' },
+          { label: 'Primary key', sub: '$rid, always stable', swatch: 'accent', variant: 'pk' },
+          { label: 'Links', sub: 'Task.assignee → Technician', swatch: 'accent', variant: 'link' },
+          { label: 'Actions', sub: 'completeTask, reassignTask', swatch: 'accent', variant: 'act' },
+          { label: 'Indexes', sub: 'For fast exactMatch / orderBy', swatch: 'tone', variant: 'idx' },
+          { label: 'Permissions', sub: 'Who reads, who edits', swatch: 'tone', variant: 'perm' },
+          { label: 'Display config', sub: 'Title template, icon', swatch: 'tone', variant: 'disp' },
+          { label: 'Derived props', sub: 'Computed from others', swatch: 'tone', variant: 'derived' },
+        ],
+      },
+      { type: 'h', body: 'Query DSL cheatsheet' },
+      {
+        type: 'code',
+        block: {
+          kind: 'code',
+          language: 'ts',
+          title: 'The operators you reach for 90% of the time',
+          body: `// Equality
+.filter((t) => t.status.exactMatch("Open"))
+
+// One of a set
+.filter((t) => t.status.isIn(["Open", "Blocked"]))
+
+// Numeric / date
+.filter((t) => t.priority.gte(3))
+.filter((t) => t.dueDate.lt(new Date()))
+
+// String containment (case-insensitive)
+.filter((t) => t.title.contains("filter"))
+
+// Boolean combinators
+.filter((t) => t.status.exactMatch("Open").and(t.priority.gte(3)))
+
+// Sort + limit (always cap queries)
+.orderBy((t) => t.priority.desc())
+.take(200)
+
+// Count or one row
+.count()
+.takeFirst()
+
+// Follow a link (lazy; triggers a join)
+const tech = task.assignee.get()`,
+        },
+      },
+      {
+        type: 'callout',
+        callout: {
+          kind: 'warn',
+          title: 'Never forget .take(N)',
+          body:
+            "Unbounded .all() on a growing Object Type will eventually return 100k rows and time out. Always cap queries, and if you need pagination, expose offset + limit in the Function signature and let Slate manage paging.",
+        },
+      },
+      { type: 'h', body: 'Input parameters — how Slate passes data to a Function' },
+      {
+        type: 'code',
+        block: {
+          kind: 'code',
+          language: 'ts',
+          title: 'Function with typed parameters',
+          body: `@Function()
+public getTasksByStatus(status: string, maxPriority: number): Task[] {
+  return Objects.search().task()
+    .filter((t) => t.status.exactMatch(status))
+    .filter((t) => t.priority.lte(maxPriority))
+    .orderBy((t) => t.priority.desc())
+    .take(200)
+    .all()
+}`,
+        },
+      },
+      {
+        type: 'p',
+        body:
+          "In Slate, when you bind this Function-backed variable, the Inspector asks you for each argument. You bind {{someStringVar}} to `status` and a literal `5` to `maxPriority`. Every time `someStringVar` changes, the Function re-runs.",
+      },
+      { type: 'h', body: 'Function errors you will see' },
+      {
+        type: 'details',
+        summary: "'Cannot find type Task'",
+        blocks: [
+          {
+            type: 'p',
+            body:
+              "You haven't ticked 'Task' in your repo's Settings → Ontology tab. Until you do, the @foundry/ontology import doesn't know about it. Tick, save, wait 10 seconds for regeneration.",
+          },
+        ],
+      },
+      {
+        type: 'details',
+        summary: "'Permission denied' when Slate calls the Function",
+        blocks: [
+          {
+            type: 'p',
+            body:
+              "The caller (your test user) lacks Read on the Task Object Type. Open Ontology Manager → Task → Permissions → grant Read to the appropriate group. The Function itself can't bypass this — that's the point.",
+          },
+        ],
+      },
+      {
+        type: 'details',
+        summary: "'Function version not released'",
+        blocks: [
+          {
+            type: 'p',
+            body:
+              "You pressed Preview but never clicked Release. Preview runs in draft; Slate calls only released versions. Release → bump the version — Slate auto-picks the latest.",
+          },
+        ],
+      },
       {
         type: 'checklist',
         items: [
           'I know the Ontology vs. dataset distinction.',
           'I wrote and released a Function.',
           'A Function-backed variable in my Slate doc returns live data.',
+          'I know the core query DSL: filter, orderBy, take, count, link follow.',
+          'I can diagnose the three common Function errors above.',
         ],
       },
     ],
@@ -422,6 +645,82 @@ export class SlateHelpers {
           },
         ],
       },
+      { type: 'h', body: 'Widget catalog — the 8 you will use most' },
+      {
+        type: 'visualRef',
+        title: 'Drag these onto the canvas; the rest are variations',
+        columns: 4,
+        items: [
+          { label: 'Heading', sub: 'Page + section titles', swatch: 'layout', variant: 'h' },
+          { label: 'List', sub: 'Per-row template over array', swatch: 'layout', variant: 'list' },
+          { label: 'HTML', sub: 'Free-form + Handlebars', swatch: 'layout', variant: 'html' },
+          { label: 'Button', sub: 'Fires an onClick action', swatch: 'layout', variant: 'btn' },
+          { label: 'Text Input', sub: 'Writes to a variable', swatch: 'accent', variant: 'ti' },
+          { label: 'Select', sub: 'Dropdown → variable', swatch: 'accent', variant: 'sel' },
+          { label: 'Table', sub: 'Sort / filter / paginate', swatch: 'accent', variant: 'tbl' },
+          { label: 'Toast', sub: 'Notification on event', swatch: 'accent', variant: 'toast' },
+        ],
+      },
+      { type: 'h', body: 'Handlebars reference — what works inside a template' },
+      {
+        type: 'code',
+        block: {
+          kind: 'code',
+          language: 'html',
+          title: 'Row template idioms',
+          body: `{{!-- Simple interpolation --}}
+<span>{{row.title}}</span>
+
+{{!-- Conditional class --}}
+<span class="tag {{#if row.isUrgent}}tag--urgent{{/if}}">...</span>
+
+{{!-- Equality switch --}}
+{{#eq row.priority "High"}}🔥{{/eq}}
+{{#eq row.priority "Low"}}⬜️{{/eq}}
+
+{{!-- Loop inside a row (rare; prefer another List widget) --}}
+<ul>{{#each row.tags}}<li>{{this}}</li>{{/each}}</ul>
+
+{{!-- Safe default --}}
+<span>{{#unless row.assignee}}— unassigned —{{/unless}}</span>
+
+{{!-- Escape HTML (Slate does this by default; triple-brace opts out) --}}
+<span>{{{row.trustedHtml}}}</span>`,
+        },
+      },
+      {
+        type: 'callout',
+        callout: {
+          kind: 'warn',
+          title: 'Triple-brace is a footgun',
+          body:
+            "{{{x}}} skips HTML escaping. If x contains user-controlled data, that's an XSS injection. Use it only for HTML you generated server-side inside a Function.",
+        },
+      },
+      { type: 'h', body: 'List widget options reference' },
+      {
+        type: 'list',
+        items: [
+          'Data Source — variable binding (must be an array).',
+          'Row Template — HTML/Handlebars; gets `row` as the current item and `index` as its position.',
+          'Empty State — shown when the array is []; never leave this empty, or the widget looks broken on zero rows.',
+          'Pagination — auto; bind page size to a variable if you want user-configurable.',
+          'Selection — single or multi; emits selectedRow / selectedRows on change.',
+          'onRowClick — fires with `row` as the event argument; most common wiring in Slate.',
+          'Filter Bar — built-in per-column filter UI; turn on once you have > 50 rows.',
+        ],
+      },
+      { type: 'h', body: 'Common beginner mistakes' },
+      {
+        type: 'list',
+        items: [
+          'Putting Function calls inside row templates — one call per row, slow and wasteful. Always fetch upfront.',
+          "Using row indices as React-style keys — Slate handles keys internally via $rid; don't manually key.",
+          "Hard-coding row heights in CSS — tasks with long titles get cut off. Use min-height and let content flow.",
+          "Forgetting the Empty State — zero-data pages look like broken pages.",
+          "Putting too many widgets on one page — > 20 widgets and first-paint gets noticeably slow.",
+        ],
+      },
       {
         type: 'checklist',
         items: [
@@ -429,6 +728,8 @@ export class SlateHelpers {
           'List renders one row per open task.',
           'Row template shows title + priority.',
           'Detail-panel placeholder is to the right.',
+          'Empty state is defined on the List widget.',
+          'No Function calls inside the row template.',
         ],
       },
     ],
@@ -545,6 +846,76 @@ public getTaskById(id: string): Task | undefined {
             'Every Function-backed variable re-runs when its inputs change. If you stick a Function call inside a list row template, you will fire N queries per render. Keep per-row data in the original query; fetch detail on selection only.',
         },
       },
+      { type: 'h', body: 'The Slate event model in one page' },
+      {
+        type: 'visualRef',
+        title: 'Event → Action → Variable → Re-render',
+        columns: 4,
+        items: [
+          { label: 'User interacts', sub: 'click / change / submit', swatch: 'tone', variant: 'user' },
+          { label: 'Widget emits', sub: 'onRowClick(row)', swatch: 'layout', variant: 'widget' },
+          { label: 'Action runs', sub: 'Set Variable / Run Fn', swatch: 'accent', variant: 'action' },
+          { label: 'Variables change', sub: 'Slate re-renders bound widgets', swatch: 'radius', variant: 'rerender' },
+        ],
+      },
+      { type: 'h', body: 'Every event type, with when to use it' },
+      {
+        type: 'list',
+        items: [
+          'onRowClick — selection. Fire Set Variable to a row $rid.',
+          'onChange — input widgets. Always write to a variable; never read input state directly from the DOM.',
+          'onSubmit — forms. Prefer over onClick of a submit button because it also fires on Enter.',
+          'onSelectionChange — multi-select lists. Receives an array of $rids.',
+          'onMount — fires once when the widget first renders. Use sparingly; prefer variable defaults.',
+          'onTimer — poll a Function every N seconds. Use only for truly live data (build status, alerts); pollers cost server cycles.',
+          'onSuccess / onError — the After hooks on Run Function / Run Action. This is where toasts and refreshes live.',
+        ],
+      },
+      { type: 'h', body: 'Variable type reference' },
+      {
+        type: 'visualRef',
+        title: 'Pick the right variable flavor',
+        columns: 3,
+        items: [
+          { label: 'Static', sub: 'Scratch value; widgets write to it', swatch: 'accent', variant: 'static' },
+          { label: 'Function-backed', sub: 'Read-only; re-runs on input change', swatch: 'accent', variant: 'fn' },
+          { label: 'Computed', sub: 'Pure expression over other variables', swatch: 'accent', variant: 'comp' },
+          { label: 'URL param', sub: 'Deep-linkable state', swatch: 'tone', variant: 'url' },
+          { label: 'Document config', sub: 'Constants set once', swatch: 'tone', variant: 'cfg' },
+          { label: 'User context', sub: 'currentUser, locale, timezone', swatch: 'tone', variant: 'user' },
+        ],
+      },
+      {
+        type: 'callout',
+        callout: {
+          kind: 'tip',
+          title: 'URL-param variables turn any selection into a deep link',
+          body:
+            "Mark selectedTaskId as a URL parameter. Now /taskboard-slate?selectedTaskId=ri.... is a shareable link that opens the app on that exact task. A user can paste one into a Slack thread and land their teammate on the right row.",
+        },
+      },
+      { type: 'h', body: 'Performance: the refresh graph' },
+      {
+        type: 'p',
+        body:
+          "Slate rebuilds a dependency graph across variables and widgets. When you change variable A, only variables/widgets that bound to A re-evaluate. Know your graph: if `selectedTask` depends on `selectedTaskId`, clicking a row triggers one Function call (getTaskById), not a page refresh. Avoid chains: don't have variable A depend on B depend on C depend on D — each hop is a server round-trip.",
+      },
+      {
+        type: 'code',
+        block: {
+          kind: 'code',
+          language: 'ts',
+          title: 'Anti-pattern — chained Function variables',
+          body: `// BAD: three round-trips per selection change
+openTasks        ← getOpenTasks()
+selectedTask     ← getTaskById(selectedTaskId)       // round-trip #1
+assignedTech     ← getTechnicianById(selectedTask.assigneeId)  // #2
+techBacklog      ← getBacklogFor(assignedTech.id)   // #3
+
+// GOOD: one Function returns the whole object graph
+selectedTaskBundle ← getTaskBundle(selectedTaskId)  // one round-trip`,
+        },
+      },
       {
         type: 'checklist',
         items: [
@@ -552,6 +923,8 @@ public getTaskById(id: string): Task | undefined {
           'List onRowClick writes to it.',
           'getTaskById is released and wired as selectedTask.',
           'Clicking a row updates the detail panel.',
+          'I know which variable flavor to pick and why.',
+          'I do not chain Function variables; each selection triggers one round-trip.',
         ],
       },
     ],
@@ -670,6 +1043,116 @@ export class TaskEdits {
           },
         ],
       },
+      { type: 'h', body: 'Action composition patterns' },
+      {
+        type: 'visualRef',
+        title: 'Pick the right wrapper for the mutation',
+        columns: 3,
+        items: [
+          { label: 'Single Action', sub: 'One Ontology Action, one button', swatch: 'accent', variant: 'single' },
+          { label: 'Sequential', sub: 'Action → onSuccess → Action', swatch: 'accent', variant: 'seq' },
+          { label: 'Transactional', sub: 'OntologyEditFunction wraps all', swatch: 'accent', variant: 'tx' },
+          { label: 'Optimistic', sub: 'Set var locally, then Action', swatch: 'tone', variant: 'opt' },
+          { label: 'Confirm → Act', sub: 'Modal → yes → Action', swatch: 'tone', variant: 'confirm' },
+          { label: 'Bulk', sub: 'Loop over selectedRows', swatch: 'tone', variant: 'bulk' },
+        ],
+      },
+      { type: 'h', body: 'Error handling — the onError branch' },
+      {
+        type: 'p',
+        body:
+          "Every Run Action / Run Function in an onClick has onSuccess and onError hooks. Use onError to toast a user-friendly message and avoid the default 'Something went wrong' modal. Your Function can throw a UserFacingError with a stable code; your onError branch can switch on that code.",
+      },
+      {
+        type: 'code',
+        block: {
+          kind: 'code',
+          language: 'ts',
+          title: 'UserFacingError in an OntologyEditFunction',
+          body: `import { OntologyEditFunction, UserFacingError } from "@foundry/functions-api"
+import { Actions, Objects } from "@foundry/ontology-api"
+
+export class TaskEdits {
+  @OntologyEditFunction()
+  public completeWithGuard(taskId: string): void {
+    const task = Objects.search().task()
+      .filter((t) => t.$rid.exactMatch(taskId))
+      .takeFirst()
+    if (!task) {
+      throw new UserFacingError("Task not found", "TASK_MISSING")
+    }
+    if (task.status === "Done") {
+      throw new UserFacingError("Already completed", "ALREADY_DONE")
+    }
+    Actions.completeTask({ task })
+  }
+}`,
+        },
+      },
+      {
+        type: 'p',
+        body:
+          "In Slate: Button → onClick → Run Function → completeWithGuard. Under After → onError, add 'Show Toast' with message derived from the error code: {{#eq error.code 'ALREADY_DONE'}}Nothing to do — already done.{{else}}{{error.message}}{{/eq}}.",
+      },
+      { type: 'h', body: 'Confirmation modals for destructive actions' },
+      {
+        type: 'step',
+        n: 1,
+        title: 'Use the Dialog widget',
+        body:
+          "Drag a Dialog widget onto the canvas. Visibility = {{confirmOpen}}. Add a title ('Complete this task?'), body text, and two buttons: Cancel (Set Variable confirmOpen = false) and Confirm (Run Action + Set Variable confirmOpen = false).",
+      },
+      {
+        type: 'step',
+        n: 2,
+        title: 'Trigger the dialog from Mark done',
+        body:
+          "Change your Mark done button's onClick from 'Run Action' to 'Set Variable confirmOpen = true'. Now the button opens the dialog; the dialog runs the Action. You have a two-step confirm for free.",
+      },
+      { type: 'h', body: 'Refresh vs. optimistic' },
+      {
+        type: 'details',
+        summary: 'When to prefer optimistic updates',
+        blocks: [
+          {
+            type: 'p',
+            body:
+              "Refreshing openTasks after an Action takes 200-800 ms round-trip. Optimistic: immediately remove the completed task from a local mirror variable, then run the Action in the background. If it fails, re-add the row and show an error toast. Only worth it when the list is large OR users complete tasks rapidly in succession. For a shift-lead app firing once per minute, refresh is fine.",
+          },
+        ],
+      },
+      { type: 'h', body: 'Bulk actions — loop in a Function' },
+      {
+        type: 'code',
+        block: {
+          kind: 'code',
+          language: 'ts',
+          title: 'Bulk-complete N selected tasks in one transaction',
+          body: `@OntologyEditFunction()
+public completeMany(taskIds: string[]): number {
+  let done = 0
+  for (const id of taskIds) {
+    const t = Objects.search().task()
+      .filter((t) => t.$rid.exactMatch(id))
+      .takeFirst()
+    if (t && t.status !== "Done") {
+      Actions.completeTask({ task: t })
+      done += 1
+    }
+  }
+  return done  // for the toast: "Completed N tasks."
+}`,
+        },
+      },
+      {
+        type: 'callout',
+        callout: {
+          kind: 'warn',
+          title: 'Slate cannot loop client-side over Actions',
+          body:
+            "If you try to wire onClick to 'for each row in selectedRows, run Action', Slate does run them sequentially — but each is a separate transaction, with separate toasts and separate rollback stories. For anything bulk, wrap in a single OntologyEditFunction and fire that once.",
+        },
+      },
       {
         type: 'checklist',
         items: [
@@ -678,6 +1161,8 @@ export class TaskEdits {
           'openTasks and selectedTask refresh after success.',
           'Toast confirms.',
           'Empty state renders when there are zero open tasks.',
+          'I have an onError branch that handles at least one error code.',
+          'Destructive actions have a confirmation dialog.',
         ],
       },
     ],
@@ -779,12 +1264,93 @@ export class TaskEdits {
         variant: 'slate-published',
         caption: 'End of lesson 7: same app, same data, but on-brand and grid-aligned.',
       },
+      { type: 'h', body: 'Design token reference — memorize these 8' },
+      {
+        type: 'visualRef',
+        title: 'Use tokens, never hex',
+        columns: 4,
+        items: [
+          { label: '--color-bg-primary', sub: 'Page background', swatch: 'tone', variant: 'bg' },
+          { label: '--color-bg-hover', sub: 'Row hover', swatch: 'tone', variant: 'hover' },
+          { label: '--color-text-primary', sub: 'Main text', swatch: 'tone', variant: 'txt' },
+          { label: '--color-text-secondary', sub: 'Muted text', swatch: 'tone', variant: 'txt2' },
+          { label: '--color-intent-warning', sub: 'High-priority tag', swatch: 'accent', variant: 'warn' },
+          { label: '--color-intent-danger', sub: 'Urgent / errors', swatch: 'accent', variant: 'danger' },
+          { label: '--color-border-subtle', sub: 'Row dividers', swatch: 'radius', variant: 'border' },
+          { label: '--spacing-md', sub: 'Standard padding', swatch: 'radius', variant: 'sp' },
+        ],
+      },
+      { type: 'h', body: 'Responsive layout — the one rule' },
+      {
+        type: 'p',
+        body:
+          "Slate's grid auto-stacks below 768 px. Your job: give every widget a sensible colSpan (1-12), and set min-height on any fixed-height widget so stacked mobile views don't clip. Never use position: absolute; it breaks the auto-stack.",
+      },
+      {
+        type: 'code',
+        block: {
+          kind: 'code',
+          language: 'css',
+          title: 'A few more tokens you will want',
+          body: `/* Corners + elevation */
+.card {
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);       /* 4px in Palantir's default */
+  box-shadow: var(--shadow-sm);
+  padding: var(--spacing-md);
+}
+
+/* Typography scale */
+h2 { font-size: var(--font-size-h2); line-height: var(--line-height-tight); }
+
+/* Transitions (keep them quiet) */
+.row { transition: background-color 120ms ease-out; }`,
+        },
+      },
+      { type: 'h', body: 'Blueprint components you will actually use' },
+      {
+        type: 'visualRef',
+        title: "Palantir's in-house React library, bundled in Slate",
+        columns: 4,
+        items: [
+          { label: 'Button', sub: 'bp4-button bp4-intent-*', swatch: 'accent', variant: 'btn' },
+          { label: 'Tag', sub: 'bp4-tag bp4-minimal', swatch: 'accent', variant: 'tag' },
+          { label: 'Callout', sub: 'bp4-callout bp4-intent-*', swatch: 'accent', variant: 'callout' },
+          { label: 'Card', sub: 'bp4-card bp4-elevation-1', swatch: 'accent', variant: 'card' },
+          { label: 'Spinner', sub: 'bp4-spinner', swatch: 'tone', variant: 'sp' },
+          { label: 'Icon', sub: 'bp4-icon bp4-icon-tick', swatch: 'tone', variant: 'ic' },
+          { label: 'Tabs', sub: 'bp4-tabs', swatch: 'tone', variant: 'tabs' },
+          { label: 'Menu', sub: 'bp4-menu', swatch: 'tone', variant: 'menu' },
+        ],
+      },
+      {
+        type: 'callout',
+        callout: {
+          kind: 'note',
+          title: 'Dark mode ships for free',
+          body:
+            "Every user can toggle dark mode in their Foundry profile. If you used tokens and Blueprint classes, your app already works — Foundry flips the token values, Blueprint adapts its classes. If you used #FFFFFF, you have homework.",
+        },
+      },
+      { type: 'h', body: 'Accessibility quick checks' },
+      {
+        type: 'list',
+        items: [
+          'Every interactive widget has a label (not just a placeholder).',
+          'Focus order matches visual order (tab through your page; any surprises = reorder widgets).',
+          'Color contrast ≥ 4.5:1 for text on background. Tokens already pass; custom hex may not.',
+          'No meaning conveyed by color alone (pair the red tag with a 🔥 icon).',
+          'Keyboard Enter on a row triggers the same onRowClick as mouse click.',
+        ],
+      },
       {
         type: 'checklist',
         items: [
           'Layout is Grid mode, 12 columns, list = 7, detail = 5.',
           'Buttons and tags use Blueprint classes.',
           'No hard-coded hex colors in my CSS.',
+          'Dark mode looks correct (toggle in your profile and re-check).',
+          'Basic a11y: labels, focus order, contrast, keyboard Enter.',
         ],
       },
     ],
@@ -869,6 +1435,66 @@ export class TaskEdits {
             'Everything you learned about the Ontology, Functions, and Action Types is 100% portable to Workshop. Only lessons 4, 5, 7 (widgets, bindings, CSS) change. The data story is the same.',
         },
       },
+      { type: 'h', body: 'Permission matrix — who sees what' },
+      {
+        type: 'visualRef',
+        title: 'Every group gets the minimum they need',
+        columns: 3,
+        items: [
+          { label: 'Viewer', sub: 'Read Slate + Read Object Type', swatch: 'accent', variant: 'v' },
+          { label: 'Operator', sub: 'Viewer + Invoke Action Types', swatch: 'accent', variant: 'op' },
+          { label: 'Editor', sub: 'Operator + Edit Slate doc', swatch: 'accent', variant: 'ed' },
+          { label: 'Owner', sub: 'Editor + Folder admin', swatch: 'tone', variant: 'own' },
+          { label: 'Function author', sub: 'Editor on Functions repo', swatch: 'tone', variant: 'fna' },
+          { label: 'Ontology lead', sub: 'Schema + Action Types', swatch: 'tone', variant: 'onto' },
+        ],
+      },
+      { type: 'h', body: 'Pre-publish checklist (the real one)' },
+      {
+        type: 'checklist',
+        items: [
+          'Open the app in a second browser profile as a test user — does the data match what that user should see?',
+          'Click every Action button — does each one succeed end-to-end?',
+          'Zero-data state — if openTasks is [], does the page still look intentional?',
+          'Error state — if a Function fails (kill its Release to test), does the UI degrade gracefully?',
+          'Bookmark the Draft URL — does it still work after you Publish? (It should; Draft is always at the same path.)',
+          'Copy the share URL in an incognito window — are your prod permissions right?',
+        ],
+      },
+      { type: 'h', body: 'Rollback playbook' },
+      {
+        type: 'step',
+        n: 1,
+        title: 'You published v3 and it broke',
+        body:
+          "Version History (clock icon) → find v2 → 'Publish this version'. Users on the bookmarked URL now see v2. Takes < 30 seconds if you have the playbook memorized.",
+      },
+      {
+        type: 'step',
+        n: 2,
+        title: "Function regression broke the app, not Slate itself",
+        body:
+          "In Functions, Releases → find the prior release → 'Set as latest'. Slate auto-picks the latest release; one click rolls back without touching Slate at all.",
+      },
+      {
+        type: 'callout',
+        callout: {
+          kind: 'tip',
+          title: 'Release notes are your changelog',
+          body:
+            "Always write a one-line release note when publishing ('v3 — add bulk complete; fix a11y labels on list'). Six months from now, Version History is your incident-response log.",
+        },
+      },
+      { type: 'h', body: 'Embedding & integration' },
+      {
+        type: 'list',
+        items: [
+          'Notepad / Quiver — paste the Slate URL; it embeds as an iframe inheriting your user identity.',
+          'Workshop — embed a Slate widget inside a Workshop app (for gradual migration).',
+          'Email / Slack — just a URL; the recipient opens it in Foundry and auth happens via SSO.',
+          'External iframe (outside Foundry) — generally blocked by X-Frame-Options; ask Admin for a trusted-embed exception only if required.',
+        ],
+      },
       {
         type: 'checklist',
         items: [
@@ -876,6 +1502,8 @@ export class TaskEdits {
           'Folder permissions grant read to the right group.',
           "I can open the URL in an incognito window as my test user.",
           'I know how to roll back to a previous version.',
+          'I know the permission matrix for Viewer vs. Operator vs. Editor.',
+          'I have a release-note habit for every publish.',
         ],
       },
     ],
@@ -947,11 +1575,124 @@ export class TaskEdits {
           'You are starting from scratch — default to Workshop unless your org mandates Slate.',
         ],
       },
+      { type: 'h', body: 'Escape-hatch decision matrix' },
+      {
+        type: 'visualRef',
+        title: 'When to reach for each',
+        columns: 3,
+        items: [
+          { label: 'Custom HTML + JS', sub: 'Bespoke layout/drag-drop/SVG', swatch: 'accent', variant: 'html' },
+          { label: 'Envision', sub: 'Charts inheriting Foundry theme', swatch: 'accent', variant: 'env' },
+          { label: 'OntologyEditFunction', sub: 'Transactional multi-mutation', swatch: 'accent', variant: 'oef' },
+          { label: 'External iframe', sub: 'Last resort; auth headache', swatch: 'tone', variant: 'ext' },
+          { label: 'Workshop migration', sub: 'When Slate hits its ceiling', swatch: 'tone', variant: 'ws' },
+          { label: 'Custom widget pkg', sub: 'Org-wide reuse', swatch: 'tone', variant: 'pkg' },
+        ],
+      },
+      { type: 'h', body: 'Custom HTML widget — the window.widget API in full' },
+      {
+        type: 'code',
+        block: {
+          kind: 'code',
+          language: 'js',
+          title: 'Everything window.widget exposes',
+          body: `// Read a variable (current value)
+const tasks = window.widget.read("openTasks")
+
+// Subscribe (fires on change; returns an unsubscribe fn)
+const off = window.widget.subscribe("openTasks", (next) => { /* ... */ })
+
+// Publish back up to a Slate variable
+window.widget.publish("selectedTaskId", "ri.ontology.abc")
+
+// Invoke a Function from JS (returns a Promise)
+const tech = await window.widget.invoke("getTechnicianById", { id: "..." })
+
+// Emit a named event (another widget can listen via onCustomEvent)
+window.widget.emit("task:selected", { id: "ri.ontology.abc" })
+
+// Read the current user
+const me = window.widget.currentUser  // { id, name, email, groups }
+
+// Cleanup on widget unmount
+window.widget.onUnmount(() => off())`,
+        },
+      },
+      {
+        type: 'callout',
+        callout: {
+          kind: 'warn',
+          title: 'Custom HTML widgets break some guardrails',
+          body:
+            "Slate cannot statically analyze your <script> tag. That means: (1) your JS can XSS if you concatenate user input into innerHTML, (2) eval() and remote script loading bypass CSP, (3) Slate's re-render graph does not track variables you read via .read() — use .subscribe() instead. Review custom HTML widgets in PR like you would any security-sensitive code.",
+        },
+      },
+      { type: 'h', body: 'Envision for charts — the 30-second overview' },
+      {
+        type: 'code',
+        block: {
+          kind: 'code',
+          language: 'python',
+          title: 'Envision script that produces a bar chart',
+          body: `# Envision: Foundry's analytic notebook language.
+from envision import read_object_set, bar_chart
+
+tasks = read_object_set("Task").filter(status="Open")
+bar_chart(
+    tasks.group_by("priority").count(),
+    x="priority",
+    y="count",
+    title="Open tasks by priority",
+)`,
+        },
+      },
+      {
+        type: 'p',
+        body:
+          "Publish the Envision script; it produces a chart artifact. In Slate: Insert → Envision Chart → pick the artifact. The chart inherits the viewer's permissions (no data leaks) and the Foundry theme (no brand drift).",
+      },
+      { type: 'h', body: 'OntologyEditFunction patterns' },
+      {
+        type: 'list',
+        items: [
+          'Transactional multi-step — N Actions inside one function; one rollback boundary.',
+          'Guarded action — validate (UserFacingError) before invoking the Action.',
+          'Derived write — compute a field value from related objects before writing.',
+          'Audit wrapper — every mutation also writes a FleetEvent row.',
+          'Idempotent — accept a requestId; no-op on replay.',
+        ],
+      },
+      { type: 'h', body: 'Slate vs. Workshop — the honest comparison' },
+      {
+        type: 'visualRef',
+        title: 'Pick Slate when… / Pick Workshop when…',
+        columns: 2,
+        items: [
+          { label: 'Slate', sub: 'HTML control + mature org muscle memory', swatch: 'accent', variant: 'slate' },
+          { label: 'Workshop', sub: 'Multi-page + no-code + newer widgets', swatch: 'accent', variant: 'ws' },
+          { label: 'Slate', sub: 'Embedded in other Foundry surfaces', swatch: 'tone', variant: 'embed' },
+          { label: 'Workshop', sub: 'Starting a new app from scratch', swatch: 'tone', variant: 'new' },
+          { label: 'Slate', sub: 'Custom visualizations (SVG, canvas)', swatch: 'radius', variant: 'viz' },
+          { label: 'Workshop', sub: 'Handoff to analyst maintainers', swatch: 'radius', variant: 'hand' },
+        ],
+      },
+      {
+        type: 'callout',
+        callout: {
+          kind: 'tip',
+          title: 'Migration plan if you outgrow Slate',
+          body:
+            "Your Ontology work, Functions, and Action Types port over unchanged. Only widgets/bindings/CSS are rebuilt. Budget 1-2 days per Slate page in Workshop; less if the UI was simple to begin with.",
+        },
+      },
       {
         type: 'checklist',
         items: [
           "I know the three Slate escape hatches and when to reach for each.",
           'I can tell a teammate when Slate vs. Workshop is the right choice.',
+          'I know the full window.widget API surface.',
+          'I understand the security implications of custom HTML widgets.',
+          'I can describe a migration plan to Workshop if/when it comes up.',
         ],
       },
     ],
