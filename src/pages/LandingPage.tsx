@@ -1,12 +1,15 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import { lessons, sampleApp } from '../content/course'
+import { palantirLessons } from '../content/palantir'
 import { LessonBody } from '../components/course/LessonBody'
 
 export function LandingPage() {
   const critical = lessons.filter((l) => !l.optional)
   const optional = lessons.filter((l) => l.optional)
   const criticalMinutes = critical.reduce((n, l) => n + l.estMinutes, 0)
+  const palantirCritical = palantirLessons.filter((l) => !l.optional)
+  const palantirMinutes = palantirCritical.reduce((n, l) => n + l.estMinutes, 0)
 
   return (
     <>
@@ -65,6 +68,165 @@ export function LandingPage() {
           <span>Windows + PowerShell</span>
           <span style={{ color: 'var(--edge)' }}>•</span>
           <span>No prior coding required</span>
+        </div>
+      </section>
+
+      {/* Track picker */}
+      <section
+        className="border-t"
+        style={{ borderColor: 'var(--edge)', background: 'var(--bg)' }}
+      >
+        <div className="mx-auto w-full max-w-[1200px] px-6 py-20 sm:px-10">
+          <p
+            className="mb-3 uppercase"
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: 11,
+              letterSpacing: '0.22em',
+              color: 'var(--ink-dim)',
+            }}
+          >
+            Pick your track
+          </p>
+          <h2
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(1.75rem, 2.5vw + 0.5rem, 3rem)',
+              lineHeight: 1.05,
+              letterSpacing: '-0.02em',
+              marginBottom: 32,
+            }}
+          >
+            Two ways to ship.
+          </h2>
+
+          <div className="grid gap-px overflow-hidden rounded-lg" style={{ background: 'var(--edge)' }}>
+            <div className="grid gap-px sm:grid-cols-2">
+              <Link
+                to="/course"
+                className="group block p-8 transition-colors hover:bg-[color:var(--bg-2)]"
+                style={{ background: 'var(--bg)' }}
+              >
+                <p
+                  className="mb-4 uppercase"
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 10,
+                    letterSpacing: '0.28em',
+                    color: 'var(--accent)',
+                  }}
+                >
+                  Track 01 · Beginner
+                </p>
+                <h3
+                  style={{
+                    fontFamily: 'var(--font-display)',
+                    fontSize: 'clamp(1.35rem, 1.2vw + 0.8rem, 1.85rem)',
+                    color: 'var(--ink)',
+                    marginBottom: 10,
+                    lineHeight: 1.15,
+                  }}
+                >
+                  Vibe coding on your Desktop
+                </h3>
+                <p style={{ color: 'var(--paper)', fontSize: 15, lineHeight: 1.6 }}>
+                  Install two free tools, paste a 5-field brief to Claude Code, run three PowerShell
+                  commands. A working prototype opens on localhost.
+                </p>
+                <div
+                  className="mt-6 flex flex-wrap items-center gap-4"
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 11,
+                    letterSpacing: '0.2em',
+                    color: 'var(--ink-dim)',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  <span>{critical.length} lessons</span>
+                  <span style={{ color: 'var(--edge)' }}>•</span>
+                  <span>~{criticalMinutes} min</span>
+                  <span style={{ color: 'var(--edge)' }}>•</span>
+                  <span>localhost prototype</span>
+                </div>
+                <div className="mt-6 inline-flex items-center gap-2" style={{ color: 'var(--accent)' }}>
+                  <span
+                    style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: 11,
+                      letterSpacing: '0.22em',
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    Start the beginner track
+                  </span>
+                  <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+                </div>
+              </Link>
+
+              <Link
+                to="/palantir"
+                className="group block p-8 transition-colors hover:bg-[color:var(--bg-2)]"
+                style={{ background: 'var(--bg)' }}
+              >
+                <p
+                  className="mb-4 uppercase"
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 10,
+                    letterSpacing: '0.28em',
+                    color: 'var(--accent)',
+                  }}
+                >
+                  Track 02 · Palantir
+                </p>
+                <h3
+                  style={{
+                    fontFamily: 'var(--font-display)',
+                    fontSize: 'clamp(1.35rem, 1.2vw + 0.8rem, 1.85rem)',
+                    color: 'var(--ink)',
+                    marginBottom: 10,
+                    lineHeight: 1.15,
+                  }}
+                >
+                  Slate webapps in Foundry
+                </h3>
+                <p style={{ color: 'var(--paper)', fontSize: 15, lineHeight: 1.6 }}>
+                  From blank Foundry tenant to a published Slate webapp. Shape the Ontology, write
+                  Functions, wire widgets, call Action Types, publish.
+                </p>
+                <div
+                  className="mt-6 flex flex-wrap items-center gap-4"
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 11,
+                    letterSpacing: '0.2em',
+                    color: 'var(--ink-dim)',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  <span>{palantirCritical.length} lessons</span>
+                  <span style={{ color: 'var(--edge)' }}>•</span>
+                  <span>~{palantirMinutes} min</span>
+                  <span style={{ color: 'var(--edge)' }}>•</span>
+                  <span>published Slate URL</span>
+                </div>
+                <div className="mt-6 inline-flex items-center gap-2" style={{ color: 'var(--accent)' }}>
+                  <span
+                    style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: 11,
+                      letterSpacing: '0.22em',
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    Start the Palantir track
+                  </span>
+                  <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+                </div>
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 

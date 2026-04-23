@@ -1,13 +1,22 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import type { LessonDef } from '../content/course'
-import { lessons } from '../content/course'
+import { lessons as beginnerLessons } from '../content/course'
 
-function LessonRow({ l }: { l: LessonDef }) {
+export interface CourseIndexViewProps {
+  lessons: LessonDef[]
+  basePath: string // e.g. '/course' or '/palantir'
+  eyebrow?: string
+  heroTitle?: string
+  heroLead?: string
+  criticalBadge?: string
+}
+
+function LessonRow({ l, basePath }: { l: LessonDef; basePath: string }) {
   return (
     <li style={{ background: 'var(--bg)' }}>
       <Link
-        to={`/course/${l.id}`}
+        to={`${basePath}/${l.id}`}
         className="group grid gap-3 px-5 py-6 transition-colors hover:bg-[color:var(--bg-2)] sm:grid-cols-[48px_1fr_auto] sm:gap-6"
       >
         <span
@@ -76,7 +85,14 @@ function LessonRow({ l }: { l: LessonDef }) {
   )
 }
 
-export function CourseIndexPage() {
+export function CourseIndexView({
+  lessons,
+  basePath,
+  eyebrow = 'The course',
+  heroTitle = '30 minutes to a running prototype.',
+  heroLead = 'Seven lessons to go from nothing to a working app on your Desktop. One optional "Level up" lesson for when you want your next brief to be twice as specific as your first.',
+  criticalBadge,
+}: CourseIndexViewProps) {
   const critical = lessons.filter((l) => !l.optional)
   const optional = lessons.filter((l) => l.optional)
   const criticalMinutes = critical.reduce((sum, l) => sum + l.estMinutes, 0)
@@ -92,18 +108,15 @@ export function CourseIndexPage() {
           color: 'var(--accent)',
         }}
       >
-        The course
+        {eyebrow}
       </p>
       <h1
         className="display"
         style={{ fontSize: 'clamp(2.25rem, 5vw + 0.5rem, 4.5rem)', lineHeight: 1 }}
       >
-        30 minutes to a running prototype.
+        {heroTitle}
       </h1>
-      <p className="lead mt-8">
-        Seven lessons to go from nothing to a working app on your Desktop. One optional "Level up"
-        lesson for when you want your next brief to be twice as specific as your first.
-      </p>
+      <p className="lead mt-8">{heroLead}</p>
 
       <div
         className="mt-10 inline-flex flex-wrap items-center gap-3 rounded-lg border px-5 py-3"
@@ -121,7 +134,7 @@ export function CourseIndexPage() {
           Critical path
         </span>
         <span style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)', fontSize: 18 }}>
-          {critical.length} lessons · {criticalMinutes} min
+          {criticalBadge ?? `${critical.length} lessons · ${criticalMinutes} min`}
         </span>
       </div>
 
@@ -130,7 +143,7 @@ export function CourseIndexPage() {
         style={{ background: 'var(--edge)' }}
       >
         {critical.map((l) => (
-          <LessonRow key={l.id} l={l} />
+          <LessonRow key={l.id} l={l} basePath={basePath} />
         ))}
       </ol>
 
@@ -156,11 +169,15 @@ export function CourseIndexPage() {
             style={{ background: 'var(--edge)' }}
           >
             {optional.map((l) => (
-              <LessonRow key={l.id} l={l} />
+              <LessonRow key={l.id} l={l} basePath={basePath} />
             ))}
           </ol>
         </>
       )}
     </section>
   )
+}
+
+export function CourseIndexPage() {
+  return <CourseIndexView lessons={beginnerLessons} basePath="/course" />
 }

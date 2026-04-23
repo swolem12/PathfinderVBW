@@ -2,10 +2,16 @@ import { useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
-import { lessons } from '../content/course'
+import type { LessonDef } from '../content/course'
+import { lessons as beginnerLessons } from '../content/course'
 import { LessonBody } from '../components/course/LessonBody'
 
-export function LessonPage() {
+export interface LessonViewProps {
+  lessons: LessonDef[]
+  basePath: string // e.g. '/course' or '/palantir'
+}
+
+export function LessonView({ lessons, basePath }: LessonViewProps) {
   const { id } = useParams()
   const index = lessons.findIndex((l) => l.id === id)
   const lesson = index >= 0 ? lessons[index] : null
@@ -27,7 +33,7 @@ export function LessonPage() {
         >
           Lesson not found.
         </h1>
-        <Link to="/course" className="btn mt-8 inline-flex">
+        <Link to={basePath} className="btn mt-8 inline-flex">
           <ArrowLeft className="h-4 w-4" /> Back to the syllabus
         </Link>
       </section>
@@ -58,10 +64,7 @@ export function LessonPage() {
           </span>
           <span>{progressPct}%</span>
         </div>
-        <nav
-          aria-label="Course map"
-          className="flex items-center gap-1 overflow-x-auto"
-        >
+        <nav aria-label="Course map" className="flex items-center gap-1 overflow-x-auto">
           {lessons.map((l, i) => {
             const state: 'done' | 'current' | 'todo' =
               i < index ? 'done' : i === index ? 'current' : 'todo'
@@ -72,13 +75,17 @@ export function LessonPage() {
                   ? 'rgba(230,161,92,0.5)'
                   : 'var(--bg-2)'
             const border =
-              state === 'todo' ? 'var(--edge)' : state === 'done' ? 'rgba(230,161,92,0.5)' : 'var(--accent)'
+              state === 'todo'
+                ? 'var(--edge)'
+                : state === 'done'
+                  ? 'rgba(230,161,92,0.5)'
+                  : 'var(--accent)'
             const fg =
               state === 'current' ? 'var(--bg)' : state === 'done' ? 'var(--bg)' : 'var(--ink-dim)'
             return (
               <div key={l.id} className="flex flex-1 items-center">
                 <Link
-                  to={`/course/${l.id}`}
+                  to={`${basePath}/${l.id}`}
                   title={`${String(l.number).padStart(2, '0')} · ${l.title}${l.optional ? ' (optional)' : ''}`}
                   className="group relative flex shrink-0 items-center justify-center"
                   style={{
@@ -110,10 +117,7 @@ export function LessonPage() {
                   <div
                     className="h-px flex-1"
                     style={{
-                      background:
-                        i < index
-                          ? 'rgba(230,161,92,0.5)'
-                          : 'var(--edge)',
+                      background: i < index ? 'rgba(230,161,92,0.5)' : 'var(--edge)',
                       minWidth: 8,
                     }}
                   />
@@ -122,7 +126,10 @@ export function LessonPage() {
             )
           })}
         </nav>
-        <div className="mt-3 h-px w-full" style={{ background: 'var(--edge)', position: 'relative' }}>
+        <div
+          className="mt-3 h-px w-full"
+          style={{ background: 'var(--edge)', position: 'relative' }}
+        >
           <motion.div
             className="h-px"
             initial={{ width: 0 }}
@@ -168,9 +175,7 @@ export function LessonPage() {
           {lesson.subtitle}
         </p>
 
-        <div
-          className="mt-8 grid gap-3 sm:grid-cols-2"
-        >
+        <div className="mt-8 grid gap-3 sm:grid-cols-2">
           <div
             className="rounded-lg border p-5"
             style={{ borderColor: 'var(--edge)', background: 'var(--bg-2)' }}
@@ -219,7 +224,7 @@ export function LessonPage() {
         <div>
           {prev ? (
             <Link
-              to={`/course/${prev.id}`}
+              to={`${basePath}/${prev.id}`}
               className="group block rounded-lg border p-5 transition-colors hover:bg-[color:var(--bg-2)]"
               style={{ borderColor: 'var(--edge)' }}
             >
@@ -246,7 +251,7 @@ export function LessonPage() {
             </Link>
           ) : (
             <Link
-              to="/course"
+              to={basePath}
               className="group block rounded-lg border p-5 transition-colors hover:bg-[color:var(--bg-2)]"
               style={{ borderColor: 'var(--edge)' }}
             >
@@ -277,7 +282,7 @@ export function LessonPage() {
         <div>
           {next ? (
             <Link
-              to={`/course/${next.id}`}
+              to={`${basePath}/${next.id}`}
               className="group block rounded-lg border p-5 text-right transition-colors hover:bg-[color:var(--bg-2)]"
               style={{
                 borderColor: 'var(--accent)',
@@ -333,7 +338,7 @@ export function LessonPage() {
               >
                 You did it. Go build something.
               </p>
-              <Link to="/course" className="btn mt-4 inline-flex">
+              <Link to={basePath} className="btn mt-4 inline-flex">
                 <ArrowLeft className="h-4 w-4" /> Back to syllabus
               </Link>
             </div>
@@ -343,11 +348,15 @@ export function LessonPage() {
 
       {next ? (
         <div className="mt-8 flex justify-end">
-          <Link to={`/course/${next.id}`} className="btn btn-primary">
+          <Link to={`${basePath}/${next.id}`} className="btn btn-primary">
             Continue <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
       ) : null}
     </article>
   )
+}
+
+export function LessonPage() {
+  return <LessonView lessons={beginnerLessons} basePath="/course" />
 }

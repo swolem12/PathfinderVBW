@@ -3,6 +3,8 @@ import { AppShell } from '../components/layout/AppShell'
 import { LandingPage } from '../pages/LandingPage'
 import { CourseIndexPage } from '../pages/CourseIndexPage'
 import { LessonPage } from '../pages/LessonPage'
+import { PalantirIndexPage } from '../pages/PalantirIndexPage'
+import { PalantirLessonPage } from '../pages/PalantirLessonPage'
 import { NotFoundPage } from '../pages/NotFoundPage'
 
 export const router = createBrowserRouter(
@@ -14,6 +16,8 @@ export const router = createBrowserRouter(
         { index: true, element: <LandingPage /> },
         { path: 'course', element: <CourseIndexPage /> },
         { path: 'course/:id', element: <LessonPage /> },
+        { path: 'palantir', element: <PalantirIndexPage /> },
+        { path: 'palantir/:id', element: <PalantirLessonPage /> },
         { path: '*', element: <NotFoundPage /> },
       ],
     },

@@ -40,7 +40,18 @@ export function AppShell() {
               }
               style={{ fontFamily: 'var(--font-mono)' }}
             >
-              Course
+              Beginner
+            </NavLink>
+            <NavLink
+              to="/palantir"
+              className={({ isActive }) =>
+                `link text-[12px] uppercase tracking-[0.22em] ${
+                  isActive ? 'text-[color:var(--ink)]' : 'text-[color:var(--ink-dim)]'
+                }`
+              }
+              style={{ fontFamily: 'var(--font-mono)' }}
+            >
+              Palantir
             </NavLink>
             <Link
               to="/course/what-is-vibe-coding"

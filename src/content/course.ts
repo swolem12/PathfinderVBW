@@ -1,12 +1,4 @@
-export type LessonId =
-  | 'what-is-vibe-coding'
-  | 'setup'
-  | 'pick-idea'
-  | 'build-brief'
-  | 'generate'
-  | 'run-locally'
-  | 'iterate'
-  | 'design-vocabulary'
+export type LessonId = string
 
 export interface CodeBlock {
   kind: 'shell' | 'markdown' | 'prompt' | 'output' | 'code'
