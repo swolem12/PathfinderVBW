@@ -125,7 +125,7 @@ const FAQ = [
   },
   {
     q: 'How much does it cost?',
-    a: 'Track 01 is free (Claude Code has a free tier, VS Code is free). Track 02 requires access to a Foundry tenant (most readers have one through work). Track 03 works with any Microsoft 365 business license or the free Power Apps Developer Plan.',
+    a: 'Track 01 (Beginner) is free — Node.js is free, all AI tools used have free tiers. Track 02 (Palantir) requires a Foundry tenant — most readers have one through work. Track 03 (Power Apps) needs a Microsoft 365 business license or the free Power Apps Developer Plan. Track 04 (Advanced) uses GitHub Copilot — the free tier (2,000 completions/month) is enough to complete the course; students get it free via GitHub Education.',
   },
   {
     q: 'How long does it actually take?',
@@ -236,9 +236,9 @@ export function LandingPage() {
         </h1>
 
         <p className="lead mt-10" style={{ maxWidth: '62ch' }}>
-          Three tracks. Three real tools. Three real outputs. Pick the world you live in —
-          your laptop, Palantir Foundry, or Microsoft Power Apps — and ship a working app by
-          the end of the afternoon.
+          Four tracks. Four real tools. Four real outputs. Pick the world you live in —
+          your laptop, Palantir Foundry, Microsoft Power Apps, or a GitHub Codespace — and
+          ship a working app by the end of the afternoon.
         </p>
 
         <div className="mt-10 flex flex-wrap items-center gap-4">
@@ -260,7 +260,7 @@ export function LandingPage() {
           }}
         >
           <span>
-            {tracks.length} tracks · {totalLessons} lessons
+            {tracks.length} tracks · {totalLessons} total lessons
           </span>
           <span style={{ color: 'var(--edge)' }}>•</span>
           <span>~{Math.round(totalMinutes / 60)} hours end to end</span>
@@ -287,8 +287,7 @@ export function LandingPage() {
                   color: 'var(--ink-dim)',
                 }}
               >
-                The three tracks
-              </p>
+                The four tracks</p>
               <h2
                 style={{
                   fontFamily: 'var(--font-display)',
@@ -306,7 +305,7 @@ export function LandingPage() {
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
             {tracks.map((t) => (
               <TrackCard key={t.slug} track={t} />
             ))}

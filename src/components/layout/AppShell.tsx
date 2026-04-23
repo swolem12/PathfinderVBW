@@ -1,7 +1,32 @@
-import { Link, NavLink, Outlet } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
+import { Menu, X } from 'lucide-react'
 import { StartButton } from '../ui/StartButton'
 
+const NAV_LINKS = [
+  { to: '/course', label: 'Beginner' },
+  { to: '/palantir', label: 'Palantir' },
+  { to: '/powerapps', label: 'Power Apps' },
+  { to: '/advanced', label: 'Advanced' },
+]
+
 export function AppShell() {
+  const [menuOpen, setMenuOpen] = useState(false)
+  const location = useLocation()
+
+  // Close mobile menu whenever the route changes
+  useEffect(() => {
+    setMenuOpen(false)
+  }, [location.pathname])
+
+  // Prevent body scroll while mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : ''
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [menuOpen])
+
   return (
     <div className="min-h-screen">
       <header
@@ -31,44 +56,73 @@ export function AppShell() {
             </span>
           </Link>
 
-          <nav className="flex items-center gap-6">
-            <NavLink
-              to="/course"
-              className={({ isActive }) =>
-                `link text-[12px] uppercase tracking-[0.22em] ${
-                  isActive ? 'text-[color:var(--ink)]' : 'text-[color:var(--ink-dim)]'
-                }`
-              }
-              style={{ fontFamily: 'var(--font-mono)' }}
-            >
-              Beginner
-            </NavLink>
-            <NavLink
-              to="/palantir"
-              className={({ isActive }) =>
-                `link text-[12px] uppercase tracking-[0.22em] ${
-                  isActive ? 'text-[color:var(--ink)]' : 'text-[color:var(--ink-dim)]'
-                }`
-              }
-              style={{ fontFamily: 'var(--font-mono)' }}
-            >
-              Palantir
-            </NavLink>
-            <NavLink
-              to="/powerapps"
-              className={({ isActive }) =>
-                `link text-[12px] uppercase tracking-[0.22em] ${
-                  isActive ? 'text-[color:var(--ink)]' : 'text-[color:var(--ink-dim)]'
-                }`
-              }
-              style={{ fontFamily: 'var(--font-mono)' }}
-            >
-              Power Apps
-            </NavLink>
-            <StartButton className="btn btn-primary hidden sm:inline-flex">Start</StartButton>
+          {/* ── Desktop nav (md+) ── */}
+          <nav className="hidden items-center gap-6 md:flex">
+            {NAV_LINKS.map(({ to, label }) => (
+              <NavLink
+                key={to}
+                to={to}
+                className={({ isActive }) =>
+                  `link text-[12px] uppercase tracking-[0.22em] ${
+                    isActive ? 'text-[color:var(--ink)]' : 'text-[color:var(--ink-dim)]'
+                  }`
+                }
+                style={{ fontFamily: 'var(--font-mono)' }}
+              >
+                {label}
+              </NavLink>
+            ))}
+            <StartButton className="btn btn-primary">Start</StartButton>
           </nav>
+
+          {/* ── Mobile: Start + hamburger (<md) ── */}
+          <div className="flex items-center gap-3 md:hidden">
+            <StartButton className="btn btn-primary text-xs">
+              Start
+            </StartButton>
+            <button
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={menuOpen}
+              style={{ color: 'var(--ink)', lineHeight: 0 }}
+            >
+              {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
         </div>
       </header>
+
+      {/* ── Mobile nav overlay ── */}
+      {menuOpen && (
+        <nav
+          className="fixed inset-0 z-30 flex flex-col pt-[65px] md:hidden"
+          style={{ background: 'var(--bg)' }}
+          aria-label="Mobile navigation"
+        >
+          <ul className="flex flex-col px-6 py-4">
+            {NAV_LINKS.map(({ to, label }) => (
+              <li key={to} style={{ borderBottom: '1px solid var(--edge)' }}>
+                <NavLink
+                  to={to}
+                  className={({ isActive }) =>
+                    `block py-5 uppercase tracking-[0.22em] ${
+                      isActive ? 'text-[color:var(--ink)]' : 'text-[color:var(--ink-dim)]'
+                    }`
+                  }
+                  style={{ fontFamily: 'var(--font-mono)', fontSize: 13 }}
+                >
+                  {label}
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+          <div className="px-6 pt-6">
+            <StartButton className="btn btn-primary w-full justify-center">
+              Start lesson 1
+            </StartButton>
+          </div>
+        </nav>
+      )}
 
       <main>
         <Outlet />

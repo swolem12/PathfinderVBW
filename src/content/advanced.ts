@@ -252,6 +252,26 @@ export const advancedLessons: LessonDef[] = [
         },
       },
       {
+        type: 'callout',
+        callout: {
+          kind: 'note',
+          title: 'GitHub account tiers — what you need for this course',
+          body: 'GitHub Free is all you need to create repos, use Codespaces (60 h/month), and deploy to GitHub Pages (public repos only). GitHub Pro ($4/month or $48/year) adds 90 Codespace-hours, GitHub Pages on private repos, and more CI minutes. GitHub Education is completely free for verified students and teachers — it gives you Pro + Copilot Pro at no cost. Apply at education.github.com — approval takes 1-5 business days. If you are a student, do this first before anything else in this course.',
+        },
+      },
+      {
+        type: 'docLink',
+        title: 'GitHub Education — free tools for students and educators',
+        description: 'Apply for GitHub Education to get GitHub Pro, Copilot Pro, and 100+ other developer tools at no cost. Verified with a .edu email or school ID.',
+        url: 'https://education.github.com',
+        source: 'GitHub Education',
+      },
+      {
+        type: 'jargon',
+        term: 'GitHub Education',
+        plain: 'A free program from GitHub for enrolled students and active educators. Gives you GitHub Pro (paid features), Copilot Pro (unlimited AI), and other developer tools at zero cost. Apply at education.github.com.',
+      },
+      {
         type: 'step',
         n: 2,
         title: 'Learn the VS Code layout',
@@ -383,6 +403,21 @@ export const advancedLessons: LessonDef[] = [
           'claude.ai — Anthropic\'s browser interface. Paste code directly. Claude 4.6 (Sonnet) is the best balance of speed and quality for code. Claude 4.7 (Opus) is slower but better at complex architecture decisions.',
           'ChatGPT / ChatGPT with Codex — OpenAI\'s browser interface. GPT-4.5 is excellent at React and TypeScript. o3 (Codex) is a specialist code model — invoke it by selecting it from the model picker in ChatGPT.',
         ],
+      },
+      {
+        type: 'callout',
+        callout: {
+          kind: 'note',
+          title: 'GitHub Copilot — which plan do you need?',
+          body: 'Copilot Free (no credit card, built into GitHub): 2,000 code completions + 50 chat messages per month — enough to complete this course at a comfortable pace. Copilot Pro ($10/month, $100/year): unlimited completions and chat. Copilot Pro is free for verified students and educators via GitHub Education (education.github.com). If you are a student, claim Education benefits before you start — you get Copilot Pro + GitHub Pro at zero cost.',
+        },
+      },
+      {
+        type: 'docLink',
+        title: 'GitHub Copilot — billing plans',
+        description: 'Full breakdown of Copilot Free, Pro, Business, and Enterprise tiers including what each plan includes and how to activate the student/educator discount.',
+        url: 'https://docs.github.com/en/copilot/about-github-copilot/subscription-plans-for-github-copilot',
+        source: 'GitHub Docs',
       },
       {
         type: 'callout',

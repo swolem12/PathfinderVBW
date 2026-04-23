@@ -328,7 +328,7 @@ export const lessons: LessonDef[] = [
       {
         type: 'list',
         items: [
-          'Install two free tools (about 5 minutes, one time only).',
+          'Install Node.js (about 5 minutes, one time only) — the only required tool.',
           'Pick an idea (or use our TaskBoard example).',
           'Write a 5-field Build Brief.',
           'Paste it to a free AI website (claude.ai or ChatGPT). It writes the files.',
@@ -500,6 +500,15 @@ export const lessons: LessonDef[] = [
           kind: 'warn',
           title: 'One thing before you move on',
           body: "If your Desktop is synced to OneDrive (common on Windows 11), dev servers sometimes reload at random. If that happens later, move your project folder to C:\\projects instead. You don't need to act on this now — just remember it exists.",
+        },
+      },
+
+      {
+        type: 'callout',
+        callout: {
+          kind: 'tip',
+          title: 'Optional: install VS Code to view and edit your files',
+          body: 'Visual Studio Code (code.visualstudio.com) is a free code editor made by Microsoft. You do not need it to run this course — but it makes opening, reading, and pasting AI-generated code much easier than Notepad. Download: code.visualstudio.com → Download for Windows → run the installer → accept defaults.',
         },
       },
 
