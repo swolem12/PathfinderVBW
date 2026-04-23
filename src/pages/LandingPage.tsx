@@ -36,10 +36,10 @@ function buildTracks(): TrackDef[] {
     {
       slug: 'palantir',
       badge: 'Track 02 · Palantir',
-      title: 'Slate apps & the Foundry engineer reference',
+      title: 'Slate apps, Data Sets, and AIP Assist bots',
       pitch:
-        'Two courses inside one track. Pick Slate to ship a user-facing app, or Foundry Engineer for Code Repos, PySpark, AIP, Workshop, and Lineage. Choose on the next screen.',
-      destination: 'A published Foundry app — or a production data product.',
+        'Three sub-courses inside one track. Slate (ship a user-facing app), Data Sets (Code Repos, PySpark, AIP, Workshop, Lineage), or AIP Assist Builder (fold a bot into a project folder). Choose on the next screen.',
+      destination: 'A published Foundry app — or a data product — or a cited chatbot.',
       lessons: palantirSlate.length + palantirEng.length,
       minutes:
         palantirSlate.reduce((n, l) => n + l.estMinutes, 0) +

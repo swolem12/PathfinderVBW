@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight, X } from 'lucide-react'
 import { lessons as beginnerLessons } from '../../content/course'
 import { palantirLessons } from '../../content/palantir'
 import { palantirAdvancedLessons } from '../../content/palantir-advanced'
+import { palantirAipLessons } from '../../content/palantir-aip'
 import { powerAppsLessons } from '../../content/powerapps'
 
 interface StartButtonProps {
@@ -125,15 +126,18 @@ export function StartButton({ children, className = 'btn btn-primary' }: StartBu
   const palantirMinutes = palantirCritical.reduce((n, l) => n + l.estMinutes, 0)
   const palantirAdvCritical = palantirAdvancedLessons.filter((l) => !l.optional)
   const palantirAdvMinutes = palantirAdvCritical.reduce((n, l) => n + l.estMinutes, 0)
+  const palantirAipCritical = palantirAipLessons.filter((l) => !l.optional)
+  const palantirAipMinutes = palantirAipCritical.reduce((n, l) => n + l.estMinutes, 0)
   const powerAppsCritical = powerAppsLessons.filter((l) => !l.optional)
   const powerAppsMinutes = powerAppsCritical.reduce((n, l) => n + l.estMinutes, 0)
 
-  const palantirTotalLessons = palantirCritical.length + palantirAdvCritical.length
-  const palantirTotalMinutes = palantirMinutes + palantirAdvMinutes
+  const palantirTotalLessons = palantirCritical.length + palantirAdvCritical.length + palantirAipCritical.length
+  const palantirTotalMinutes = palantirMinutes + palantirAdvMinutes + palantirAipMinutes
 
   const firstBeginner = beginnerLessons[0]
   const firstPalantir = palantirLessons[0]
   const firstPalantirAdv = palantirAdvancedLessons[0]
+  const firstPalantirAip = palantirAipLessons[0]
   const firstPowerApps = powerAppsLessons[0]
 
   const close = () => setOpen(false)
@@ -209,7 +213,7 @@ export function StartButton({ children, className = 'btn btn-primary' }: StartBu
               >
                 {view === 'tracks'
                   ? 'Which course do you want to start?'
-                  : 'Palantir has two courses. Pick one.'}
+                  : 'Palantir has three courses. Pick one.'}
               </h2>
               {view === 'palantir' ? (
                 <p
@@ -217,9 +221,9 @@ export function StartButton({ children, className = 'btn btn-primary' }: StartBu
                   style={{ color: 'var(--paper)', fontSize: 14, lineHeight: 1.55 }}
                 >
                   <strong>Slate</strong> ships user-facing apps.{' '}
-                  <strong>Foundry Engineer</strong> is the practitioner reference for Code
-                  Repos, PySpark, AIP, Workshop, and Lineage. Start with whichever matches
-                  your day job.
+                  <strong>Data Sets</strong> is the practitioner reference for Code Repos,
+                  PySpark, AIP, Workshop, and Lineage. <strong>AIP Assist Builder</strong>{' '}
+                  trains a folder-scoped chatbot. Start with whichever matches your day job.
                 </p>
               ) : null}
             </div>
@@ -241,8 +245,8 @@ export function StartButton({ children, className = 'btn btn-primary' }: StartBu
                   />
                   <Tile
                     eyebrow="Track 02 · Palantir"
-                    title="Slate apps + Foundry Engineer"
-                    body="Two courses inside one track. Pick Slate or Foundry Engineer next."
+                    title="Slate apps + Data Sets + AIP Assist"
+                    body="Three courses inside one track. Pick Slate, Data Sets, or AIP Assist next."
                     lessons={palantirTotalLessons}
                     minutes={palantirTotalMinutes}
                     onClick={() => setView('palantir')}
@@ -259,7 +263,7 @@ export function StartButton({ children, className = 'btn btn-primary' }: StartBu
                   />
                 </div>
               ) : (
-                <div className="grid gap-px sm:grid-cols-2">
+                <div className="grid gap-px sm:grid-cols-3">
                   <Tile
                     eyebrow="Course A · Slate"
                     title="Slate webapps in Foundry"
@@ -270,12 +274,21 @@ export function StartButton({ children, className = 'btn btn-primary' }: StartBu
                     onClick={close}
                   />
                   <Tile
-                    eyebrow="Course B · Foundry Engineer"
+                    eyebrow="Course B · Data Sets"
                     title="Code Repos, PySpark, AIP, Workshop, Lineage"
                     body="The practitioner reference. TypeScript Metric + Writeback Functions, PySpark transforms, Pipeline Builder, AIP Logic, Workshop, and Lineage (health + schedules)."
                     lessons={palantirAdvCritical.length}
                     minutes={palantirAdvMinutes}
                     to={`/palantir-engineer/${firstPalantirAdv.id}`}
+                    onClick={close}
+                  />
+                  <Tile
+                    eyebrow="Course C · AIP Assist Builder"
+                    title="Train a bot on a project folder"
+                    body="Scope, curate, prompt, eval, embed, and operate. Four lessons from empty folder to cited, governed chatbot."
+                    lessons={palantirAipCritical.length}
+                    minutes={palantirAipMinutes}
+                    to={`/palantir-aip/${firstPalantirAip.id}`}
                     onClick={close}
                   />
                 </div>
