@@ -3,6 +3,7 @@ import { ArrowRight } from 'lucide-react'
 import { lessons, sampleApp } from '../content/course'
 import { palantirLessons } from '../content/palantir'
 import { LessonBody } from '../components/course/LessonBody'
+import { StartButton } from '../components/ui/StartButton'
 
 export function LandingPage() {
   const critical = lessons.filter((l) => !l.optional)
@@ -46,9 +47,9 @@ export function LandingPage() {
         </p>
 
         <div className="mt-10 flex flex-wrap items-center gap-4">
-          <Link to="/course/what-is-vibe-coding" className="btn btn-primary">
+          <StartButton>
             Start lesson 1 <ArrowRight className="h-4 w-4" />
-          </Link>
+          </StartButton>
           <Link to="/course" className="btn">
             See the syllabus
           </Link>
@@ -447,9 +448,9 @@ export function LandingPage() {
         )}
 
         <div className="mt-12 flex flex-wrap gap-4">
-          <Link to="/course/what-is-vibe-coding" className="btn btn-primary">
+          <StartButton>
             Start lesson 1 <ArrowRight className="h-4 w-4" />
-          </Link>
+          </StartButton>
         </div>
       </section>
     </>

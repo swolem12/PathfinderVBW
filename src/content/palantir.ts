@@ -32,6 +32,11 @@ export const palantirLessons: LessonDef[] = [
         body:
           "Foundry is Palantir's data platform plus app platform. Slate is the part you'll use to build a webapp your team can actually open. This course takes you from logging in for the first time to publishing a working Slate app — a TaskBoard for a maintenance crew.",
       },
+      {
+        type: 'slateMock',
+        variant: 'slate-published',
+        caption: "Lesson 8 destination — this is what you ship. Don't worry about how yet.",
+      },
       { type: 'loopDiagram', caption: 'Every Slate app follows this loop: data → ontology → functions → UI → publish → iterate.' },
       { type: 'h', body: "The four things you'll touch" },
       {
@@ -114,6 +119,17 @@ export const palantirLessons: LessonDef[] = [
           'Open Compass → New → Folder. Name it slate-<your-name> and put it somewhere your team has write access (ask your data lead if unsure). Every artifact you build in this course lives inside this folder.',
       },
       {
+        type: 'slateMock',
+        variant: 'compass',
+        caption: 'What Compass looks like after steps 3 and 4. The highlighted row is your folder.',
+        annotations: [
+          { x: 0, y: 0, label: 'Left tree', note: 'Your folders. Drill down to your slate-<name>.' },
+          { x: 0, y: 0, label: 'Right list', note: 'Files inside the folder. The Slate doc is highlighted.' },
+          { x: 0, y: 0, label: 'Icons', note: '▣ = Slate, ƒ = Function. Recognize these at a glance.' },
+          { x: 0, y: 0, label: 'Share', note: "Right-click the folder to set permissions — we'll do this in lesson 8." },
+        ],
+      },
+      {
         type: 'callout',
         callout: {
           kind: 'warn',
@@ -174,6 +190,17 @@ export const palantirLessons: LessonDef[] = [
         plain:
           "A TypeScript function that runs on Foundry's servers, can query the Ontology, and returns typed data or mutations to anything that calls it (Slate, Workshop, other Functions).",
       },
+      {
+        type: 'slateMock',
+        variant: 'ontology-object',
+        caption: 'The Task Object Type in Ontology Manager — your org ships an analog of this.',
+        annotations: [
+          { x: 0, y: 0, label: 'Properties', note: 'The fields on each Task. Slate reads these as row.title, row.priority, etc.' },
+          { x: 0, y: 0, label: '$rid', note: 'Primary key. Always use this to identify an object — never use title.' },
+          { x: 0, y: 0, label: 'Links', note: "assignee → Technician. You'll follow this link in lesson 5's detail panel." },
+          { x: 0, y: 0, label: 'Published badge', note: 'Only published object types are reachable from Functions and Slate.' },
+        ],
+      },
       { type: 'h', body: 'Pick an Object Type to work with' },
       {
         type: 'list',
@@ -222,6 +249,17 @@ export class SlateHelpers {
         },
       },
       {
+        type: 'slateMock',
+        variant: 'functions-ide',
+        caption: 'Your Functions IDE after you paste the snippet and click Preview.',
+        annotations: [
+          { x: 0, y: 0, label: 'Explorer', note: 'Your repo file tree. index.ts is where getOpenTasks lives.' },
+          { x: 0, y: 0, label: '@Function decorator', note: 'Marks a method as callable from Slate. No decorator = Slate cannot see it.' },
+          { x: 0, y: 0, label: 'Release v3 pill', note: "Every Release bumps the version. Slate pins itself to a specific release." },
+          { x: 0, y: 0, label: 'Preview bar', note: 'Green check + row count = your Function works. Now click Release.' },
+        ],
+      },
+      {
         type: 'step',
         n: 1,
         title: 'Publish the Function',
@@ -242,6 +280,17 @@ export class SlateHelpers {
         title: 'Verify',
         body:
           "The variable should show a green dot and a preview of the first item. Click the variable to see its full JSON output in the bottom pane.",
+      },
+      {
+        type: 'slateMock',
+        variant: 'variables-panel',
+        caption: "What your Slate variables panel should look like after lesson 5. Right now you only have openTasks.",
+        annotations: [
+          { x: 0, y: 0, label: 'Green dot', note: 'Variable evaluated successfully. Red = a Function error; click to see the message.' },
+          { x: 0, y: 0, label: 'Function kind', note: "Runs server-side. Re-runs whenever its inputs change — don't stuff these inside loops." },
+          { x: 0, y: 0, label: 'Static kind', note: 'A local scratch value you assign from widget events (onRowClick, onChange).' },
+          { x: 0, y: 0, label: 'Preview column', note: 'Live value. Expand into full JSON with the chevron.' },
+        ],
       },
       {
         type: 'callout',
@@ -277,13 +326,14 @@ export class SlateHelpers {
     blocks: [
       { type: 'h', body: 'The three panels of Slate' },
       {
-        type: 'visualRef',
-        title: 'Slate editor layout',
-        columns: 3,
-        items: [
-          { label: 'Widget tray', sub: 'left', swatch: 'layout', variant: 'sidebar' },
-          { label: 'Canvas', sub: 'center', swatch: 'layout', variant: 'single' },
-          { label: 'Inspector', sub: 'right', swatch: 'layout', variant: 'split' },
+        type: 'slateMock',
+        variant: 'slate-editor',
+        caption: "Your Slate editor after step 3. Memorize these three panels — you'll live here.",
+        annotations: [
+          { x: 0, y: 0, label: 'Widget tray (left)', note: 'Drag these onto the canvas. Heading, List, HTML, Button are the only four you need today.' },
+          { x: 0, y: 0, label: 'Canvas (center)', note: 'Your actual page. Dashed border = editable region. Selected widget has an orange border + chip.' },
+          { x: 0, y: 0, label: 'Inspector (right)', note: 'Everything about the selected widget: Data, Style, Events, Visibility. Orange cells = bound to a variable.' },
+          { x: 0, y: 0, label: '{{openTasks}} pill', note: 'The binding syntax. Re-renders the widget whenever the variable changes.' },
         ],
       },
       {
@@ -406,6 +456,16 @@ export class SlateHelpers {
         n: 1,
         title: 'Create a document variable selectedTaskId',
         body: 'Variables → New → Static → Type: String → Default: empty string. Save.',
+      },
+      {
+        type: 'slateMock',
+        variant: 'variables-panel',
+        caption: 'End of this lesson: three variables wired together — one Static, two Function-backed.',
+        annotations: [
+          { x: 0, y: 0, label: 'openTasks', note: 'The list Function you built in lesson 3. Refreshed by the Mark-done button in lesson 6.' },
+          { x: 0, y: 0, label: 'selectedTaskId', note: 'Static. Set by onRowClick (step 2). The only writable variable in this app.' },
+          { x: 0, y: 0, label: 'selectedTask', note: 'Function-backed on getTaskById, bound to {{selectedTaskId}}. Re-runs on every click.' },
+        ],
       },
       {
         type: 'step',
@@ -536,6 +596,17 @@ public getTaskById(id: string): Task | undefined {
           "Button → Events → onClick → Add Action → 'Run Ontology Action' → completeTask. For the task argument, bind {{selectedTask}}. Under 'After', tick 'Refresh variables' and pick openTasks AND selectedTask. Save.",
       },
       {
+        type: 'slateMock',
+        variant: 'action-modal',
+        caption: 'The onClick editor. Ontology Actions are just functions with a form UI in front.',
+        annotations: [
+          { x: 0, y: 0, label: 'Action name', note: "completeTask — defined in Ontology Manager, not in Slate. You're only wiring, not creating." },
+          { x: 0, y: 0, label: 'task argument', note: 'Bound to {{selectedTask}}. The orange border means this value comes from a variable, not a literal.' },
+          { x: 0, y: 0, label: 'After success', note: 'Refresh openTasks + selectedTask so the UI reflects the mutation. Then show toast.' },
+          { x: 0, y: 0, label: 'Run action', note: 'What happens when the user clicks Mark done. Slate validates inputs first.' },
+        ],
+      },
+      {
         type: 'callout',
         callout: {
           kind: 'tip',
@@ -557,6 +628,11 @@ public getTaskById(id: string): Task | undefined {
         title: 'Conditional empty states everywhere',
         body:
           "Every widget has a Visibility section in the Inspector. Add a new HTML widget above the list with content 'Nothing open — good shift.' and Visibility condition {{openTasks.length}} === 0. Set the List's own Visibility to {{openTasks.length}} > 0. Now the page never looks broken, even when there is no data.",
+      },
+      {
+        type: 'slateMock',
+        variant: 'slate-published',
+        caption: 'What lesson 6 produces in Preview — a row selected, detail rendered, Mark-done ready to fire.',
       },
       {
         type: 'details',
@@ -699,6 +775,11 @@ export class TaskEdits {
         },
       },
       {
+        type: 'slateMock',
+        variant: 'slate-published',
+        caption: 'End of lesson 7: same app, same data, but on-brand and grid-aligned.',
+      },
+      {
         type: 'checklist',
         items: [
           'Layout is Grid mode, 12 columns, list = 7, detail = 5.',
@@ -739,6 +820,11 @@ export class TaskEdits {
         title: 'Check permissions on the parent folder',
         body:
           "In Compass, right-click your slate-<name> folder → Share. Confirm read access for your target group (e.g. 'Maintenance / Shift Leads'). The Slate app inherits from here.",
+      },
+      {
+        type: 'slateMock',
+        variant: 'compass',
+        caption: "Back in Compass — right-click the folder to open Share. Permissions inherit to everything inside.",
       },
       {
         type: 'callout',

@@ -1079,6 +1079,1037 @@ function VisualRef({
 }
 
 /* ------------------------------------------------------------------ */
+/*  SlateMock — CSS/SVG mocks of Foundry UI                           */
+/* ------------------------------------------------------------------ */
+
+type SlateMockVariant =
+  | 'compass'
+  | 'slate-editor'
+  | 'slate-published'
+  | 'ontology-object'
+  | 'functions-ide'
+  | 'action-modal'
+  | 'variables-panel'
+
+function FoundryChrome({
+  title,
+  app,
+  children,
+  dark = false,
+}: {
+  title: string
+  app: string
+  children: React.ReactNode
+  dark?: boolean
+}) {
+  const bg = dark ? '#1a1d22' : '#f7f6f3'
+  const ink = dark ? '#e8e6e1' : '#1b1d22'
+  const edge = dark ? '#2d3139' : '#d9d6cc'
+  return (
+    <div
+      className="overflow-hidden rounded-md"
+      style={{ background: bg, color: ink, border: `1px solid ${edge}` }}
+    >
+      {/* Foundry top bar */}
+      <div
+        className="flex items-center gap-3 px-3 py-2"
+        style={{ borderBottom: `1px solid ${edge}`, background: dark ? '#14171c' : '#ffffff' }}
+      >
+        <div className="flex items-center gap-1.5">
+          <span
+            className="inline-block h-2.5 w-2.5 rounded-full"
+            style={{ background: '#e6a15c' }}
+            aria-hidden
+          />
+          <span
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: 10,
+              letterSpacing: '0.18em',
+              color: dark ? '#8d9199' : '#6b6b6b',
+              textTransform: 'uppercase',
+            }}
+          >
+            Foundry · {app}
+          </span>
+        </div>
+        <span style={{ color: edge }}>/</span>
+        <span
+          style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 11,
+            color: dark ? '#c1c4ca' : '#1b1d22',
+          }}
+        >
+          {title}
+        </span>
+        <span className="ml-auto flex items-center gap-3">
+          <span
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: 10,
+              color: dark ? '#8d9199' : '#8b8b8b',
+            }}
+          >
+            branch: main
+          </span>
+          <span
+            className="inline-block h-5 w-5 rounded-full"
+            style={{ background: '#e6a15c' }}
+            aria-hidden
+          />
+        </span>
+      </div>
+      {children}
+    </div>
+  )
+}
+
+function CompassMock() {
+  return (
+    <FoundryChrome title="/Projects/Maintenance/slate-yourname" app="Compass">
+      <div className="grid grid-cols-[180px_1fr] text-[11px]">
+        <div className="border-r p-2" style={{ background: '#ffffff', borderColor: '#e7e5df' }}>
+          <div style={{ color: '#8b8b8b', fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: 6 }}>
+            Tree
+          </div>
+          {['Projects', '  Maintenance', '    slate-yourname', 'Shared', 'Playground'].map((l, i) => (
+            <div
+              key={i}
+              style={{
+                padding: '4px 6px',
+                borderRadius: 3,
+                background: i === 2 ? '#fce9d4' : 'transparent',
+                color: i === 2 ? '#1b1d22' : '#4a4a4a',
+                fontFamily: 'var(--font-body)',
+                whiteSpace: 'pre',
+              }}
+            >
+              {i === 2 ? '▸ ' : i === 0 || i === 3 || i === 4 ? '▸ ' : '  '}
+              {l}
+            </div>
+          ))}
+        </div>
+        <div style={{ background: '#faf8f3' }}>
+          <div
+            className="flex items-center gap-3 border-b px-3 py-1.5"
+            style={{ borderColor: '#e7e5df', color: '#4a4a4a', fontFamily: 'var(--font-mono)', fontSize: 10 }}
+          >
+            <span>Name</span>
+            <span className="ml-auto">Modified</span>
+            <span style={{ width: 40 }}>Type</span>
+          </div>
+          {[
+            { name: 'taskboard-slate', type: 'Slate', mod: '2m ago', sel: true, icon: '▣' },
+            { name: 'slate-helpers', type: 'Function', mod: '12m ago', icon: 'ƒ' },
+            { name: 'taskboard-screenshot.png', type: 'Image', mod: '3h ago', icon: '▨' },
+          ].map((f, i) => (
+            <div
+              key={i}
+              className="grid items-center gap-3 border-b px-3 py-2"
+              style={{
+                gridTemplateColumns: '1fr auto 48px',
+                borderColor: '#ecebe4',
+                background: f.sel ? '#fce9d4' : 'transparent',
+                fontFamily: 'var(--font-body)',
+                color: '#1b1d22',
+              }}
+            >
+              <span>
+                <span style={{ color: '#e6a15c', marginRight: 6 }}>{f.icon}</span>
+                {f.name}
+              </span>
+              <span style={{ color: '#8b8b8b', fontFamily: 'var(--font-mono)', fontSize: 10 }}>
+                {f.mod}
+              </span>
+              <span style={{ color: '#8b8b8b', fontFamily: 'var(--font-mono)', fontSize: 10 }}>
+                {f.type}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </FoundryChrome>
+  )
+}
+
+function SlateEditorMock() {
+  return (
+    <FoundryChrome title="taskboard-slate · Draft" app="Slate">
+      <div className="grid text-[11px]" style={{ gridTemplateColumns: '140px 1fr 170px', minHeight: 260 }}>
+        {/* Widget tray */}
+        <div className="border-r p-2" style={{ background: '#ffffff', borderColor: '#e7e5df' }}>
+          <div style={{ color: '#8b8b8b', fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: 8 }}>
+            Widgets
+          </div>
+          {['Heading', 'List', 'HTML', 'Button', 'Table', 'Tabs', 'Metric', 'Chart'].map((w, i) => (
+            <div
+              key={w}
+              className="flex items-center gap-2 rounded"
+              style={{
+                padding: '5px 6px',
+                marginBottom: 2,
+                background: i === 1 ? '#fce9d4' : 'transparent',
+                color: '#1b1d22',
+                fontFamily: 'var(--font-body)',
+                cursor: 'grab',
+              }}
+            >
+              <span
+                style={{
+                  width: 12,
+                  height: 12,
+                  borderRadius: 2,
+                  background: i === 1 ? '#e6a15c' : '#e7e5df',
+                }}
+              />
+              {w}
+            </div>
+          ))}
+        </div>
+        {/* Canvas */}
+        <div style={{ background: '#faf8f3', padding: 12, position: 'relative' }}>
+          {/* 12-col grid hint */}
+          <div
+            className="absolute inset-2 rounded"
+            style={{
+              border: '1px dashed #e7e5df',
+              pointerEvents: 'none',
+            }}
+          />
+          <div
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 16,
+              color: '#1b1d22',
+              marginBottom: 10,
+              letterSpacing: '-0.01em',
+            }}
+          >
+            TaskBoard — Shift View
+          </div>
+          <div className="grid gap-2" style={{ gridTemplateColumns: '1.4fr 1fr' }}>
+            {/* List widget — selected */}
+            <div
+              style={{
+                background: '#fff',
+                border: '2px solid #e6a15c',
+                borderRadius: 4,
+                padding: 6,
+                position: 'relative',
+              }}
+            >
+              <span
+                style={{
+                  position: 'absolute',
+                  top: -9,
+                  left: 6,
+                  background: '#e6a15c',
+                  color: '#fff',
+                  padding: '1px 6px',
+                  fontSize: 8,
+                  fontFamily: 'var(--font-mono)',
+                  letterSpacing: '0.14em',
+                  borderRadius: 2,
+                  textTransform: 'uppercase',
+                }}
+              >
+                List · {'{{openTasks}}'}
+              </span>
+              {[
+                { t: 'Replace HVAC filter', p: 'Med' },
+                { t: 'Diagnose conveyor fault', p: 'High' },
+                { t: 'Reset access PIN', p: 'Low' },
+              ].map((r, i) => (
+                <div
+                  key={i}
+                  className="flex items-center justify-between"
+                  style={{
+                    padding: '4px 6px',
+                    borderBottom: i < 2 ? '1px solid #ecebe4' : 'none',
+                    color: '#1b1d22',
+                  }}
+                >
+                  <span>{r.t}</span>
+                  <span
+                    style={{
+                      background: r.p === 'High' ? '#e6a15c' : '#ecebe4',
+                      color: r.p === 'High' ? '#fff' : '#6b6b6b',
+                      fontSize: 9,
+                      padding: '1px 6px',
+                      borderRadius: 2,
+                      fontFamily: 'var(--font-mono)',
+                      letterSpacing: '0.1em',
+                    }}
+                  >
+                    {r.p}
+                  </span>
+                </div>
+              ))}
+            </div>
+            {/* Detail panel — HTML widget placeholder */}
+            <div
+              style={{
+                background: '#fff',
+                border: '1px solid #e7e5df',
+                borderRadius: 4,
+                padding: 10,
+                color: '#8b8b8b',
+                fontStyle: 'italic',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              Select a task to see details.
+            </div>
+          </div>
+        </div>
+        {/* Inspector */}
+        <div className="border-l p-2" style={{ background: '#ffffff', borderColor: '#e7e5df' }}>
+          <div style={{ color: '#8b8b8b', fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: 8 }}>
+            Inspector · List
+          </div>
+          {[
+            { k: 'Data Source', v: '{{openTasks}}', hi: true },
+            { k: 'Row template', v: 'HTML' },
+            { k: 'colSpan', v: '7' },
+            { k: 'onRowClick', v: 'Set var…', hi: true },
+            { k: 'Visibility', v: 'always' },
+          ].map((row) => (
+            <div key={row.k} style={{ marginBottom: 6 }}>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: '#8b8b8b', letterSpacing: '0.1em' }}>
+                {row.k}
+              </div>
+              <div
+                style={{
+                  background: row.hi ? '#fce9d4' : '#faf8f3',
+                  border: '1px solid #ecebe4',
+                  padding: '3px 6px',
+                  borderRadius: 2,
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 10,
+                  color: '#1b1d22',
+                }}
+              >
+                {row.v}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </FoundryChrome>
+  )
+}
+
+function SlatePublishedMock() {
+  return (
+    <FoundryChrome title="taskboard-slate · v1" app="Slate">
+      <div style={{ background: '#faf8f3', padding: 14, minHeight: 220 }}>
+        <div className="mb-3 flex items-baseline justify-between">
+          <div
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 18,
+              color: '#1b1d22',
+              letterSpacing: '-0.01em',
+            }}
+          >
+            TaskBoard — Shift View
+          </div>
+          <div
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: 10,
+              color: '#8b8b8b',
+              letterSpacing: '0.14em',
+            }}
+          >
+            3 OPEN · 1 SELECTED
+          </div>
+        </div>
+        <div className="grid gap-3" style={{ gridTemplateColumns: '1.3fr 1fr' }}>
+          <div style={{ background: '#fff', border: '1px solid #e7e5df', borderRadius: 4 }}>
+            {[
+              { t: 'Diagnose conveyor #2 fault', p: 'High', sel: true },
+              { t: 'Replace HVAC filter — shop A', p: 'Med' },
+              { t: 'Reset access panel PIN', p: 'Low' },
+            ].map((r, i) => (
+              <div
+                key={i}
+                className="flex items-center justify-between"
+                style={{
+                  padding: '9px 12px',
+                  borderBottom: i < 2 ? '1px solid #ecebe4' : 'none',
+                  background: r.sel ? '#fce9d4' : 'transparent',
+                  color: '#1b1d22',
+                  fontSize: 12,
+                }}
+              >
+                <span>{r.t}</span>
+                <span
+                  style={{
+                    background:
+                      r.p === 'High' ? '#e6a15c' : r.p === 'Med' ? '#ecebe4' : 'transparent',
+                    color: r.p === 'High' ? '#fff' : '#6b6b6b',
+                    fontSize: 10,
+                    padding: '2px 7px',
+                    borderRadius: 2,
+                    fontFamily: 'var(--font-mono)',
+                    letterSpacing: '0.1em',
+                  }}
+                >
+                  {r.p}
+                </span>
+              </div>
+            ))}
+          </div>
+          <div
+            style={{
+              background: '#fff',
+              border: '1px solid #e7e5df',
+              borderRadius: 4,
+              padding: 12,
+              color: '#1b1d22',
+              fontSize: 12,
+              lineHeight: 1.5,
+            }}
+          >
+            <div style={{ fontFamily: 'var(--font-display)', fontSize: 15, marginBottom: 6 }}>
+              Diagnose conveyor #2 fault
+            </div>
+            <div style={{ color: '#6b6b6b', marginBottom: 4 }}>
+              <b>Priority:</b> High
+            </div>
+            <div style={{ color: '#6b6b6b', marginBottom: 4 }}>
+              <b>Assignee:</b> J. Rivera
+            </div>
+            <div style={{ color: '#6b6b6b', marginBottom: 10 }}>
+              Intermittent stop after 10 min runtime. Sensor check required.
+            </div>
+            <button
+              style={{
+                background: '#e6a15c',
+                color: '#fff',
+                padding: '6px 12px',
+                border: 'none',
+                borderRadius: 3,
+                fontFamily: 'var(--font-mono)',
+                fontSize: 10,
+                letterSpacing: '0.18em',
+                textTransform: 'uppercase',
+                cursor: 'pointer',
+              }}
+            >
+              Mark done
+            </button>
+          </div>
+        </div>
+      </div>
+    </FoundryChrome>
+  )
+}
+
+function OntologyObjectMock() {
+  return (
+    <FoundryChrome title="Task · Object Type" app="Ontology Manager">
+      <div className="grid text-[11px]" style={{ gridTemplateColumns: '160px 1fr', minHeight: 240 }}>
+        <div className="border-r p-2" style={{ background: '#ffffff', borderColor: '#e7e5df' }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.18em', color: '#8b8b8b', textTransform: 'uppercase', marginBottom: 8 }}>
+            Sections
+          </div>
+          {['Overview', 'Properties', 'Links', 'Actions', 'Permissions', 'History'].map((s, i) => (
+            <div
+              key={s}
+              style={{
+                padding: '5px 6px',
+                borderRadius: 3,
+                marginBottom: 2,
+                background: i === 1 ? '#fce9d4' : 'transparent',
+                color: i === 1 ? '#1b1d22' : '#4a4a4a',
+                fontFamily: 'var(--font-body)',
+              }}
+            >
+              {s}
+            </div>
+          ))}
+        </div>
+        <div style={{ background: '#faf8f3', padding: 12 }}>
+          <div className="mb-3 flex items-center gap-2">
+            <span
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 26,
+                height: 26,
+                borderRadius: 4,
+                background: '#e6a15c',
+                color: '#fff',
+                fontFamily: 'var(--font-mono)',
+                fontSize: 13,
+              }}
+            >
+              ▣
+            </span>
+            <span style={{ fontFamily: 'var(--font-display)', fontSize: 16, color: '#1b1d22' }}>
+              Task
+            </span>
+            <span
+              style={{
+                marginLeft: 8,
+                background: '#dbe8db',
+                color: '#2f5f2f',
+                fontFamily: 'var(--font-mono)',
+                fontSize: 9,
+                letterSpacing: '0.14em',
+                padding: '2px 6px',
+                borderRadius: 2,
+                textTransform: 'uppercase',
+              }}
+            >
+              Published
+            </span>
+          </div>
+          <div
+            className="grid gap-0 rounded"
+            style={{ background: '#fff', border: '1px solid #e7e5df' }}
+          >
+            {[
+              { k: '$rid', t: 'String (primary key)', hl: true },
+              { k: 'title', t: 'String' },
+              { k: 'priority', t: "Enum: 'Low' | 'Med' | 'High'" },
+              { k: 'status', t: "Enum: 'Open' | 'In Progress' | 'Done'" },
+              { k: 'assignee', t: '→ Technician (link)', hl: true },
+              { k: 'description', t: 'String (long)' },
+              { k: 'createdAt', t: 'Timestamp' },
+            ].map((p, i) => (
+              <div
+                key={p.k}
+                className="grid items-center gap-3 px-3 py-1.5"
+                style={{
+                  gridTemplateColumns: '110px 1fr',
+                  borderBottom: i < 6 ? '1px solid #ecebe4' : 'none',
+                  color: '#1b1d22',
+                }}
+              >
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: p.hl ? '#e6a15c' : '#1b1d22' }}>
+                  {p.k}
+                </span>
+                <span style={{ color: '#6b6b6b', fontFamily: 'var(--font-body)' }}>{p.t}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </FoundryChrome>
+  )
+}
+
+function FunctionsIdeMock() {
+  return (
+    <FoundryChrome title="slate-helpers · src/index.ts" app="Functions" dark>
+      <div className="grid text-[11px]" style={{ gridTemplateColumns: '160px 1fr', minHeight: 240 }}>
+        <div className="border-r p-2" style={{ background: '#14171c', borderColor: '#2d3139' }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.18em', color: '#8d9199', textTransform: 'uppercase', marginBottom: 8 }}>
+            Explorer
+          </div>
+          {[
+            { n: 'slate-helpers/', k: 'folder', l: 0 },
+            { n: 'src/', k: 'folder', l: 1 },
+            { n: 'index.ts', k: 'file', l: 2, sel: true },
+            { n: 'types.ts', k: 'file', l: 2 },
+            { n: 'package.json', k: 'file', l: 1 },
+            { n: 'ontology.config.yml', k: 'file', l: 1 },
+          ].map((f, i) => (
+            <div
+              key={i}
+              style={{
+                padding: '3px 6px',
+                paddingLeft: 6 + f.l * 10,
+                borderRadius: 3,
+                marginBottom: 1,
+                background: f.sel ? '#2d3139' : 'transparent',
+                color: f.sel ? '#f0cf9c' : '#c1c4ca',
+                fontFamily: 'var(--font-mono)',
+              }}
+            >
+              {f.k === 'folder' ? '▸ ' : '  '}
+              {f.n}
+            </div>
+          ))}
+        </div>
+        <div style={{ background: '#0f1216', padding: 0 }}>
+          {/* Tab bar */}
+          <div className="flex" style={{ background: '#14171c', borderBottom: '1px solid #2d3139' }}>
+            <div
+              style={{
+                padding: '4px 10px',
+                background: '#0f1216',
+                color: '#f0cf9c',
+                fontFamily: 'var(--font-mono)',
+                fontSize: 10,
+                borderRight: '1px solid #2d3139',
+                borderTop: '2px solid #e6a15c',
+              }}
+            >
+              index.ts
+            </div>
+            <div style={{ marginLeft: 'auto', padding: '4px 10px' }}>
+              <span
+                style={{
+                  background: '#e6a15c',
+                  color: '#1b1d22',
+                  padding: '2px 8px',
+                  borderRadius: 2,
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 9,
+                  letterSpacing: '0.14em',
+                  textTransform: 'uppercase',
+                }}
+              >
+                Release v3
+              </span>
+            </div>
+          </div>
+          <pre
+            style={{
+              margin: 0,
+              padding: 10,
+              fontFamily: 'var(--font-mono)',
+              fontSize: 11,
+              color: '#c1c4ca',
+              lineHeight: 1.55,
+            }}
+          >
+            <span style={{ color: '#8d9199' }}>
+              {`  1 `}
+            </span>
+            <span style={{ color: '#d985c5' }}>import</span>{' '}
+            <span>{`{ Function } `}</span>
+            <span style={{ color: '#d985c5' }}>from</span>{' '}
+            <span style={{ color: '#a0c4ff' }}>"@foundry/functions-api"</span>
+            {'\n'}
+            <span style={{ color: '#8d9199' }}>{`  2 `}</span>
+            <span style={{ color: '#d985c5' }}>import</span>{' '}
+            <span>{`{ Objects } `}</span>
+            <span style={{ color: '#d985c5' }}>from</span>{' '}
+            <span style={{ color: '#a0c4ff' }}>"@foundry/ontology-api"</span>
+            {'\n'}
+            <span style={{ color: '#8d9199' }}>{`  3 `}</span>
+            <span style={{ color: '#d985c5' }}>import</span>{' '}
+            <span>{`{ Task } `}</span>
+            <span style={{ color: '#d985c5' }}>from</span>{' '}
+            <span style={{ color: '#a0c4ff' }}>"@foundry/ontology"</span>
+            {'\n'}
+            <span style={{ color: '#8d9199' }}>{`  4 `}</span>
+            {'\n'}
+            <span style={{ color: '#8d9199' }}>{`  5 `}</span>
+            <span style={{ color: '#d985c5' }}>export class</span>{' '}
+            <span style={{ color: '#f0cf9c' }}>SlateHelpers</span>
+            {' {'}
+            {'\n'}
+            <span style={{ color: '#8d9199' }}>{`  6 `}</span>
+            {'  '}
+            <span style={{ color: '#e6a15c' }}>@Function</span>()
+            {'\n'}
+            <span style={{ color: '#8d9199' }}>{`  7 `}</span>
+            {'  '}
+            <span style={{ color: '#d985c5' }}>public</span>{' '}
+            <span style={{ color: '#a0c4ff' }}>getOpenTasks</span>(): Task[]{' {'}
+            {'\n'}
+            <span style={{ color: '#8d9199' }}>{`  8 `}</span>
+            {'    '}
+            <span style={{ color: '#d985c5' }}>return</span> Objects.search().task()
+            {'\n'}
+            <span style={{ color: '#8d9199' }}>{`  9 `}</span>
+            {'      .'}
+            <span style={{ color: '#a0c4ff' }}>filter</span>
+            {'((t) => t.status.'}
+            <span style={{ color: '#a0c4ff' }}>exactMatch</span>
+            {'('}
+            <span style={{ color: '#a0c4ff' }}>"Open"</span>
+            {'))'}
+            {'\n'}
+            <span style={{ color: '#8d9199' }}>{` 10 `}</span>
+            {'      .'}
+            <span style={{ color: '#a0c4ff' }}>take</span>
+            {'(200).'}
+            <span style={{ color: '#a0c4ff' }}>all</span>
+            {'()'}
+            {'\n'}
+            <span style={{ color: '#8d9199' }}>{` 11 `}</span>
+            {'  }'}
+            {'\n'}
+            <span style={{ color: '#8d9199' }}>{` 12 `}</span>
+            {'}'}
+          </pre>
+          <div
+            className="border-t px-3 py-1.5"
+            style={{
+              borderColor: '#2d3139',
+              fontFamily: 'var(--font-mono)',
+              fontSize: 10,
+              color: '#5cd8c4',
+              letterSpacing: '0.14em',
+            }}
+          >
+            ✓ Preview OK · 3 rows returned · 84ms
+          </div>
+        </div>
+      </div>
+    </FoundryChrome>
+  )
+}
+
+function ActionModalMock() {
+  return (
+    <FoundryChrome title="taskboard-slate" app="Slate">
+      <div
+        style={{
+          background: '#faf8f3',
+          padding: 16,
+          minHeight: 220,
+          position: 'relative',
+        }}
+      >
+        <div style={{ filter: 'blur(1px)', opacity: 0.6 }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: 16, marginBottom: 8, color: '#1b1d22' }}>
+            TaskBoard — Shift View
+          </div>
+          <div style={{ background: '#fff', border: '1px solid #e7e5df', borderRadius: 4, height: 120 }} />
+        </div>
+        {/* Modal */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '70%',
+            background: '#fff',
+            borderRadius: 6,
+            boxShadow: '0 12px 40px rgba(0,0,0,0.25)',
+            border: '1px solid #d9d6cc',
+            overflow: 'hidden',
+          }}
+        >
+          <div
+            className="flex items-center justify-between px-3 py-2"
+            style={{ borderBottom: '1px solid #e7e5df', background: '#faf8f3' }}
+          >
+            <span style={{ fontFamily: 'var(--font-display)', fontSize: 13, color: '#1b1d22' }}>
+              Action · completeTask
+            </span>
+            <span
+              style={{
+                background: '#dbe8db',
+                color: '#2f5f2f',
+                fontFamily: 'var(--font-mono)',
+                fontSize: 9,
+                letterSpacing: '0.14em',
+                padding: '1px 6px',
+                borderRadius: 2,
+                textTransform: 'uppercase',
+              }}
+            >
+              Ontology Action
+            </span>
+          </div>
+          <div style={{ padding: 12 }}>
+            <div
+              style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: '#8b8b8b', letterSpacing: '0.14em', marginBottom: 4, textTransform: 'uppercase' }}
+            >
+              task
+            </div>
+            <div
+              style={{
+                background: '#fce9d4',
+                border: '1px solid #e6a15c',
+                borderRadius: 3,
+                padding: '5px 8px',
+                fontFamily: 'var(--font-mono)',
+                fontSize: 11,
+                color: '#1b1d22',
+                marginBottom: 10,
+              }}
+            >
+              {'{{selectedTask}}'} · Diagnose conveyor #2 fault
+            </div>
+            <div className="flex items-center justify-between">
+              <span style={{ color: '#8b8b8b', fontSize: 11 }}>
+                After success: refresh openTasks, selectedTask
+              </span>
+              <div className="flex gap-2">
+                <button
+                  style={{
+                    padding: '5px 12px',
+                    border: '1px solid #d9d6cc',
+                    background: '#fff',
+                    borderRadius: 3,
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 10,
+                    color: '#1b1d22',
+                    letterSpacing: '0.14em',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  style={{
+                    padding: '5px 12px',
+                    background: '#e6a15c',
+                    color: '#fff',
+                    borderRadius: 3,
+                    border: 'none',
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 10,
+                    letterSpacing: '0.14em',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  Run action
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </FoundryChrome>
+  )
+}
+
+function VariablesPanelMock() {
+  return (
+    <FoundryChrome title="taskboard-slate · Variables" app="Slate">
+      <div style={{ background: '#ffffff', padding: 12, minHeight: 220 }}>
+        <div
+          className="mb-2 flex items-center justify-between"
+          style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.14em', color: '#8b8b8b', textTransform: 'uppercase' }}
+        >
+          <span>Document variables</span>
+          <span
+            style={{
+              background: '#e6a15c',
+              color: '#fff',
+              padding: '2px 7px',
+              borderRadius: 2,
+              fontSize: 9,
+            }}
+          >
+            + New
+          </span>
+        </div>
+        <div
+          className="grid gap-0 rounded"
+          style={{ background: '#faf8f3', border: '1px solid #e7e5df' }}
+        >
+          {[
+            {
+              n: 'openTasks',
+              k: 'Function',
+              s: 'getOpenTasks()',
+              v: '3 items',
+              ok: true,
+            },
+            {
+              n: 'selectedTaskId',
+              k: 'Static',
+              s: 'string',
+              v: '"ri.ont.main.object.task-7f2"',
+              ok: true,
+            },
+            {
+              n: 'selectedTask',
+              k: 'Function',
+              s: 'getTaskById(selectedTaskId)',
+              v: 'Task · Diagnose conveyor #2',
+              ok: true,
+            },
+          ].map((r, i) => (
+            <div
+              key={r.n}
+              className="grid items-center gap-2 px-3 py-2"
+              style={{
+                gridTemplateColumns: '120px 70px 1fr auto',
+                borderBottom: i < 2 ? '1px solid #ecebe4' : 'none',
+              }}
+            >
+              <div className="flex items-center gap-1.5">
+                <span
+                  style={{
+                    width: 6,
+                    height: 6,
+                    borderRadius: 999,
+                    background: r.ok ? '#5cb85c' : '#e6a15c',
+                  }}
+                />
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: '#1b1d22' }}>
+                  {r.n}
+                </span>
+              </div>
+              <span
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 9,
+                  letterSpacing: '0.14em',
+                  color: '#8b8b8b',
+                  textTransform: 'uppercase',
+                }}
+              >
+                {r.k}
+              </span>
+              <span
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 10,
+                  color: '#6b6b6b',
+                }}
+              >
+                {r.s}
+              </span>
+              <span
+                style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 11,
+                  color: '#1b1d22',
+                  maxWidth: 220,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {r.v}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </FoundryChrome>
+  )
+}
+
+function SlateMock({
+  variant,
+  caption,
+  annotations,
+}: {
+  variant: SlateMockVariant
+  caption?: string
+  annotations?: { x: number; y: number; label: string; note: string }[]
+}) {
+  const label: Record<SlateMockVariant, string> = {
+    compass: "Compass — Foundry's file browser",
+    'slate-editor': 'Slate editor — widget tray, canvas, inspector',
+    'slate-published': 'Your published Slate app',
+    'ontology-object': 'Ontology Manager — the Task Object Type',
+    'functions-ide': 'Functions IDE — your TypeScript Function repo',
+    'action-modal': 'Calling an Action Type from Slate',
+    'variables-panel': 'Slate document variables panel',
+  }
+
+  return (
+    <motion.figure
+      className="my-8 overflow-hidden rounded-lg border"
+      style={{ borderColor: 'var(--edge)', background: 'var(--bg-2)' }}
+      initial={{ opacity: 0, y: 8 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-10%' }}
+      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <div
+        className="flex items-center justify-between border-b px-4 py-2"
+        style={{ borderColor: 'var(--edge)' }}
+      >
+        <span
+          className="uppercase"
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: 10,
+            letterSpacing: '0.22em',
+            color: 'var(--ink-dim)',
+          }}
+        >
+          Screen · {label[variant]}
+        </span>
+        <span
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: 10,
+            color: 'var(--ink-dim)',
+            letterSpacing: '0.14em',
+          }}
+        >
+          palantirfoundry.com
+        </span>
+      </div>
+      <div style={{ padding: 16, position: 'relative' }}>
+        {variant === 'compass' && <CompassMock />}
+        {variant === 'slate-editor' && <SlateEditorMock />}
+        {variant === 'slate-published' && <SlatePublishedMock />}
+        {variant === 'ontology-object' && <OntologyObjectMock />}
+        {variant === 'functions-ide' && <FunctionsIdeMock />}
+        {variant === 'action-modal' && <ActionModalMock />}
+        {variant === 'variables-panel' && <VariablesPanelMock />}
+        {annotations && annotations.length > 0 && (
+          <div
+            className="mt-3 grid gap-2 sm:grid-cols-2"
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: 11,
+              color: 'var(--paper)',
+            }}
+          >
+            {annotations.map((a, i) => (
+              <div
+                key={i}
+                className="flex gap-2 rounded border px-3 py-2"
+                style={{ borderColor: 'var(--edge)', background: 'var(--bg)' }}
+              >
+                <span
+                  style={{
+                    background: 'var(--accent)',
+                    color: 'var(--bg)',
+                    width: 18,
+                    height: 18,
+                    borderRadius: 999,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 10,
+                    flexShrink: 0,
+                    marginTop: 1,
+                  }}
+                >
+                  {i + 1}
+                </span>
+                <span>
+                  <b style={{ color: 'var(--ink)' }}>{a.label}</b> — {a.note}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      {caption && (
+        <figcaption
+          className="border-t px-4 py-2 text-center"
+          style={{
+            borderColor: 'var(--edge)',
+            fontFamily: 'var(--font-mono)',
+            fontSize: 11,
+            color: 'var(--ink-dim)',
+          }}
+        >
+          {caption}
+        </figcaption>
+      )}
+    </motion.figure>
+  )
+}
+
+/* ------------------------------------------------------------------ */
 /*  Public renderer                                                   */
 /* ------------------------------------------------------------------ */
 
@@ -1190,6 +2221,15 @@ function renderBlock(block: LessonBlock, i: number): React.ReactNode {
           title={block.title}
           columns={block.columns}
           items={block.items}
+        />
+      )
+    case 'slateMock':
+      return (
+        <SlateMock
+          key={i}
+          variant={block.variant}
+          caption={block.caption}
+          annotations={block.annotations}
         />
       )
     default:

@@ -33,6 +33,19 @@ export type LessonBlock =
       columns: 2 | 3 | 4
       items: { label: string; sub?: string; swatch: 'layout' | 'tone' | 'radius' | 'accent'; variant: string }[]
     }
+  | {
+      type: 'slateMock'
+      variant:
+        | 'compass'
+        | 'slate-editor'
+        | 'slate-published'
+        | 'ontology-object'
+        | 'functions-ide'
+        | 'action-modal'
+        | 'variables-panel'
+      caption?: string
+      annotations?: { x: number; y: number; label: string; note: string }[]
+    }
 
 export interface LessonDef {
   id: LessonId

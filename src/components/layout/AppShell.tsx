@@ -1,4 +1,5 @@
 import { Link, NavLink, Outlet } from 'react-router-dom'
+import { StartButton } from '../ui/StartButton'
 
 export function AppShell() {
   return (
@@ -53,12 +54,7 @@ export function AppShell() {
             >
               Palantir
             </NavLink>
-            <Link
-              to="/course/what-is-vibe-coding"
-              className="btn btn-primary hidden sm:inline-flex"
-            >
-              Start
-            </Link>
+            <StartButton className="btn btn-primary hidden sm:inline-flex">Start</StartButton>
           </nav>
         </div>
       </header>

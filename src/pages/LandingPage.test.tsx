@@ -13,6 +13,8 @@ describe('LandingPage', () => {
     expect(
       screen.getByRole('heading', { level: 1, name: /build a real app/i }),
     ).toBeInTheDocument()
-    expect(screen.getAllByRole('link', { name: /start lesson 1/i }).length).toBeGreaterThan(0)
+    expect(
+      screen.getAllByRole('button', { name: /start lesson 1/i }).length,
+    ).toBeGreaterThan(0)
   })
 })
