@@ -177,6 +177,11 @@ export const advancedLessons: LessonDef[] = [
         body: 'After creating, you land on the Code tab. Here is what every tab does — you will use all of them.',
       },
       {
+        type: 'githubMock',
+        variant: 'repo-anatomy',
+        caption: 'A fresh repo — the tabs you\'ll use every day',
+      },
+      {
         type: 'list',
         items: [
           '< > Code — the file browser. Click any file to read it. This is where you and the AI spend most of your time.',
@@ -191,6 +196,11 @@ export const advancedLessons: LessonDef[] = [
         n: 4,
         title: 'Understand the green Code button',
         body: 'Click the green Code button now. You see three options: Local (clone to your PC), Codespace (cloud VS Code — you will use this in lesson 2), and GitHub Desktop. Keep this button in mind — it is how you open your project editor.',
+      },
+      {
+        type: 'githubMock',
+        variant: 'code-dropdown',
+        caption: 'Click Code → Codespaces → Create codespace on main',
       },
       {
         type: 'jargon',
@@ -244,6 +254,11 @@ export const advancedLessons: LessonDef[] = [
         body: "On your repository page, click the green Code button → Codespaces tab → Create codespace on main. A new browser tab opens. VS Code loads inside it. This takes about 60 seconds the first time.",
       },
       {
+        type: 'githubMock',
+        variant: 'codespace-launcher',
+        caption: 'First launch takes 30–60 seconds — you only wait once per Codespace',
+      },
+      {
         type: 'callout',
         callout: {
           kind: 'tip',
@@ -272,10 +287,20 @@ export const advancedLessons: LessonDef[] = [
         plain: 'A free program from GitHub for enrolled students and active educators. Gives you GitHub Pro (paid features), Copilot Pro (unlimited AI), and other developer tools at zero cost. Apply at education.github.com.',
       },
       {
+        type: 'githubMock',
+        variant: 'education-apply',
+        caption: 'If you are a student — unlock these first, before anything else in this course',
+      },
+      {
         type: 'step',
         n: 2,
         title: 'Learn the VS Code layout',
         body: 'Everything you need is in the two sidebars and the bottom panel.',
+      },
+      {
+        type: 'githubMock',
+        variant: 'vscode-layout',
+        caption: 'Activity bar (far left) → file tree → editor → terminal at bottom',
       },
       {
         type: 'list',
@@ -360,6 +385,11 @@ export const advancedLessons: LessonDef[] = [
         body: "Click the Source Control icon (branch, left sidebar) → type a message like 'initial scaffold' → click Commit → click Sync Changes. Your files are now saved to GitHub and visible on your repo page.",
       },
       {
+        type: 'githubMock',
+        variant: 'source-control',
+        caption: 'Write a message → Commit → Sync Changes. Your work is now on GitHub.',
+      },
+      {
         type: 'checklist',
         items: [
           'Codespace is open and shows VS Code with my repository files',
@@ -427,6 +457,11 @@ export const advancedLessons: LessonDef[] = [
           body: "Start with GitHub Copilot in VS Code — it has access to your entire file tree via @workspace. For complex architectural decisions, open claude.ai in a second tab and paste only the relevant files. Use Codex 5.3 when you need deep algorithmic logic.",
         },
       },
+      {
+        type: 'githubMock',
+        variant: 'copilot-models',
+        caption: 'The model picker lives at the bottom of the chat panel — switch anytime',
+      },
       { type: 'h', body: 'Using GitHub Copilot agent mode in VS Code' },
       {
         type: 'step',
@@ -454,6 +489,11 @@ export const advancedLessons: LessonDef[] = [
         n: 3,
         title: 'Run your first agent session',
         body: 'Use the bootstrap prompt below. Replace the bracketed placeholder with your one-sentence app description. The AI will ask questions, then wait for your approval before writing anything.',
+      },
+      {
+        type: 'githubMock',
+        variant: 'copilot-chat',
+        caption: 'Agent mode — review every file change before you click Accept all',
       },
       {
         type: 'code',
@@ -1189,6 +1229,11 @@ TOASTS (bottom-right)
       },
       { type: 'h', body: 'Step 1 — Architect before you build' },
       {
+        type: 'githubMock',
+        variant: 'architecture-flow',
+        caption: 'The full advanced-track pipeline: author → push → Actions builds → gh-pages serves → live URL',
+      },
+      {
         type: 'p',
         body: "Before asking the AI to write a single line, answer these four questions in your prompt. The AI's first response will confirm your architecture before building.",
       },
@@ -1367,6 +1412,11 @@ Before writing any code:
         body: "In the Firebase console, click Build → Firestore Database → Create database → Start in test mode (for development) → Choose a region close to you → Enable. Test mode allows all reads and writes for 30 days — you will add security rules before launching.",
       },
       {
+        type: 'githubMock',
+        variant: 'firebase-console',
+        caption: 'Your Firebase project — four tiles, you only need Firestore for now',
+      },
+      {
         type: 'callout',
         callout: {
           kind: 'warn',
@@ -1436,6 +1486,11 @@ Before writing any code:
         n: 2,
         title: 'Create your database tables',
         body: "In your Supabase project, click Table Editor → New table. Create one table for each data type in your app. Example: a tasks table with columns: id (uuid, default random), title (text, not null), status (text), assignee (text), due_date (date), created_at (timestamp, default now).",
+      },
+      {
+        type: 'githubMock',
+        variant: 'supabase-table',
+        caption: 'Supabase Table Editor — think of it as a cloud spreadsheet with an API',
       },
       {
         type: 'step',
@@ -1575,6 +1630,11 @@ Before writing any code:
 
       { type: 'h', body: 'Step 4 — Enable GitHub Pages in repo settings' },
       {
+        type: 'githubMock',
+        variant: 'pages-settings',
+        caption: 'Settings → Pages — point at gh-pages branch / root, save, done',
+      },
+      {
         type: 'list',
         items: [
           'On github.com, go to your repository → Settings → Pages (left column).',
@@ -1598,6 +1658,11 @@ Before writing any code:
       {
         type: 'p',
         body: "After pushing, go to your repository on GitHub → Actions tab. You will see a workflow run in progress. When the yellow dot turns green (usually 60–90 seconds), your site is live. Open https://YOUR-USERNAME.github.io/YOUR-REPO-NAME/",
+      },
+      {
+        type: 'githubMock',
+        variant: 'actions-run',
+        caption: 'Yellow dot = in progress · green check = live · red × = build failed',
       },
       {
         type: 'callout',
@@ -1642,6 +1707,11 @@ Before writing any code:
           {
             type: 'p',
             body: ".env.local is gitignored — your Firebase or Supabase keys are NOT deployed with your code. You need to add them as GitHub Actions secrets so the build can access them.",
+          },
+          {
+            type: 'githubMock',
+            variant: 'env-secrets',
+            caption: 'Settings → Secrets and variables → Actions — one secret per VITE_ variable',
           },
           {
             type: 'list',

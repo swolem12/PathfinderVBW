@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { CodeBlock, LessonBlock } from '../../content/course'
 import { CopyButton } from '../ui/CopyButton'
+import { GithubMock } from './GithubMock'
 
 /* ------------------------------------------------------------------ */
 /*  Primitives                                                        */
@@ -5152,6 +5153,15 @@ function renderBlock(block: LessonBlock, i: number): React.ReactNode {
     case 'aipMock':
       return (
         <AipMock
+          key={i}
+          variant={block.variant}
+          caption={block.caption}
+          annotations={block.annotations}
+        />
+      )
+    case 'githubMock':
+      return (
+        <GithubMock
           key={i}
           variant={block.variant}
           caption={block.caption}

@@ -90,6 +90,26 @@ export type LessonBlock =
       caption?: string
       annotations?: { x: number; y: number; label: string; note: string }[]
     }
+  | {
+      type: 'githubMock'
+      variant:
+        | 'repo-anatomy'
+        | 'code-dropdown'
+        | 'codespace-launcher'
+        | 'vscode-layout'
+        | 'copilot-chat'
+        | 'source-control'
+        | 'actions-run'
+        | 'pages-settings'
+        | 'firebase-console'
+        | 'supabase-table'
+        | 'env-secrets'
+        | 'copilot-models'
+        | 'education-apply'
+        | 'architecture-flow'
+      caption?: string
+      annotations?: { x: number; y: number; label: string; note: string }[]
+    }
 
 export interface LessonDef {
   id: LessonId
