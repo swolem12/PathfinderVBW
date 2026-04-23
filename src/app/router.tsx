@@ -3,6 +3,7 @@ import { AppShell } from '../components/layout/AppShell'
 import { LandingPage } from '../pages/LandingPage'
 import { CourseIndexPage } from '../pages/CourseIndexPage'
 import { LessonPage } from '../pages/LessonPage'
+import { PalantirHubPage } from '../pages/PalantirHubPage'
 import { PalantirIndexPage } from '../pages/PalantirIndexPage'
 import { PalantirLessonPage } from '../pages/PalantirLessonPage'
 import { PalantirAdvancedIndexPage } from '../pages/PalantirAdvancedIndexPage'
@@ -20,10 +21,11 @@ export const router = createBrowserRouter(
         { index: true, element: <LandingPage /> },
         { path: 'course', element: <CourseIndexPage /> },
         { path: 'course/:id', element: <LessonPage /> },
-        { path: 'palantir', element: <PalantirIndexPage /> },
-        { path: 'palantir/:id', element: <PalantirLessonPage /> },
-        { path: 'foundry-engineer', element: <PalantirAdvancedIndexPage /> },
-        { path: 'foundry-engineer/:id', element: <PalantirAdvancedLessonPage /> },
+        { path: 'palantir', element: <PalantirHubPage /> },
+        { path: 'palantir-slate', element: <PalantirIndexPage /> },
+        { path: 'palantir-slate/:id', element: <PalantirLessonPage /> },
+        { path: 'palantir-engineer', element: <PalantirAdvancedIndexPage /> },
+        { path: 'palantir-engineer/:id', element: <PalantirAdvancedLessonPage /> },
         { path: 'powerapps', element: <PowerAppsIndexPage /> },
         { path: 'powerapps/:id', element: <PowerAppsLessonPage /> },
         { path: '*', element: <NotFoundPage /> },

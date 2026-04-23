@@ -55,17 +55,6 @@ export function AppShell() {
               Palantir
             </NavLink>
             <NavLink
-              to="/foundry-engineer"
-              className={({ isActive }) =>
-                `link text-[12px] uppercase tracking-[0.22em] ${
-                  isActive ? 'text-[color:var(--ink)]' : 'text-[color:var(--ink-dim)]'
-                }`
-              }
-              style={{ fontFamily: 'var(--font-mono)' }}
-            >
-              Foundry Eng
-            </NavLink>
-            <NavLink
               to="/powerapps"
               className={({ isActive }) =>
                 `link text-[12px] uppercase tracking-[0.22em] ${

@@ -18,8 +18,8 @@ type TrackDef = {
 
 function buildTracks(): TrackDef[] {
   const beginner = beginnerLessons.filter((l) => !l.optional)
-  const palantir = palantirLessons.filter((l) => !l.optional)
-  const palantirAdvanced = palantirAdvancedLessons.filter((l) => !l.optional)
+  const palantirSlate = palantirLessons.filter((l) => !l.optional)
+  const palantirEng = palantirAdvancedLessons.filter((l) => !l.optional)
   const powerApps = powerAppsLessons.filter((l) => !l.optional)
 
   return [
@@ -35,27 +35,19 @@ function buildTracks(): TrackDef[] {
     },
     {
       slug: 'palantir',
-      badge: 'Track 02 · Palantir Slate',
-      title: 'Slate webapps in Foundry',
+      badge: 'Track 02 · Palantir',
+      title: 'Slate apps & the Foundry engineer reference',
       pitch:
-        "Shape the Ontology, write Functions, drag widgets onto a Slate canvas, wire Action Types. Publish a URL your team actually opens.",
-      destination: 'A published Slate URL.',
-      lessons: palantir.length,
-      minutes: palantir.reduce((n, l) => n + l.estMinutes, 0),
-    },
-    {
-      slug: 'foundry-engineer',
-      badge: 'Track 03 · Foundry Engineer',
-      title: 'Code Repos, PySpark, AIP, Workshop, Lineage',
-      pitch:
-        'The practitioner track. TypeScript Functions (Metric + Writeback), PySpark transforms, Pipeline Builder, AIP Logic, Workshop frontends, and Lineage for health + schedules.',
-      destination: 'A production-shaped Foundry data product.',
-      lessons: palantirAdvanced.length,
-      minutes: palantirAdvanced.reduce((n, l) => n + l.estMinutes, 0),
+        'Two courses inside one track. Pick Slate to ship a user-facing app, or Foundry Engineer for Code Repos, PySpark, AIP, Workshop, and Lineage. Choose on the next screen.',
+      destination: 'A published Foundry app — or a production data product.',
+      lessons: palantirSlate.length + palantirEng.length,
+      minutes:
+        palantirSlate.reduce((n, l) => n + l.estMinutes, 0) +
+        palantirEng.reduce((n, l) => n + l.estMinutes, 0),
     },
     {
       slug: 'powerapps',
-      badge: 'Track 04 · Power Apps',
+      badge: 'Track 03 · Power Apps',
       title: 'A dynamic calendar in Power Apps',
       pitch:
         'Open Power Apps Studio, wire a SharePoint Events list, write Power Fx, render a month grid with event dots. Share a link teammates open in the mobile app.',
@@ -302,7 +294,7 @@ export function LandingPage() {
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-6 md:grid-cols-3">
             {tracks.map((t) => (
               <TrackCard key={t.slug} track={t} />
             ))}
