@@ -12,6 +12,8 @@ import { PalantirAipIndexPage } from '../pages/PalantirAipIndexPage'
 import { PalantirAipLessonPage } from '../pages/PalantirAipLessonPage'
 import { PowerAppsIndexPage } from '../pages/PowerAppsIndexPage'
 import { PowerAppsLessonPage } from '../pages/PowerAppsLessonPage'
+import { AdvancedIndexPage } from '../pages/AdvancedIndexPage'
+import { AdvancedLessonPage } from '../pages/AdvancedLessonPage'
 import { NotFoundPage } from '../pages/NotFoundPage'
 
 export const router = createBrowserRouter(
@@ -32,6 +34,8 @@ export const router = createBrowserRouter(
         { path: 'palantir-aip/:id', element: <PalantirAipLessonPage /> },
         { path: 'powerapps', element: <PowerAppsIndexPage /> },
         { path: 'powerapps/:id', element: <PowerAppsLessonPage /> },
+        { path: 'advanced', element: <AdvancedIndexPage /> },
+        { path: 'advanced/:id', element: <AdvancedLessonPage /> },
         { path: '*', element: <NotFoundPage /> },
       ],
     },

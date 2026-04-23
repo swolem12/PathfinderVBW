@@ -4,6 +4,7 @@ import { lessons as beginnerLessons } from '../content/course'
 import { palantirLessons } from '../content/palantir'
 import { palantirAdvancedLessons } from '../content/palantir-advanced'
 import { powerAppsLessons } from '../content/powerapps'
+import { advancedLessons } from '../content/advanced'
 import { StartButton } from '../components/ui/StartButton'
 
 type TrackDef = {
@@ -21,6 +22,7 @@ function buildTracks(): TrackDef[] {
   const palantirSlate = palantirLessons.filter((l) => !l.optional)
   const palantirEng = palantirAdvancedLessons.filter((l) => !l.optional)
   const powerApps = powerAppsLessons.filter((l) => !l.optional)
+  const advanced = advancedLessons.filter((l) => !l.optional)
 
   return [
     {
@@ -54,6 +56,16 @@ function buildTracks(): TrackDef[] {
       destination: 'A published Microsoft Power App.',
       lessons: powerApps.length,
       minutes: powerApps.reduce((n, l) => n + l.estMinutes, 0),
+    },
+    {
+      slug: 'advanced',
+      badge: 'Track 04 · Advanced',
+      title: 'GitHub Codespace, agentic AI, full-stack deploy',
+      pitch:
+        'Create a GitHub repo, open Codespace, direct AI agents (Claude 4.7, ChatGPT, Codex) to build a multi-page app, wire Firebase or Supabase as a real database, add the full Untitled UI design vocabulary, and publish to GitHub Pages.',
+      destination: 'A full-stack app live at github.io.',
+      lessons: advanced.length,
+      minutes: advanced.reduce((n, l) => n + l.estMinutes, 0),
     },
   ]
 }
