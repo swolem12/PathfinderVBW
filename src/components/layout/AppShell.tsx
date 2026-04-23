@@ -54,6 +54,17 @@ export function AppShell() {
             >
               Palantir
             </NavLink>
+            <NavLink
+              to="/powerapps"
+              className={({ isActive }) =>
+                `link text-[12px] uppercase tracking-[0.22em] ${
+                  isActive ? 'text-[color:var(--ink)]' : 'text-[color:var(--ink-dim)]'
+                }`
+              }
+              style={{ fontFamily: 'var(--font-mono)' }}
+            >
+              Power Apps
+            </NavLink>
             <StartButton className="btn btn-primary hidden sm:inline-flex">Start</StartButton>
           </nav>
         </div>

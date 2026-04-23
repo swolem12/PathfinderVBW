@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { ArrowRight, X } from 'lucide-react'
 import { lessons as beginnerLessons } from '../../content/course'
 import { palantirLessons } from '../../content/palantir'
+import { powerAppsLessons } from '../../content/powerapps'
 
 interface StartButtonProps {
   children: ReactNode
@@ -30,9 +31,12 @@ export function StartButton({ children, className = 'btn btn-primary' }: StartBu
   const beginnerMinutes = beginnerCritical.reduce((n, l) => n + l.estMinutes, 0)
   const palantirCritical = palantirLessons.filter((l) => !l.optional)
   const palantirMinutes = palantirCritical.reduce((n, l) => n + l.estMinutes, 0)
+  const powerAppsCritical = powerAppsLessons.filter((l) => !l.optional)
+  const powerAppsMinutes = powerAppsCritical.reduce((n, l) => n + l.estMinutes, 0)
 
   const firstBeginner = beginnerLessons[0]
   const firstPalantir = palantirLessons[0]
+  const firstPowerApps = powerAppsLessons[0]
 
   return (
     <>
@@ -52,7 +56,7 @@ export function StartButton({ children, className = 'btn btn-primary' }: StartBu
           }}
         >
           <div
-            className="relative w-full max-w-[720px] rounded-lg border"
+            className="relative w-full max-w-[960px] rounded-lg border"
             style={{ background: 'var(--bg)', borderColor: 'var(--edge)' }}
           >
             <button
@@ -94,7 +98,7 @@ export function StartButton({ children, className = 'btn btn-primary' }: StartBu
               className="grid gap-px overflow-hidden"
               style={{ background: 'var(--edge)', borderTop: '1px solid var(--edge)' }}
             >
-              <div className="grid gap-px sm:grid-cols-2">
+              <div className="grid gap-px sm:grid-cols-3">
                 <Link
                   to={`/course/${firstBeginner.id}`}
                   onClick={() => setOpen(false)}
@@ -199,6 +203,66 @@ export function StartButton({ children, className = 'btn btn-primary' }: StartBu
                     <span>{palantirCritical.length} lessons</span>
                     <span style={{ color: 'var(--edge)' }}>•</span>
                     <span>~{palantirMinutes} min</span>
+                  </div>
+                  <div className="mt-5 inline-flex items-center gap-2" style={{ color: 'var(--accent)' }}>
+                    <span
+                      style={{
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: 11,
+                        letterSpacing: '0.22em',
+                        textTransform: 'uppercase',
+                      }}
+                    >
+                      Start lesson 1
+                    </span>
+                    <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+                  </div>
+                </Link>
+
+                <Link
+                  to={`/powerapps/${firstPowerApps.id}`}
+                  onClick={() => setOpen(false)}
+                  className="group block p-7 transition-colors hover:bg-[color:var(--bg-2)]"
+                  style={{ background: 'var(--bg)' }}
+                >
+                  <p
+                    className="mb-3 uppercase"
+                    style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: 10,
+                      letterSpacing: '0.28em',
+                      color: 'var(--accent)',
+                    }}
+                  >
+                    Track 03 · Power Apps
+                  </p>
+                  <h3
+                    style={{
+                      fontFamily: 'var(--font-display)',
+                      fontSize: '1.35rem',
+                      color: 'var(--ink)',
+                      marginBottom: 8,
+                      lineHeight: 1.2,
+                    }}
+                  >
+                    Dynamic calendar in Power Apps
+                  </h3>
+                  <p style={{ color: 'var(--paper)', fontSize: 14, lineHeight: 1.55 }}>
+                    Power Fx + SharePoint. Published URL your team opens.
+                  </p>
+                  <div
+                    className="mt-5 flex flex-wrap items-center gap-3"
+                    style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: 10,
+                      letterSpacing: '0.22em',
+                      color: 'var(--ink-dim)',
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    <span>{powerAppsCritical.length} lessons</span>
+                    <span style={{ color: 'var(--edge)' }}>•</span>
+                    <span>~{powerAppsMinutes} min</span>
                   </div>
                   <div className="mt-5 inline-flex items-center gap-2" style={{ color: 'var(--accent)' }}>
                     <span

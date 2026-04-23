@@ -2110,6 +2110,952 @@ function SlateMock({
 }
 
 /* ------------------------------------------------------------------ */
+/*  PowerAppsMock — CSS/SVG mocks of Microsoft Power Apps Studio      */
+/* ------------------------------------------------------------------ */
+
+type PowerAppsMockVariant =
+  | 'studio'
+  | 'tree-view'
+  | 'data-schema'
+  | 'formula-bar'
+  | 'calendar-preview'
+  | 'calendar-live'
+  | 'share-dialog'
+
+function PowerAppsChrome({
+  title,
+  app,
+  children,
+}: {
+  title: string
+  app: string
+  children: React.ReactNode
+}) {
+  return (
+    <div
+      className="overflow-hidden rounded-md"
+      style={{ background: '#faf9f8', color: '#201f1e', border: '1px solid #e1dfdd' }}
+    >
+      <div
+        className="flex items-center gap-3 px-3 py-2"
+        style={{ borderBottom: '1px solid #e1dfdd', background: '#f3f2f1' }}
+      >
+        <div className="flex items-center gap-1.5">
+          <span
+            aria-hidden
+            className="inline-block"
+            style={{
+              width: 14,
+              height: 14,
+              background:
+                'conic-gradient(from 45deg, #f25022 0 25%, #7fba00 0 50%, #00a4ef 0 75%, #ffb900 0 100%)',
+              borderRadius: 1,
+            }}
+          />
+          <span
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 11,
+              color: '#605e5c',
+              letterSpacing: 0,
+            }}
+          >
+            {app}
+          </span>
+        </div>
+        <span style={{ color: '#c8c6c4' }}>|</span>
+        <span
+          style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 11,
+            color: '#201f1e',
+          }}
+        >
+          {title}
+        </span>
+        <span className="ml-auto flex items-center gap-2">
+          <span
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 11,
+              color: '#605e5c',
+            }}
+          >
+            Environment: Default
+          </span>
+          <span
+            className="inline-block h-5 w-5 rounded-full"
+            style={{ background: '#0078d4' }}
+            aria-hidden
+          />
+        </span>
+      </div>
+      {children}
+    </div>
+  )
+}
+
+function PowerAppsStudioMock() {
+  return (
+    <PowerAppsChrome title="EventsCalendar · Draft" app="Power Apps Studio">
+      {/* Command bar */}
+      <div
+        className="flex items-center gap-4 px-3 py-1.5"
+        style={{ background: '#ffffff', borderBottom: '1px solid #e1dfdd', fontSize: 11, color: '#201f1e' }}
+      >
+        {['File', 'Insert', 'Data', 'View', 'Action', 'Settings'].map((m, i) => (
+          <span
+            key={m}
+            style={{
+              color: i === 1 ? '#0078d4' : '#201f1e',
+              borderBottom: i === 1 ? '2px solid #0078d4' : 'none',
+              paddingBottom: 2,
+            }}
+          >
+            {m}
+          </span>
+        ))}
+        <span className="ml-auto" style={{ color: '#605e5c' }}>
+          ▷ Preview · ⤴ Share · Publish
+        </span>
+      </div>
+      {/* Formula bar */}
+      <div
+        className="flex items-center gap-2 px-3 py-1.5"
+        style={{ background: '#faf9f8', borderBottom: '1px solid #e1dfdd' }}
+      >
+        <span
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: 10,
+            color: '#605e5c',
+            letterSpacing: '0.04em',
+          }}
+        >
+          GalleryDays
+        </span>
+        <span style={{ color: '#c8c6c4' }}>·</span>
+        <span
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: 10,
+            color: '#605e5c',
+          }}
+        >
+          Items =
+        </span>
+        <span
+          className="flex-1 truncate rounded border px-2 py-0.5"
+          style={{
+            background: '#ffffff',
+            borderColor: '#e1dfdd',
+            fontFamily: 'var(--font-mono)',
+            fontSize: 11,
+            color: '#201f1e',
+          }}
+        >
+          <span style={{ color: '#0078d4' }}>ForAll</span>(
+          <span style={{ color: '#0078d4' }}>Sequence</span>(42),
+          <span style={{ color: '#0078d4' }}> DateAdd</span>(locGridStart, ThisRecord.Value - 1))
+        </span>
+      </div>
+
+      <div className="grid text-[11px]" style={{ gridTemplateColumns: '180px 1fr 180px', minHeight: 300 }}>
+        {/* Tree View */}
+        <div className="border-r" style={{ background: '#ffffff', borderColor: '#e1dfdd', padding: 8 }}>
+          <div style={{ color: '#605e5c', fontSize: 10, marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+            Tree view
+          </div>
+          {[
+            { n: 'App', d: 0 },
+            { n: 'Screens', d: 0, hdr: true },
+            { n: 'CalendarScreen', d: 1, sel: true, bold: true },
+            { n: 'HeaderContainer', d: 2 },
+            { n: '  btnPrev', d: 3 },
+            { n: '  lblMonth', d: 3 },
+            { n: '  btnNext', d: 3 },
+            { n: 'GalleryDays', d: 2, sel2: true },
+            { n: '  lblDay', d: 3 },
+            { n: '  lblCount', d: 3 },
+            { n: 'PanelDetails', d: 2 },
+            { n: 'DetailScreen', d: 1 },
+          ].map((item, i) => (
+            <div
+              key={i}
+              style={{
+                padding: '3px 6px',
+                paddingLeft: 6 + item.d * 10,
+                borderRadius: 2,
+                background: item.sel ? '#deecf9' : item.sel2 ? '#c7e0f4' : 'transparent',
+                color: item.hdr ? '#605e5c' : '#201f1e',
+                fontWeight: item.bold ? 600 : 400,
+                fontSize: item.hdr ? 9 : 11,
+                textTransform: item.hdr ? 'uppercase' : 'none',
+                letterSpacing: item.hdr ? '0.08em' : 0,
+                marginBottom: 1,
+              }}
+            >
+              {item.n}
+            </div>
+          ))}
+        </div>
+
+        {/* Canvas */}
+        <div style={{ background: '#edebe9', padding: 12 }}>
+          <div
+            style={{
+              background: '#ffffff',
+              border: '1px solid #e1dfdd',
+              borderRadius: 2,
+              padding: 12,
+              minHeight: 260,
+            }}
+          >
+            {/* Header row */}
+            <div className="mb-3 flex items-center justify-between">
+              <span style={{ color: '#0078d4', fontSize: 14 }}>‹</span>
+              <span style={{ fontFamily: 'var(--font-display)', fontSize: 15, color: '#201f1e' }}>
+                April 2026
+              </span>
+              <span style={{ color: '#0078d4', fontSize: 14 }}>›</span>
+            </div>
+            {/* Day headers */}
+            <div className="grid gap-1" style={{ gridTemplateColumns: 'repeat(7, 1fr)' }}>
+              {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d) => (
+                <div
+                  key={d}
+                  className="text-center"
+                  style={{
+                    fontSize: 9,
+                    color: '#605e5c',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.08em',
+                  }}
+                >
+                  {d}
+                </div>
+              ))}
+              {Array.from({ length: 42 }).map((_, i) => {
+                const day = i - 2 // start mid-week
+                const inMonth = day >= 1 && day <= 30
+                const isToday = day === 23
+                const isSel = day === 17
+                const dots = [5, 9, 12, 17, 23, 28].includes(day) ? (day === 17 ? 3 : day === 23 ? 2 : 1) : 0
+                return (
+                  <div
+                    key={i}
+                    style={{
+                      aspectRatio: '1/1',
+                      borderRadius: 2,
+                      border: '1px solid ' + (isSel ? '#0078d4' : '#edebe9'),
+                      background: isToday ? '#0078d4' : isSel ? '#deecf9' : '#ffffff',
+                      color: isToday ? '#fff' : inMonth ? '#201f1e' : '#c8c6c4',
+                      fontSize: 10,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'flex-start',
+                      paddingTop: 3,
+                      position: 'relative',
+                    }}
+                  >
+                    <span style={{ fontWeight: isToday ? 600 : 400 }}>
+                      {inMonth ? day : day < 1 ? 30 + day : day - 30}
+                    </span>
+                    {dots > 0 && (
+                      <div className="mt-auto mb-1 flex gap-0.5">
+                        {Array.from({ length: dots }).map((__, j) => (
+                          <span
+                            key={j}
+                            style={{
+                              width: 3,
+                              height: 3,
+                              borderRadius: 999,
+                              background: isToday ? '#fff' : '#0078d4',
+                            }}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Properties panel */}
+        <div className="border-l" style={{ background: '#ffffff', borderColor: '#e1dfdd', padding: 8 }}>
+          <div style={{ color: '#605e5c', fontSize: 10, marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+            Properties · GalleryDays
+          </div>
+          {[
+            { k: 'Items', v: 'ForAll(Sequence(42)…', hi: true },
+            { k: 'TemplateSize', v: '72' },
+            { k: 'WrapCount', v: '7' },
+            { k: 'OnSelect', v: 'Set(locSelectedDate…)', hi: true },
+            { k: 'Fill', v: 'RGBA(255,255,255,1)' },
+            { k: 'BorderColor', v: 'ColorFade(#edebe9…)' },
+          ].map((row) => (
+            <div key={row.k} style={{ marginBottom: 6 }}>
+              <div style={{ fontSize: 9, color: '#605e5c', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                {row.k}
+              </div>
+              <div
+                style={{
+                  background: row.hi ? '#deecf9' : '#faf9f8',
+                  border: '1px solid #edebe9',
+                  padding: '3px 6px',
+                  borderRadius: 2,
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 10,
+                  color: '#201f1e',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {row.v}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </PowerAppsChrome>
+  )
+}
+
+function PowerAppsTreeViewMock() {
+  return (
+    <PowerAppsChrome title="Tree view" app="Power Apps Studio">
+      <div style={{ background: '#ffffff', padding: 10, minHeight: 220 }}>
+        {[
+          { n: 'App', d: 0, icon: '▦', note: 'App.OnStart sets locFirstOfMonth' },
+          { n: 'CalendarScreen', d: 1, icon: '▢', note: 'Main screen — tablet layout' },
+          { n: 'HeaderContainer', d: 2, icon: '▭', note: 'Horizontal container' },
+          { n: 'btnPrev', d: 3, icon: '◁', note: "OnSelect: UpdateContext({locFirstOfMonth: DateAdd(…,-1,Months)})" },
+          { n: 'lblMonth', d: 3, icon: 'T', note: 'Text = Text(locFirstOfMonth,"mmmm yyyy")' },
+          { n: 'btnNext', d: 3, icon: '▷', note: 'OnSelect: +1 month' },
+          { n: 'GalleryDays', d: 2, icon: '▤', note: 'The 7×6 calendar grid', sel: true },
+          { n: 'lblDay', d: 3, icon: 'T', note: 'Text = Day(ThisItem.Value)' },
+          { n: 'lblCount', d: 3, icon: '●', note: "Visible = CountRows(…) > 0" },
+          { n: 'PanelDetails', d: 2, icon: '▥', note: 'Right-side event list for selected day' },
+          { n: 'galSelectedDayEvents', d: 3, icon: '▤', note: 'Items = Filter(Events, …)' },
+        ].map((r, i) => (
+          <div
+            key={i}
+            className="grid items-center gap-2"
+            style={{
+              gridTemplateColumns: '1fr 2fr',
+              padding: '3px 6px',
+              paddingLeft: 6 + r.d * 14,
+              borderBottom: i < 10 ? '1px solid #f3f2f1' : 'none',
+              background: r.sel ? '#deecf9' : 'transparent',
+            }}
+          >
+            <span
+              style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 11,
+                color: '#201f1e',
+                fontWeight: r.sel ? 600 : 400,
+              }}
+            >
+              <span style={{ color: '#0078d4', marginRight: 6 }}>{r.icon}</span>
+              {r.n}
+            </span>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: '#605e5c' }}>
+              {r.note}
+            </span>
+          </div>
+        ))}
+      </div>
+    </PowerAppsChrome>
+  )
+}
+
+function PowerAppsDataSchemaMock() {
+  return (
+    <PowerAppsChrome title="Events · SharePoint list" app="Data">
+      <div style={{ background: '#ffffff', padding: 12, minHeight: 220 }}>
+        <div className="mb-3 flex items-center gap-2">
+          <span
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 26,
+              height: 26,
+              background: '#0078d4',
+              color: '#fff',
+              borderRadius: 2,
+              fontFamily: 'var(--font-body)',
+              fontSize: 13,
+            }}
+          >
+            ≡
+          </span>
+          <span style={{ fontFamily: 'var(--font-display)', fontSize: 16, color: '#201f1e' }}>
+            Events
+          </span>
+          <span
+            style={{
+              background: '#c7e0f4',
+              color: '#004578',
+              fontFamily: 'var(--font-body)',
+              fontSize: 10,
+              padding: '1px 6px',
+              borderRadius: 2,
+              marginLeft: 4,
+              letterSpacing: '0.04em',
+            }}
+          >
+            SharePoint list
+          </span>
+        </div>
+        <div
+          className="overflow-hidden rounded"
+          style={{ border: '1px solid #e1dfdd', background: '#ffffff' }}
+        >
+          <div
+            className="grid items-center gap-3 px-3 py-1.5"
+            style={{
+              gridTemplateColumns: '160px 130px 1fr',
+              borderBottom: '1px solid #e1dfdd',
+              background: '#faf9f8',
+              fontFamily: 'var(--font-body)',
+              fontSize: 10,
+              color: '#605e5c',
+              textTransform: 'uppercase',
+              letterSpacing: '0.08em',
+            }}
+          >
+            <span>Column</span>
+            <span>Type</span>
+            <span>Description</span>
+          </div>
+          {[
+            { c: 'Title', t: 'Single line of text', d: 'Event title shown in the cell and details.', key: true },
+            { c: 'Start', t: 'Date and time', d: 'Start timestamp. Calendar filters on this.' },
+            { c: 'End', t: 'Date and time', d: 'End timestamp. Used for duration.' },
+            { c: 'Category', t: 'Choice', d: 'Work · Personal · On-call · Holiday.' },
+            { c: 'Owner', t: 'Person or Group', d: 'Who the event belongs to.' },
+            { c: 'Notes', t: 'Multiple lines of text', d: 'Rendered in detail panel (lesson 6).' },
+          ].map((row, i) => (
+            <div
+              key={row.c}
+              className="grid items-center gap-3 px-3 py-2"
+              style={{
+                gridTemplateColumns: '160px 130px 1fr',
+                borderBottom: i < 5 ? '1px solid #f3f2f1' : 'none',
+                color: '#201f1e',
+                fontFamily: 'var(--font-body)',
+                fontSize: 11,
+              }}
+            >
+              <span>
+                {row.key && (
+                  <span style={{ color: '#0078d4', marginRight: 4, fontSize: 9 }}>★</span>
+                )}
+                {row.c}
+              </span>
+              <span style={{ color: '#605e5c' }}>{row.t}</span>
+              <span style={{ color: '#605e5c' }}>{row.d}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </PowerAppsChrome>
+  )
+}
+
+function PowerAppsFormulaBarMock() {
+  return (
+    <PowerAppsChrome title="App · OnStart" app="Formula bar">
+      <div style={{ background: '#ffffff', minHeight: 180 }}>
+        <div
+          className="flex items-center gap-2 px-3 py-2"
+          style={{ borderBottom: '1px solid #e1dfdd', background: '#faf9f8' }}
+        >
+          <span
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: 11,
+              color: '#201f1e',
+              background: '#ffffff',
+              border: '1px solid #e1dfdd',
+              padding: '2px 6px',
+              borderRadius: 2,
+            }}
+          >
+            App
+          </span>
+          <span style={{ color: '#605e5c', fontSize: 10 }}>▾</span>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: '#605e5c' }}>
+            OnStart
+          </span>
+          <span style={{ color: '#605e5c', fontSize: 10 }}>=</span>
+        </div>
+        <pre
+          style={{
+            margin: 0,
+            padding: 12,
+            fontFamily: 'var(--font-mono)',
+            fontSize: 11,
+            color: '#201f1e',
+            lineHeight: 1.6,
+            background: '#ffffff',
+            whiteSpace: 'pre-wrap',
+          }}
+        >
+          <span style={{ color: '#8a8886' }}>{`// Initialize calendar state once on app launch\n`}</span>
+          <span style={{ color: '#0078d4' }}>Set</span>
+          {'(locFirstOfMonth, '}
+          <span style={{ color: '#0078d4' }}>DateAdd</span>
+          {'('}
+          <span style={{ color: '#0078d4' }}>Today</span>
+          {'(), -(Day('}
+          <span style={{ color: '#0078d4' }}>Today</span>
+          {'()) - 1), Days));\n'}
+          <span style={{ color: '#0078d4' }}>Set</span>
+          {'(locSelectedDate, '}
+          <span style={{ color: '#0078d4' }}>Today</span>
+          {'());\n'}
+          <span style={{ color: '#0078d4' }}>Set</span>
+          {'(locGridStart,\n  '}
+          <span style={{ color: '#0078d4' }}>DateAdd</span>
+          {'(locFirstOfMonth, -'}
+          <span style={{ color: '#0078d4' }}>Weekday</span>
+          {'(locFirstOfMonth) + 1, Days)\n)'}
+        </pre>
+        <div
+          className="border-t px-3 py-1.5"
+          style={{
+            borderColor: '#e1dfdd',
+            background: '#f3f9f1',
+            fontFamily: 'var(--font-mono)',
+            fontSize: 10,
+            color: '#107c10',
+            letterSpacing: '0.04em',
+          }}
+        >
+          ✓ No errors · 3 variables initialized
+        </div>
+      </div>
+    </PowerAppsChrome>
+  )
+}
+
+function PowerAppsCalendarPreviewMock({ live = false }: { live?: boolean }) {
+  const selected = 17
+  const today = 23
+  return (
+    <PowerAppsChrome
+      title={live ? 'EventsCalendar · Play (F5)' : 'EventsCalendar · Canvas preview'}
+      app={live ? 'Player' : 'Power Apps Studio'}
+    >
+      <div style={{ background: '#edebe9', padding: 14, minHeight: 260 }}>
+        <div
+          className="grid gap-3"
+          style={{ gridTemplateColumns: live ? '1.5fr 1fr' : '1fr' }}
+        >
+          <div
+            style={{
+              background: '#ffffff',
+              border: '1px solid #e1dfdd',
+              borderRadius: 2,
+              padding: 14,
+            }}
+          >
+            <div className="mb-3 flex items-center justify-between">
+              <span
+                style={{
+                  width: 26,
+                  height: 26,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 2,
+                  border: '1px solid #e1dfdd',
+                  color: '#0078d4',
+                }}
+              >
+                ‹
+              </span>
+              <span style={{ fontFamily: 'var(--font-display)', fontSize: 16, color: '#201f1e' }}>
+                April 2026
+              </span>
+              <span
+                style={{
+                  width: 26,
+                  height: 26,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 2,
+                  border: '1px solid #e1dfdd',
+                  color: '#0078d4',
+                }}
+              >
+                ›
+              </span>
+            </div>
+            <div className="grid gap-1" style={{ gridTemplateColumns: 'repeat(7, 1fr)' }}>
+              {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d) => (
+                <div
+                  key={d}
+                  className="text-center"
+                  style={{ fontSize: 10, color: '#605e5c', textTransform: 'uppercase', letterSpacing: '0.08em', padding: '2px 0' }}
+                >
+                  {d}
+                </div>
+              ))}
+              {Array.from({ length: 42 }).map((_, i) => {
+                const day = i - 2
+                const inMonth = day >= 1 && day <= 30
+                const isToday = day === today
+                const isSel = day === selected
+                const dots = [5, 9, 12, 17, 23, 28, 30].includes(day)
+                  ? day === 17
+                    ? 3
+                    : day === 23
+                      ? 2
+                      : 1
+                  : 0
+                return (
+                  <div
+                    key={i}
+                    style={{
+                      aspectRatio: '1/1',
+                      borderRadius: 2,
+                      border: '1px solid ' + (isSel ? '#0078d4' : '#edebe9'),
+                      background: isToday ? '#0078d4' : isSel ? '#deecf9' : '#ffffff',
+                      color: isToday ? '#fff' : inMonth ? '#201f1e' : '#c8c6c4',
+                      fontSize: 11,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'flex-start',
+                      paddingTop: 4,
+                      position: 'relative',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <span style={{ fontWeight: isToday ? 600 : 400 }}>
+                      {inMonth ? day : day < 1 ? 30 + day : day - 30}
+                    </span>
+                    {dots > 0 && (
+                      <div className="mt-auto mb-1 flex gap-0.5">
+                        {Array.from({ length: dots }).map((__, j) => (
+                          <span
+                            key={j}
+                            style={{
+                              width: 4,
+                              height: 4,
+                              borderRadius: 999,
+                              background: isToday ? '#fff' : '#0078d4',
+                            }}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+          {live && (
+            <div
+              style={{
+                background: '#ffffff',
+                border: '1px solid #e1dfdd',
+                borderRadius: 2,
+                padding: 12,
+              }}
+            >
+              <div style={{ fontFamily: 'var(--font-display)', fontSize: 13, color: '#201f1e', marginBottom: 2 }}>
+                Fri · April 17
+              </div>
+              <div style={{ fontSize: 10, color: '#605e5c', marginBottom: 10 }}>
+                3 events
+              </div>
+              {[
+                { t: '09:00 — Stand-up', c: '#0078d4', cat: 'Work' },
+                { t: '11:30 — Vendor demo', c: '#107c10', cat: 'Work' },
+                { t: '18:00 — On-call starts', c: '#ca5010', cat: 'On-call' },
+              ].map((ev, i) => (
+                <div
+                  key={i}
+                  className="mb-1.5 rounded"
+                  style={{
+                    background: '#faf9f8',
+                    borderLeft: `3px solid ${ev.c}`,
+                    padding: '6px 8px',
+                    fontSize: 11,
+                    color: '#201f1e',
+                  }}
+                >
+                  <div>{ev.t}</div>
+                  <div style={{ fontSize: 9, color: '#605e5c', marginTop: 1 }}>{ev.cat}</div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </PowerAppsChrome>
+  )
+}
+
+function PowerAppsShareDialogMock() {
+  return (
+    <PowerAppsChrome title="Share EventsCalendar" app="Power Apps">
+      <div style={{ background: '#ffffff', padding: 0, minHeight: 240, position: 'relative' }}>
+        <div style={{ padding: 14, opacity: 0.35, filter: 'blur(1px)' }}>
+          <div style={{ height: 200, background: '#edebe9', borderRadius: 2 }} />
+        </div>
+        <div
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '78%',
+            background: '#ffffff',
+            borderRadius: 2,
+            boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
+            border: '1px solid #e1dfdd',
+            overflow: 'hidden',
+          }}
+        >
+          <div
+            className="flex items-center justify-between px-3 py-2"
+            style={{ borderBottom: '1px solid #e1dfdd', background: '#f3f2f1' }}
+          >
+            <span style={{ fontFamily: 'var(--font-display)', fontSize: 13, color: '#201f1e' }}>
+              Share EventsCalendar
+            </span>
+            <span style={{ color: '#605e5c' }}>×</span>
+          </div>
+          <div style={{ padding: 12 }}>
+            <div style={{ fontSize: 10, color: '#605e5c', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>
+              Enter a name, email address, or group
+            </div>
+            <div
+              style={{
+                background: '#ffffff',
+                border: '1px solid #0078d4',
+                padding: '6px 8px',
+                borderRadius: 2,
+                marginBottom: 10,
+                fontFamily: 'var(--font-body)',
+                fontSize: 11,
+                color: '#201f1e',
+              }}
+            >
+              <span
+                style={{
+                  background: '#deecf9',
+                  color: '#004578',
+                  padding: '2px 6px',
+                  borderRadius: 2,
+                  marginRight: 4,
+                }}
+              >
+                ◉ Field Ops Team
+              </span>
+              <span
+                style={{
+                  background: '#deecf9',
+                  color: '#004578',
+                  padding: '2px 6px',
+                  borderRadius: 2,
+                  marginRight: 4,
+                }}
+              >
+                ◉ J. Rivera
+              </span>
+            </div>
+            <div className="mb-3 flex items-center gap-2">
+              <input
+                type="checkbox"
+                defaultChecked
+                style={{ accentColor: '#0078d4' }}
+              />
+              <span style={{ fontSize: 11, color: '#201f1e' }}>
+                Co-owner (can edit) ·{' '}
+                <span style={{ color: '#605e5c' }}>
+                  uncheck to grant User (can run) only
+                </span>
+              </span>
+            </div>
+            <div
+              style={{
+                background: '#fff4ce',
+                border: '1px solid #fde293',
+                padding: '6px 8px',
+                borderRadius: 2,
+                fontSize: 10,
+                color: '#8a6116',
+                marginBottom: 10,
+              }}
+            >
+              ⚠ Users also need access to the Events SharePoint list, or the app will load blank for them.
+            </div>
+            <div className="flex items-center justify-end gap-2">
+              <button
+                style={{
+                  padding: '5px 12px',
+                  border: '1px solid #8a8886',
+                  background: '#ffffff',
+                  borderRadius: 2,
+                  fontSize: 11,
+                  color: '#201f1e',
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                style={{
+                  padding: '5px 14px',
+                  background: '#0078d4',
+                  color: '#fff',
+                  borderRadius: 2,
+                  border: 'none',
+                  fontSize: 11,
+                }}
+              >
+                Share
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </PowerAppsChrome>
+  )
+}
+
+function PowerAppsMock({
+  variant,
+  caption,
+  annotations,
+}: {
+  variant: PowerAppsMockVariant
+  caption?: string
+  annotations?: { x: number; y: number; label: string; note: string }[]
+}) {
+  const label: Record<PowerAppsMockVariant, string> = {
+    studio: 'Power Apps Studio — 3-panel editor',
+    'tree-view': 'Tree view — your app structure',
+    'data-schema': 'Your Events data source',
+    'formula-bar': 'Power Fx formula bar',
+    'calendar-preview': 'Calendar canvas preview',
+    'calendar-live': 'Your published calendar',
+    'share-dialog': 'Share dialog',
+  }
+
+  return (
+    <motion.figure
+      className="my-8 overflow-hidden rounded-lg border"
+      style={{ borderColor: 'var(--edge)', background: 'var(--bg-2)' }}
+      initial={{ opacity: 0, y: 8 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-10%' }}
+      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <div
+        className="flex items-center justify-between border-b px-4 py-2"
+        style={{ borderColor: 'var(--edge)' }}
+      >
+        <span
+          className="uppercase"
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: 10,
+            letterSpacing: '0.22em',
+            color: 'var(--ink-dim)',
+          }}
+        >
+          Screen · {label[variant]}
+        </span>
+        <span
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: 10,
+            color: 'var(--ink-dim)',
+            letterSpacing: '0.14em',
+          }}
+        >
+          make.powerapps.com
+        </span>
+      </div>
+      <div style={{ padding: 16, position: 'relative' }}>
+        {variant === 'studio' && <PowerAppsStudioMock />}
+        {variant === 'tree-view' && <PowerAppsTreeViewMock />}
+        {variant === 'data-schema' && <PowerAppsDataSchemaMock />}
+        {variant === 'formula-bar' && <PowerAppsFormulaBarMock />}
+        {variant === 'calendar-preview' && <PowerAppsCalendarPreviewMock />}
+        {variant === 'calendar-live' && <PowerAppsCalendarPreviewMock live />}
+        {variant === 'share-dialog' && <PowerAppsShareDialogMock />}
+        {annotations && annotations.length > 0 && (
+          <div
+            className="mt-3 grid gap-2 sm:grid-cols-2"
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: 11,
+              color: 'var(--paper)',
+            }}
+          >
+            {annotations.map((a, i) => (
+              <div
+                key={i}
+                className="flex gap-2 rounded border px-3 py-2"
+                style={{ borderColor: 'var(--edge)', background: 'var(--bg)' }}
+              >
+                <span
+                  style={{
+                    background: 'var(--accent)',
+                    color: 'var(--bg)',
+                    width: 18,
+                    height: 18,
+                    borderRadius: 999,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 10,
+                    flexShrink: 0,
+                    marginTop: 1,
+                  }}
+                >
+                  {i + 1}
+                </span>
+                <span>
+                  <b style={{ color: 'var(--ink)' }}>{a.label}</b> — {a.note}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      {caption && (
+        <figcaption
+          className="border-t px-4 py-2 text-center"
+          style={{
+            borderColor: 'var(--edge)',
+            fontFamily: 'var(--font-mono)',
+            fontSize: 11,
+            color: 'var(--ink-dim)',
+          }}
+        >
+          {caption}
+        </figcaption>
+      )}
+    </motion.figure>
+  )
+}
+
+/* ------------------------------------------------------------------ */
 /*  Public renderer                                                   */
 /* ------------------------------------------------------------------ */
 
@@ -2226,6 +3172,15 @@ function renderBlock(block: LessonBlock, i: number): React.ReactNode {
     case 'slateMock':
       return (
         <SlateMock
+          key={i}
+          variant={block.variant}
+          caption={block.caption}
+          annotations={block.annotations}
+        />
+      )
+    case 'powerAppsMock':
+      return (
+        <PowerAppsMock
           key={i}
           variant={block.variant}
           caption={block.caption}

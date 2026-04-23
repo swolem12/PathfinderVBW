@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import { lessons, sampleApp } from '../content/course'
 import { palantirLessons } from '../content/palantir'
+import { powerAppsLessons } from '../content/powerapps'
 import { LessonBody } from '../components/course/LessonBody'
 import { StartButton } from '../components/ui/StartButton'
 
@@ -11,6 +12,8 @@ export function LandingPage() {
   const criticalMinutes = critical.reduce((n, l) => n + l.estMinutes, 0)
   const palantirCritical = palantirLessons.filter((l) => !l.optional)
   const palantirMinutes = palantirCritical.reduce((n, l) => n + l.estMinutes, 0)
+  const powerAppsCritical = powerAppsLessons.filter((l) => !l.optional)
+  const powerAppsMinutes = powerAppsCritical.reduce((n, l) => n + l.estMinutes, 0)
 
   return (
     <>
@@ -98,11 +101,11 @@ export function LandingPage() {
               marginBottom: 32,
             }}
           >
-            Two ways to ship.
+            Three ways to ship.
           </h2>
 
           <div className="grid gap-px overflow-hidden rounded-lg" style={{ background: 'var(--edge)' }}>
-            <div className="grid gap-px sm:grid-cols-2">
+            <div className="grid gap-px lg:grid-cols-3">
               <Link
                 to="/course"
                 className="group block p-8 transition-colors hover:bg-[color:var(--bg-2)]"
@@ -222,6 +225,69 @@ export function LandingPage() {
                     }}
                   >
                     Start the Palantir track
+                  </span>
+                  <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+                </div>
+              </Link>
+
+              <Link
+                to="/powerapps"
+                className="group block p-8 transition-colors hover:bg-[color:var(--bg-2)]"
+                style={{ background: 'var(--bg)' }}
+              >
+                <p
+                  className="mb-4 uppercase"
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 10,
+                    letterSpacing: '0.28em',
+                    color: 'var(--accent)',
+                  }}
+                >
+                  Track 03 · Power Apps
+                </p>
+                <h3
+                  style={{
+                    fontFamily: 'var(--font-display)',
+                    fontSize: 'clamp(1.35rem, 1.2vw + 0.8rem, 1.85rem)',
+                    color: 'var(--ink)',
+                    marginBottom: 10,
+                    lineHeight: 1.15,
+                  }}
+                >
+                  Dynamic calendar in Power Apps
+                </h3>
+                <p style={{ color: 'var(--paper)', fontSize: 15, lineHeight: 1.6 }}>
+                  Open Power Apps Studio, wire a SharePoint list, write Power Fx, render a
+                  month grid with event dots, publish a URL your team opens in a browser or the
+                  mobile app.
+                </p>
+                <div
+                  className="mt-6 flex flex-wrap items-center gap-4"
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 11,
+                    letterSpacing: '0.2em',
+                    color: 'var(--ink-dim)',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  <span>{powerAppsCritical.length} lessons</span>
+                  <span style={{ color: 'var(--edge)' }}>•</span>
+                  <span>~{powerAppsMinutes} min</span>
+                  <span style={{ color: 'var(--edge)' }}>•</span>
+                  <span>published Power App</span>
+                </div>
+                <div className="mt-6 inline-flex items-center gap-2" style={{ color: 'var(--accent)' }}>
+                  <span
+                    style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: 11,
+                      letterSpacing: '0.22em',
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    Start the Power Apps track
                   </span>
                   <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
                 </div>

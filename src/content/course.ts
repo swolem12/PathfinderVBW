@@ -46,6 +46,19 @@ export type LessonBlock =
       caption?: string
       annotations?: { x: number; y: number; label: string; note: string }[]
     }
+  | {
+      type: 'powerAppsMock'
+      variant:
+        | 'studio'
+        | 'tree-view'
+        | 'data-schema'
+        | 'formula-bar'
+        | 'calendar-preview'
+        | 'calendar-live'
+        | 'share-dialog'
+      caption?: string
+      annotations?: { x: number; y: number; label: string; note: string }[]
+    }
 
 export interface LessonDef {
   id: LessonId
