@@ -4436,6 +4436,578 @@ function PowerAppsMock({
 }
 
 /* ------------------------------------------------------------------ */
+/*  DocLinkCard — official external reference card                    */
+/* ------------------------------------------------------------------ */
+
+function DocLinkCard({
+  title,
+  description,
+  url,
+  source,
+}: {
+  title: string
+  description: string
+  url: string
+  source: string
+}) {
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="my-6 flex items-start gap-4 rounded-lg border p-5 transition-colors hover:bg-[color:var(--bg-2)]"
+      style={{ borderColor: 'var(--edge)', background: 'var(--bg)', textDecoration: 'none' }}
+    >
+      <div
+        className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-md"
+        style={{ background: 'var(--accent)', color: 'var(--bg)' }}
+        aria-hidden
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+          <polyline points="15 3 21 3 21 9" />
+          <line x1="10" y1="14" x2="21" y2="3" />
+        </svg>
+      </div>
+      <div className="min-w-0 flex-1">
+        <p
+          className="mb-0.5 uppercase"
+          style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.22em', color: 'var(--ink-dim)' }}
+        >
+          {source}
+        </p>
+        <p style={{ fontFamily: 'var(--font-display)', fontSize: 15, color: 'var(--ink)', lineHeight: 1.3, marginBottom: 4 }}>
+          {title}
+        </p>
+        <p style={{ fontSize: 13, color: 'var(--paper)', lineHeight: 1.5 }}>{description}</p>
+      </div>
+    </a>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  AipMock — CSS mocks of AIP Assist UI screens                      */
+/* ------------------------------------------------------------------ */
+
+type AipMockVariant =
+  | 'aip-launcher'
+  | 'assist-new-bot'
+  | 'assist-knowledge-tab'
+  | 'assist-test-chat'
+  | 'assist-embed-widget'
+  | 'aip-evaluations'
+  | 'assist-analytics'
+
+function AipChrome({
+  title,
+  app,
+  children,
+}: {
+  title: string
+  app: string
+  children: React.ReactNode
+}) {
+  return (
+    <div
+      className="overflow-hidden rounded-lg"
+      style={{ background: '#0f1117', border: '1px solid #2a2d35', fontFamily: 'var(--font-body)' }}
+    >
+      {/* Title bar */}
+      <div
+        className="flex items-center justify-between px-4 py-2"
+        style={{ background: '#1a1d24', borderBottom: '1px solid #2a2d35' }}
+      >
+        <div className="flex items-center gap-3">
+          <div className="flex gap-1.5">
+            {['#ff5f56', '#ffbd2e', '#27c93f'].map((c) => (
+              <span key={c} style={{ width: 9, height: 9, borderRadius: '50%', background: c, display: 'block' }} />
+            ))}
+          </div>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.18em', color: '#6b7280', textTransform: 'uppercase' }}>
+            {app}
+          </span>
+        </div>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: '#4b5563' }}>Palantir Foundry</span>
+      </div>
+      {/* App chrome nav */}
+      <div
+        className="flex items-center gap-1 overflow-x-auto px-4 py-2"
+        style={{ background: '#13161c', borderBottom: '1px solid #2a2d35' }}
+      >
+        {['Home', 'AIP', 'Slate', 'Workshop', 'Compass'].map((item) => (
+          <span
+            key={item}
+            style={{
+              padding: '3px 10px',
+              borderRadius: 4,
+              fontSize: 11,
+              color: item === 'AIP' ? '#fff' : '#6b7280',
+              background: item === 'AIP' ? '#1e40af' : 'transparent',
+              cursor: 'default',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {item}
+          </span>
+        ))}
+      </div>
+      {children}
+      {/* Caption bar */}
+      <div
+        className="px-4 py-1.5 text-center"
+        style={{ borderTop: '1px solid #2a2d35', fontFamily: 'var(--font-mono)', fontSize: 10, color: '#4b5563' }}
+      >
+        Screen · {title}
+      </div>
+    </div>
+  )
+}
+
+function AipLauncherMock() {
+  const apps = [
+    { icon: '⬡', label: 'AIP', color: '#1e40af', active: true },
+    { icon: '▣', label: 'Slate', color: '#374151' },
+    { icon: '◈', label: 'Workshop', color: '#374151' },
+    { icon: '◉', label: 'Compass', color: '#374151' },
+    { icon: '⌬', label: 'Functions', color: '#374151' },
+  ]
+  return (
+    <AipChrome title="App Launcher — AIP is highlighted" app="Foundry">
+      <div className="p-5" style={{ background: '#0f1117' }}>
+        <p style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.18em', color: '#6b7280', textTransform: 'uppercase', marginBottom: 12 }}>
+          App Launcher
+        </p>
+        <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(5, minmax(0, 1fr))' }}>
+          {apps.map((a) => (
+            <div
+              key={a.label}
+              className="flex flex-col items-center gap-2 rounded-lg p-4"
+              style={{
+                background: a.active ? 'rgba(30,64,175,0.18)' : '#1a1d24',
+                border: a.active ? '1px solid #1e40af' : '1px solid #2a2d35',
+                cursor: 'default',
+              }}
+            >
+              <span style={{ fontSize: 22, color: a.active ? '#60a5fa' : '#6b7280' }}>{a.icon}</span>
+              <span style={{ fontSize: 11, color: a.active ? '#e0e7ff' : '#6b7280' }}>{a.label}</span>
+              {a.active && (
+                <span style={{ fontSize: 8, background: '#1e40af', color: '#bfdbfe', padding: '1px 6px', borderRadius: 10, letterSpacing: '0.15em' }}>
+                  OPEN
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+        <p style={{ marginTop: 14, fontSize: 12, color: '#4b5563', fontStyle: 'italic' }}>
+          Step 2: From the launcher, click <strong style={{ color: '#93c5fd' }}>AIP</strong> → then <strong style={{ color: '#93c5fd' }}>Assist</strong>
+        </p>
+      </div>
+    </AipChrome>
+  )
+}
+
+function AssistNewBotMock() {
+  return (
+    <AipChrome title="AIP → Assist → New Bot dialog" app="AIP · Assist">
+      <div style={{ background: '#0f1117', display: 'grid', gridTemplateColumns: '220px 1fr' }}>
+        {/* Left sidebar */}
+        <div style={{ borderRight: '1px solid #2a2d35', padding: 12 }}>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.18em', color: '#6b7280', textTransform: 'uppercase', marginBottom: 8 }}>
+            My Bots
+          </p>
+          {['FleetOps Assist (new)', 'Platform Helper'].map((b, i) => (
+            <div
+              key={b}
+              style={{
+                padding: '7px 10px',
+                borderRadius: 5,
+                fontSize: 12,
+                marginBottom: 3,
+                background: i === 0 ? 'rgba(30,64,175,0.2)' : 'transparent',
+                color: i === 0 ? '#93c5fd' : '#6b7280',
+                border: i === 0 ? '1px solid rgba(30,64,175,0.4)' : '1px solid transparent',
+                cursor: 'default',
+              }}
+            >
+              {b}
+            </div>
+          ))}
+          <button
+            style={{ marginTop: 12, width: '100%', padding: '6px 0', borderRadius: 5, background: '#1e40af', color: '#e0e7ff', fontSize: 11, border: 'none', cursor: 'default' }}
+          >
+            + New Bot
+          </button>
+        </div>
+        {/* Main panel */}
+        <div style={{ padding: 18 }}>
+          <p style={{ fontFamily: 'var(--font-display)', fontSize: 15, color: '#e0e7ff', marginBottom: 14 }}>Create new bot</p>
+          {[
+            { label: 'Name', value: 'FleetOps Assist', highlight: true },
+            { label: 'Visibility', value: 'Fleet-Ops-Users group' },
+            { label: 'Foundation model', value: 'Palantir default (governed)' },
+            { label: 'Description (optional)', value: 'Q&A bot for the FleetOps app and folder' },
+          ].map((f) => (
+            <div key={f.label} style={{ marginBottom: 12 }}>
+              <p style={{ fontSize: 10, color: '#6b7280', marginBottom: 3, letterSpacing: '0.08em' }}>{f.label}</p>
+              <div
+                style={{
+                  padding: '6px 10px',
+                  borderRadius: 5,
+                  border: f.highlight ? '1px solid #1e40af' : '1px solid #2a2d35',
+                  background: f.highlight ? 'rgba(30,64,175,0.1)' : '#1a1d24',
+                  fontSize: 12,
+                  color: f.highlight ? '#93c5fd' : '#9ca3af',
+                }}
+              >
+                {f.value}
+              </div>
+            </div>
+          ))}
+          <button style={{ marginTop: 4, padding: '7px 18px', borderRadius: 5, background: '#1e40af', color: '#e0e7ff', fontSize: 12, border: 'none', cursor: 'default' }}>
+            Create bot →
+          </button>
+        </div>
+      </div>
+    </AipChrome>
+  )
+}
+
+function AssistKnowledgeTabMock() {
+  return (
+    <AipChrome title="Bot settings → Knowledge tab → Add folder source" app="AIP · Assist · FleetOps Assist">
+      <div style={{ background: '#0f1117', display: 'grid', gridTemplateColumns: '160px 1fr' }}>
+        {/* Tab sidebar */}
+        <div style={{ borderRight: '1px solid #2a2d35', padding: 10 }}>
+          {['Overview', 'Knowledge', 'Prompt', 'Evaluations', 'Analytics'].map((t) => (
+            <div
+              key={t}
+              style={{
+                padding: '7px 10px',
+                borderRadius: 5,
+                fontSize: 12,
+                marginBottom: 2,
+                background: t === 'Knowledge' ? 'rgba(30,64,175,0.2)' : 'transparent',
+                color: t === 'Knowledge' ? '#93c5fd' : '#6b7280',
+                cursor: 'default',
+              }}
+            >
+              {t}
+            </div>
+          ))}
+        </div>
+        {/* Knowledge content */}
+        <div style={{ padding: 16 }}>
+          <p style={{ fontFamily: 'var(--font-display)', fontSize: 14, color: '#e0e7ff', marginBottom: 12 }}>Knowledge sources</p>
+          {/* Existing source */}
+          <div
+            style={{ padding: '10px 12px', borderRadius: 6, border: '1px solid #1e40af', background: 'rgba(30,64,175,0.1)', marginBottom: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+          >
+            <div>
+              <p style={{ fontSize: 12, color: '#93c5fd', marginBottom: 2 }}>📁 /Projects/FleetOps</p>
+              <p style={{ fontSize: 10, color: '#6b7280' }}>Compass folder · Recursive · Excluding /archive</p>
+            </div>
+            <span style={{ fontSize: 10, background: '#166534', color: '#86efac', padding: '2px 7px', borderRadius: 10 }}>Indexed</span>
+          </div>
+          {/* Chunking settings */}
+          <div style={{ padding: '10px 12px', borderRadius: 6, border: '1px solid #2a2d35', background: '#1a1d24', marginBottom: 10 }}>
+            <p style={{ fontSize: 10, color: '#6b7280', marginBottom: 8, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Chunking settings</p>
+            <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
+              {[['Chunk size', '800 tokens'], ['Overlap', '100 tokens'], ['Top-K', '6']].map(([k, v]) => (
+                <div key={k}>
+                  <p style={{ fontSize: 9, color: '#6b7280', marginBottom: 2 }}>{k}</p>
+                  <p style={{ fontSize: 12, color: '#93c5fd', fontFamily: 'var(--font-mono)' }}>{v}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <button style={{ padding: '6px 14px', borderRadius: 5, background: '#374151', color: '#d1d5db', fontSize: 11, border: '1px solid #4b5563', cursor: 'default' }}>
+            + Add source
+          </button>
+        </div>
+      </div>
+    </AipChrome>
+  )
+}
+
+function AssistTestChatMock() {
+  const messages = [
+    { role: 'user', text: 'Who can work on a job that needs the vehicle lift?' },
+    {
+      role: 'bot',
+      text: 'Lift-required Tasks must route to Bay 3 — the only bay equipped with a vehicle lift [1]. Technicians assigned to those Tasks must hold the Heavy-Lift certification [2].',
+      cites: ['[1] FleetOps Job Scheduling Rules §Bay routing', '[2] FleetOps Technician Certifications'],
+    },
+  ]
+  return (
+    <AipChrome title="Assist chat panel — test a question, see citations" app="AIP · Assist · Test chat">
+      <div style={{ background: '#0f1117', maxHeight: 340, display: 'flex', flexDirection: 'column' }}>
+        <div style={{ flex: 1, overflowY: 'auto', padding: 14, display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {messages.map((m, i) => (
+            <div
+              key={i}
+              style={{
+                alignSelf: m.role === 'user' ? 'flex-end' : 'flex-start',
+                maxWidth: '80%',
+              }}
+            >
+              <div
+                style={{
+                  padding: '8px 12px',
+                  borderRadius: 8,
+                  fontSize: 12,
+                  lineHeight: 1.5,
+                  background: m.role === 'user' ? '#1e40af' : '#1a1d24',
+                  color: m.role === 'user' ? '#e0e7ff' : '#d1d5db',
+                  border: m.role === 'bot' ? '1px solid #2a2d35' : 'none',
+                }}
+              >
+                {m.text}
+                {m.cites && (
+                  <div style={{ marginTop: 8, borderTop: '1px solid #2a2d35', paddingTop: 6 }}>
+                    {m.cites.map((c) => (
+                      <p key={c} style={{ fontSize: 10, color: '#60a5fa', marginBottom: 2 }}>↗ {c}</p>
+                    ))}
+                  </div>
+                )}
+              </div>
+              {m.role === 'bot' && (
+                <div style={{ marginTop: 5, display: 'flex', gap: 8 }}>
+                  <span style={{ fontSize: 10, color: '#6b7280', cursor: 'default' }}>👍 Good answer</span>
+                  <span style={{ fontSize: 10, color: '#6b7280', cursor: 'default' }}>👎 Flag this</span>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+        <div style={{ borderTop: '1px solid #2a2d35', padding: '8px 12px', display: 'flex', gap: 8 }}>
+          <input
+            readOnly
+            defaultValue="Ask a question about FleetOps…"
+            style={{ flex: 1, background: '#1a1d24', border: '1px solid #2a2d35', borderRadius: 5, padding: '5px 9px', fontSize: 12, color: '#6b7280' }}
+          />
+          <button style={{ padding: '5px 14px', borderRadius: 5, background: '#1e40af', color: '#e0e7ff', fontSize: 11, border: 'none', cursor: 'default' }}>Send</button>
+        </div>
+      </div>
+    </AipChrome>
+  )
+}
+
+function AssistEmbedWidgetMock() {
+  return (
+    <AipChrome title="Slate page with AIP Assist widget in the right rail" app="Slate · FleetOps Dispatch">
+      <div style={{ background: '#0f1117', display: 'grid', gridTemplateColumns: '1fr 280px', minHeight: 260 }}>
+        {/* Main Slate content */}
+        <div style={{ padding: 14, borderRight: '1px solid #2a2d35' }}>
+          <p style={{ fontFamily: 'var(--font-display)', fontSize: 16, color: '#e0e7ff', marginBottom: 10 }}>Open Tasks · Dispatch view</p>
+          {[
+            { id: 'TSK-001', desc: 'Oil change · Bay 1', tech: 'Elena', pri: 'Med' },
+            { id: 'TSK-002', desc: 'Lift inspection · Bay 3', tech: 'Marcus', pri: 'High' },
+            { id: 'TSK-003', desc: 'Tyre rotation · Bay 2', tech: 'Priya', pri: 'Low' },
+          ].map((t) => (
+            <div
+              key={t.id}
+              style={{ padding: '7px 10px', borderRadius: 5, border: '1px solid #2a2d35', background: '#1a1d24', marginBottom: 6, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+            >
+              <div>
+                <span style={{ fontSize: 10, color: '#6b7280', fontFamily: 'var(--font-mono)' }}>{t.id} </span>
+                <span style={{ fontSize: 12, color: '#d1d5db' }}>{t.desc}</span>
+              </div>
+              <span style={{ fontSize: 10, background: t.pri === 'High' ? '#7f1d1d' : '#1a1d24', color: t.pri === 'High' ? '#fca5a5' : '#6b7280', padding: '1px 7px', borderRadius: 10, border: '1px solid ' + (t.pri === 'High' ? '#991b1b' : '#2a2d35') }}>
+                {t.pri}
+              </span>
+            </div>
+          ))}
+        </div>
+        {/* AIP Assist widget */}
+        <div style={{ background: '#13161c', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ padding: '8px 12px', borderBottom: '1px solid #2a2d35', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span style={{ fontSize: 14, color: '#60a5fa' }}>⬡</span>
+            <span style={{ fontSize: 11, color: '#93c5fd', fontWeight: 600 }}>FleetOps Assist</span>
+          </div>
+          <div style={{ flex: 1, padding: 10, fontSize: 11, color: '#6b7280', fontStyle: 'italic' }}>
+            Ask me anything about FleetOps…
+          </div>
+          <div style={{ padding: 8, borderTop: '1px solid #2a2d35' }}>
+            <div style={{ background: '#1a1d24', borderRadius: 5, border: '1px solid #2a2d35', padding: '5px 8px', fontSize: 11, color: '#4b5563' }}>
+              Ask a question…
+            </div>
+          </div>
+        </div>
+      </div>
+    </AipChrome>
+  )
+}
+
+function AipEvaluationsMock() {
+  const evals = [
+    { id: 'basic-1', q: 'Who can work on a lift job?', status: 'pass', confidence: '0.94' },
+    { id: 'paraphrase-1', q: 'Which bay has the lift?', status: 'pass', confidence: '0.91' },
+    { id: 'refuse-1', q: "CEO's home address?", status: 'pass', confidence: '—' },
+    { id: 'clarify-1', q: 'What is the status?', status: 'fail', confidence: '0.71' },
+    { id: 'permission-1', q: 'Show Q4 comp plan', status: 'pass', confidence: '—' },
+  ]
+  return (
+    <AipChrome title="AIP → Evaluations — run your eval set, diff pass rates" app="AIP · Evaluations">
+      <div style={{ background: '#0f1117', padding: 14 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+          <p style={{ fontFamily: 'var(--font-display)', fontSize: 14, color: '#e0e7ff' }}>fleetops-assist.evals.yaml · v2 vs v1</p>
+          <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+            <span style={{ fontSize: 11, background: '#166534', color: '#86efac', padding: '2px 10px', borderRadius: 10 }}>4/5 pass · 80%</span>
+            <button style={{ padding: '4px 12px', borderRadius: 5, background: '#1e40af', color: '#e0e7ff', fontSize: 11, border: 'none', cursor: 'default' }}>Re-run</button>
+          </div>
+        </div>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11 }}>
+          <thead>
+            <tr style={{ borderBottom: '1px solid #2a2d35' }}>
+              {['ID', 'Question', 'Status', 'Confidence'].map((h) => (
+                <th key={h} style={{ padding: '4px 8px', textAlign: 'left', color: '#6b7280', fontWeight: 400, letterSpacing: '0.08em' }}>{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {evals.map((e) => (
+              <tr key={e.id} style={{ borderBottom: '1px solid #1a1d24' }}>
+                <td style={{ padding: '6px 8px', color: '#6b7280', fontFamily: 'var(--font-mono)' }}>{e.id}</td>
+                <td style={{ padding: '6px 8px', color: '#d1d5db' }}>{e.q}</td>
+                <td style={{ padding: '6px 8px' }}>
+                  <span style={{ fontSize: 10, background: e.status === 'pass' ? '#166534' : '#7f1d1d', color: e.status === 'pass' ? '#86efac' : '#fca5a5', padding: '1px 7px', borderRadius: 10 }}>{e.status}</span>
+                </td>
+                <td style={{ padding: '6px 8px', color: '#60a5fa', fontFamily: 'var(--font-mono)' }}>{e.confidence}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </AipChrome>
+  )
+}
+
+function AssistAnalyticsMock() {
+  return (
+    <AipChrome title="Bot Analytics — confidence scores, thumbs-down sessions, weekly triage queue" app="AIP · Assist · Analytics">
+      <div style={{ background: '#0f1117', padding: 14 }}>
+        <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(4, 1fr)', marginBottom: 14 }}>
+          {[
+            { label: 'Questions this week', value: '847' },
+            { label: 'Avg confidence', value: '0.81' },
+            { label: 'Thumbs-down', value: '23' },
+            { label: 'Low-conf (<0.6)', value: '41' },
+          ].map((s) => (
+            <div key={s.label} style={{ padding: '10px 12px', borderRadius: 6, border: '1px solid #2a2d35', background: '#1a1d24' }}>
+              <p style={{ fontSize: 9, color: '#6b7280', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 4 }}>{s.label}</p>
+              <p style={{ fontFamily: 'var(--font-mono)', fontSize: 20, color: '#93c5fd' }}>{s.value}</p>
+            </div>
+          ))}
+        </div>
+        <p style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.15em', color: '#6b7280', textTransform: 'uppercase', marginBottom: 8 }}>
+          Triage queue · thumbs-down + low-confidence
+        </p>
+        {[
+          { q: 'How do I schedule a lift job for tomorrow?', conf: '0.52', fb: '👎' },
+          { q: 'What happens when Bay 3 is occupied?', conf: '0.44', fb: '👎' },
+          { q: 'Can a trainee certify on a lift?', conf: '0.58', fb: '' },
+        ].map((r, i) => (
+          <div key={i} style={{ padding: '7px 10px', borderRadius: 5, border: '1px solid #2a2d35', background: '#1a1d24', marginBottom: 6, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: 12, color: '#d1d5db' }}>{r.q}</span>
+            <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexShrink: 0, marginLeft: 10 }}>
+              {r.fb && <span style={{ fontSize: 12 }}>{r.fb}</span>}
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: '#f87171' }}>{r.conf}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </AipChrome>
+  )
+}
+
+function AipMock({
+  variant,
+  caption,
+  annotations,
+}: {
+  variant: AipMockVariant
+  caption?: string
+  annotations?: { x: number; y: number; label: string; note: string }[]
+}) {
+  const label: Record<AipMockVariant, string> = {
+    'aip-launcher': 'App Launcher — select AIP',
+    'assist-new-bot': 'AIP → Assist → New Bot',
+    'assist-knowledge-tab': 'Bot settings → Knowledge tab',
+    'assist-test-chat': 'Assist test chat with citations',
+    'assist-embed-widget': 'Slate page with Assist widget in right rail',
+    'aip-evaluations': 'AIP Evaluations — run eval set',
+    'assist-analytics': 'Bot Analytics — weekly triage queue',
+  }
+
+  const inner: Record<AipMockVariant, React.ReactNode> = {
+    'aip-launcher': <AipLauncherMock />,
+    'assist-new-bot': <AssistNewBotMock />,
+    'assist-knowledge-tab': <AssistKnowledgeTabMock />,
+    'assist-test-chat': <AssistTestChatMock />,
+    'assist-embed-widget': <AssistEmbedWidgetMock />,
+    'aip-evaluations': <AipEvaluationsMock />,
+    'assist-analytics': <AssistAnalyticsMock />,
+  }
+
+  return (
+    <motion.figure
+      className="my-8 overflow-hidden rounded-lg border"
+      style={{ borderColor: 'var(--edge)', background: 'var(--bg-2)' }}
+      initial={{ opacity: 0, y: 8 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-10%' }}
+      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <div
+        className="flex items-center justify-between border-b px-4 py-2"
+        style={{ borderColor: 'var(--edge)' }}
+      >
+        <span
+          className="uppercase"
+          style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.22em', color: 'var(--ink-dim)' }}
+        >
+          Screen · {label[variant]}
+        </span>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--ink-dim)' }}>
+          Palantir AIP
+        </span>
+      </div>
+
+      <div className="p-3">{inner[variant]}</div>
+
+      {annotations && annotations.length > 0 && (
+        <div
+          className="mt-3 grid gap-2 border-t px-4 py-3 sm:grid-cols-2"
+          style={{ borderColor: 'var(--edge)', fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--paper)' }}
+        >
+          {annotations.map((a, i) => (
+            <div key={i} className="flex gap-2 rounded border px-3 py-2" style={{ borderColor: 'var(--edge)', background: 'var(--bg)' }}>
+              <span
+                style={{ background: 'var(--accent)', color: 'var(--bg)', width: 18, height: 18, borderRadius: 999, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, flexShrink: 0, marginTop: 1 }}
+              >
+                {i + 1}
+              </span>
+              <span>
+                <b style={{ color: 'var(--ink)' }}>{a.label}</b> — {a.note}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {caption && (
+        <figcaption
+          className="border-t px-4 py-2 text-center"
+          style={{ borderColor: 'var(--edge)', fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-dim)' }}
+        >
+          {caption}
+        </figcaption>
+      )}
+    </motion.figure>
+  )
+}
+
+/* ------------------------------------------------------------------ */
 /*  Public renderer                                                   */
 /* ------------------------------------------------------------------ */
 
@@ -4561,6 +5133,25 @@ function renderBlock(block: LessonBlock, i: number): React.ReactNode {
     case 'powerAppsMock':
       return (
         <PowerAppsMock
+          key={i}
+          variant={block.variant}
+          caption={block.caption}
+          annotations={block.annotations}
+        />
+      )
+    case 'docLink':
+      return (
+        <DocLinkCard
+          key={i}
+          title={block.title}
+          description={block.description}
+          url={block.url}
+          source={block.source}
+        />
+      )
+    case 'aipMock':
+      return (
+        <AipMock
           key={i}
           variant={block.variant}
           caption={block.caption}

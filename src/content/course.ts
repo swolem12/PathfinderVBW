@@ -69,6 +69,27 @@ export type LessonBlock =
       caption?: string
       annotations?: { x: number; y: number; label: string; note: string }[]
     }
+  | {
+      type: 'docLink'
+      title: string
+      description: string
+      url: string
+      /** Short canonical label for the domain, e.g. "Palantir Docs" */
+      source: string
+    }
+  | {
+      type: 'aipMock'
+      variant:
+        | 'aip-launcher'
+        | 'assist-new-bot'
+        | 'assist-knowledge-tab'
+        | 'assist-test-chat'
+        | 'assist-embed-widget'
+        | 'aip-evaluations'
+        | 'assist-analytics'
+      caption?: string
+      annotations?: { x: number; y: number; label: string; note: string }[]
+    }
 
 export interface LessonDef {
   id: LessonId
@@ -256,6 +277,33 @@ Constraints:
 - Do not touch unrelated features.
 - After the change, tell me exactly what to test in the browser to confirm it works.`
 
+export const chatGptZipPrompt = `I want to build a small web app. Below is my Build Brief.
+
+Do all of the following, in this order:
+1. Design the app from the brief — only the items under "Three things I can do". Do NOT build anything extra.
+2. Write the full source code for a React + TypeScript + Vite project, using browser localStorage (no backend) and plain CSS (no UI libraries).
+3. Required files: package.json, tsconfig.json, vite.config.ts, index.html, src/main.tsx, src/App.tsx, src/index.css — plus any component files needed.
+4. Use your code interpreter to package ALL of these files into a single zip file called taskboard.zip, preserving the correct folder structure.
+5. Provide a download link for taskboard.zip.
+6. After I unzip it, I will run: npm install → npm run dev. Confirm those two commands will start the app at http://localhost:5173/.
+
+Here is the brief:
+
+<PASTE YOUR FILLED-IN BRIEF HERE>`
+
+export const claudeWebPrompt = `I want to build a small web app. Below is my Build Brief.
+
+Do all of the following, in this order:
+1. Design the app from the brief — only the items under "Three things I can do". Do NOT build anything extra.
+2. Write the full source code for a React + TypeScript + Vite project, using browser localStorage (no backend) and plain CSS (no UI libraries).
+3. Required files: package.json, tsconfig.json, vite.config.ts, index.html, src/main.tsx, src/App.tsx, src/index.css — plus any component files needed.
+4. Give every file its own code block, labeled with its relative path (e.g. \`src/App.tsx\`).
+5. After all the code blocks, write a Windows PowerShell script I can copy and run that will: (a) create a folder called taskboard inside $HOME\\Desktop, (b) create every sub-folder, (c) write each file's full contents to disk.
+
+Here is the brief:
+
+<PASTE YOUR FILLED-IN BRIEF HERE>`
+
 /* ------------------------------------------------------------------
  *  LESSONS — 7 critical path + 1 optional level-up
  * ------------------------------------------------------------------ */
@@ -283,7 +331,7 @@ export const lessons: LessonDef[] = [
           'Install two free tools (about 5 minutes, one time only).',
           'Pick an idea (or use our TaskBoard example).',
           'Write a 5-field Build Brief.',
-          'Paste it to an AI called Claude Code. It writes the files.',
+          'Paste it to a free AI website (claude.ai or ChatGPT). It writes the files.',
           'Run three commands. The app opens in your browser.',
           'Play with it. Break it. Ask the AI to fix or add things.',
         ],
@@ -309,17 +357,17 @@ export const lessons: LessonDef[] = [
   {
     id: 'setup',
     number: 2,
-    title: 'Install two tools',
-    subtitle: 'One command. One time. Forever.',
-    goal: "Your PC has Node.js and Claude Code installed. You're in a PowerShell window on your Desktop.",
-    endState: 'node -v, npm -v, and claude --version all print numbers.',
+    title: 'Install Node.js — pick your AI',
+    subtitle: 'One install. Free AI websites. No CLI required.',
+    goal: "Node.js is installed on your PC and you have chosen which free AI website (claude.ai, ChatGPT, or Codex) you will use to generate the code.",
+    endState: 'node -v and npm -v both print version numbers. Your PowerShell prompt ends in Desktop>.',
     estMinutes: 6,
     blocks: [
       {
         type: 'p',
-        body: 'You need exactly two tools: Node.js (runs the app) and Claude Code (the AI that writes the code). Both install from PowerShell with one command each.',
+        body: 'You need exactly one thing installed on your PC: Node.js. It runs the app after the AI generates the code for you. The AI itself lives on a free website — no installation required.',
       },
-      { type: 'powershellDiagram', caption: "What a PowerShell window looks like. Don't worry — you only type two commands total." },
+      { type: 'powershellDiagram', caption: "What a PowerShell window looks like. You only need it to verify Node.js and later to run your app." },
       {
         type: 'jargon',
         term: 'PowerShell',
@@ -377,31 +425,55 @@ export const lessons: LessonDef[] = [
       {
         type: 'step',
         n: 3,
-        title: 'Install Claude Code',
-        body: 'Claude Code is a small AI tool that writes apps for you from PowerShell. Install it with one command. This takes about 30 seconds.',
+        title: 'Choose your AI tool',
+        body: 'The AI that writes all the code lives on a free website — no installation needed. You have three solid options. Pick whichever you already have an account with.',
+      },
+      { type: 'h', body: 'Option A — ChatGPT  (recommended for beginners)' },
+      {
+        type: 'p',
+        body: 'Go to chatgpt.com. ChatGPT can use its built-in code tool to package all your project files into a single zip you download in one click. That is the fastest path to a ready-to-run folder on your Desktop.',
       },
       {
-        type: 'shellSession',
-        lines: [
-          {
-            prompt: 'PS C:\\Users\\you>',
-            command: 'npm install -g @anthropic-ai/claude-code',
-          },
-          { output: 'added 42 packages in 3s' },
-        ],
+        type: 'callout',
+        callout: {
+          kind: 'tip',
+          title: 'Why ChatGPT for beginners',
+          body: "ChatGPT's code interpreter creates a real zip file you download with one click — no copying or pasting code by hand.",
+        },
+      },
+      { type: 'h', body: 'Option B — Claude.ai' },
+      {
+        type: 'p',
+        body: "Go to claude.ai. Claude writes every file and then gives you a PowerShell setup script at the end. Running that one script in PowerShell creates the whole project folder automatically.",
+      },
+      { type: 'h', body: 'Option C — ChatGPT Codex' },
+      {
+        type: 'p',
+        body: "Codex is OpenAI's specialist code model available inside chatgpt.com. Select it from the model picker or start your prompt with 'Use Codex'. It works exactly like Option A — zip download included.",
       },
       {
         type: 'jargon',
         term: 'npm',
-        plain: 'Node Package Manager. It came with Node.js. It fetches and installs code libraries for you.',
+        plain: 'Node Package Manager. It installed alongside Node.js. It downloads the libraries your app needs when you run npm install.',
       },
       {
         type: 'details',
-        summary: "I'd rather use ChatGPT in my browser (Codex path)",
+        summary: 'Power-user option: Claude Code CLI (terminal tool)',
         blocks: [
           {
             type: 'p',
-            body: "That works too. You'll paste your brief into chatgpt.com and copy each file it gives you to disk by hand. Skip step 3 above — you don't need Claude Code. Pick this path only if you can't install the CLI tool. It adds about 10 minutes of manual copy-paste at the generate step.",
+            body: 'Claude Code CLI is a command-line version of Claude that writes files directly on your PC from PowerShell — no copy-paste at all. It requires an Anthropic API key and one extra install command.',
+          },
+          {
+            type: 'shellSession',
+            lines: [
+              { prompt: 'PS C:\\Users\\you>', command: 'npm install -g @anthropic-ai/claude-code' },
+              { output: 'added 42 packages in 3s' },
+            ],
+          },
+          {
+            type: 'p',
+            body: 'After installing, run claude --version to confirm it works. When you reach the generate lesson, use the Claude Code CLI prompt instead of the ChatGPT or Claude.ai prompts.',
           },
         ],
       },
@@ -409,8 +481,8 @@ export const lessons: LessonDef[] = [
       {
         type: 'step',
         n: 4,
-        title: 'Verify everything works',
-        body: 'In a fresh PowerShell window, run these three commands. Each should print a number. If any says "not recognized", close PowerShell and open a new window — Windows only picks up new tools in new windows.',
+        title: 'Verify Node.js is installed',
+        body: 'In a fresh PowerShell window, run these two commands. Each should print a version number. If either says "not recognized", close ALL PowerShell windows and open a new one — Windows only picks up newly installed tools in new windows.',
       },
       {
         type: 'shellSession',
@@ -419,8 +491,6 @@ export const lessons: LessonDef[] = [
           { output: 'v22.11.0' },
           { prompt: 'PS C:\\Users\\you>', command: 'npm -v' },
           { output: '10.9.0' },
-          { prompt: 'PS C:\\Users\\you>', command: 'claude --version' },
-          { output: '0.x.x' },
         ],
       },
 
@@ -452,7 +522,7 @@ export const lessons: LessonDef[] = [
         items: [
           'node -v printed a version',
           'npm -v printed a version',
-          'claude --version printed a version (unless I chose the Codex browser path)',
+          'I have picked my AI tool (ChatGPT, Claude.ai, or Codex)',
           'My PowerShell prompt now ends in "Desktop>"',
         ],
       },
@@ -576,7 +646,7 @@ export const lessons: LessonDef[] = [
           'Every <BRACKET> in my brief has been replaced with a real answer',
           "I did not use 'modern', 'clean', or 'intuitive'",
           'My ship list has exactly 3 items, not 10',
-          'I know the next step is to paste this to Claude Code',
+          'I know the next step is to paste this into my AI tool (ChatGPT, Claude.ai, or Codex)',
         ],
       },
     ],
@@ -585,101 +655,132 @@ export const lessons: LessonDef[] = [
   {
     id: 'generate',
     number: 5,
-    title: 'Let the AI write it',
-    subtitle: 'One prompt. One folder. Every file.',
-    goal: "A new folder called taskboard exists on your Desktop, full of source files Claude Code wrote for you.",
-    endState: 'You can see taskboard on your Desktop.',
+    title: 'Let the AI generate it',
+    subtitle: 'Paste a prompt. Download the files. Your project is ready.',
+    goal: "You have pasted your brief into a free AI website, received the generated project files, and confirmed a taskboard folder with package.json and a src folder exists on your Desktop.",
+    endState: 'A taskboard folder sits on your Desktop, ready to run.',
     estMinutes: 5,
     blocks: [
       {
         type: 'p',
-        body: 'Claude Code runs inside PowerShell. You start it, paste the prompt below, paste your brief at the bottom, press Enter. It writes every file for you — no copy-pasting.',
+        body: 'Pick the path that matches the AI tool you chose in lesson 2. All three paths end the same way: a taskboard folder on your Desktop containing your generated code. Once you have that folder, this lesson is done.',
       },
+
+      { type: 'h', body: "What's inside your project — the key files explained" },
+      {
+        type: 'p',
+        body: 'The AI will generate several files. Here is what each one does so you know what you are looking at when you open the folder.',
+      },
+      {
+        type: 'jargon',
+        term: 'package.json',
+        plain: "The project's shopping list. Names every library the app needs and defines the 'npm run dev' command that starts it.",
+      },
+      {
+        type: 'jargon',
+        term: 'vite.config.ts',
+        plain: "Vite's instruction file. Tells the build tool how to bundle and serve your app during development. You rarely touch this.",
+      },
+      {
+        type: 'jargon',
+        term: 'tsconfig.json',
+        plain: "TypeScript's rule book. Turns type-checking features on or off. Generated once, rarely edited.",
+      },
+      {
+        type: 'jargon',
+        term: 'index.html',
+        plain: "The one HTML page the browser loads first. It has a single div where React injects your whole app.",
+      },
+      {
+        type: 'jargon',
+        term: 'src/main.tsx',
+        plain: "The on-switch. Its entire job is to mount the React app into that div.",
+      },
+      {
+        type: 'jargon',
+        term: 'src/App.tsx',
+        plain: "Where your app actually lives. All the buttons, lists, forms, and logic go in here (or in component files it imports).",
+      },
+      {
+        type: 'jargon',
+        term: 'src/index.css',
+        plain: "The global stylesheet. Fonts, colors, resets, and any styles that apply across the whole app.",
+      },
+
+      { type: 'h', body: 'Path A — ChatGPT  (download a zip file)' },
 
       {
         type: 'step',
         n: 1,
-        title: 'Start Claude Code',
-        body: 'You should already be in your Desktop folder from the setup lesson. If not, run cd $HOME\\Desktop first. Then start Claude Code.',
+        title: 'Open chatgpt.com and start a new chat',
+        body: 'Go to chatgpt.com. Start a new chat. Any current GPT-4 class model (GPT-4o, o3, or similar) works — they all support the code execution needed to create a zip.',
       },
-      {
-        type: 'shellSession',
-        lines: [
-          { prompt: 'PS C:\\Users\\you\\Desktop>', command: 'claude' },
-          {
-            output:
-              'Claude Code — ready.\nTell me what you want to build, or paste instructions.',
-          },
-        ],
-      },
-
       {
         type: 'step',
         n: 2,
         title: 'Paste this prompt',
-        body: 'Copy the block below. Paste it into Claude Code. Then paste your filled-in mini brief on the last line (replacing the placeholder). Press Enter.',
+        body: 'Copy the block below. Paste it into the chat. Then paste your filled-in mini brief at the very bottom, replacing the placeholder. Send.',
       },
       {
         type: 'code',
-        block: { kind: 'prompt', title: 'Paste this into Claude Code', body: claudeCodePrompt },
+        block: { kind: 'prompt', title: 'Paste into ChatGPT — requests a zip download', body: chatGptZipPrompt },
       },
 
       {
         type: 'step',
         n: 3,
-        title: 'Approve the file writes',
-        body: "Claude Code will ask before writing each file. Press 'a' (approve all) and it writes every file automatically. This takes about 30 seconds.",
+        title: 'Download the zip',
+        body: 'ChatGPT will use its built-in code tool to generate all the files and bundle them as taskboard.zip. When it gives you a download link, click it and save taskboard.zip to your Desktop.',
+      },
+      {
+        type: 'step',
+        n: 4,
+        title: 'Extract the zip to your Desktop',
+        body: "On your Desktop, right-click taskboard.zip → 'Extract All…' → the default destination (your Desktop) is correct → click Extract. A taskboard folder appears.",
       },
       {
         type: 'callout',
         callout: {
           kind: 'tip',
-          title: "What 'approve all' means",
-          body: "You're letting Claude Code create files on your Desktop. It only creates files inside the new taskboard folder it is making. Safe.",
+          title: 'Check the folder structure',
+          body: "Open the taskboard folder. At the top level you should see package.json and a src folder — not another taskboard folder inside. If you see taskboard/taskboard, move the inner folder up one level and delete the empty outer one.",
         },
       },
 
       {
-        type: 'step',
-        n: 4,
-        title: 'Look for the folder',
-        body: 'Minimize PowerShell. Your Desktop should now have a taskboard folder icon on it. That is your app.',
+        type: 'details',
+        summary: 'Path B — Claude.ai (run a PowerShell setup script)',
+        blocks: [
+          {
+            type: 'p',
+            body: 'Open claude.ai and start a new conversation. Copy the prompt below, paste it in, add your filled-in brief at the bottom, and send.',
+          },
+          {
+            type: 'code',
+            block: { kind: 'prompt', title: 'Paste into Claude.ai', body: claudeWebPrompt },
+          },
+          {
+            type: 'p',
+            body: "Claude will display every file's full code, then produce a PowerShell setup script at the end. Copy that entire script, paste it into a PowerShell window pointed at your Desktop (run cd $HOME\\Desktop first if needed), and press Enter. It creates the taskboard folder and writes every file automatically.",
+          },
+        ],
       },
 
       {
         type: 'details',
-        summary: "I chose the ChatGPT Codex path in setup — what do I do?",
+        summary: 'Path C — Claude Code CLI (if you installed it in lesson 2)',
         blocks: [
           {
             type: 'p',
-            body: "Open chatgpt.com. Start a new chat. Paste the prompt below, with your mini brief pasted on the last line. ChatGPT will reply with every file's contents in separate code blocks.",
+            body: "In PowerShell on your Desktop, run claude to start it. Paste the prompt below, add your brief at the bottom, and press Enter.",
           },
           {
             type: 'code',
-            block: { kind: 'prompt', title: 'Paste this into ChatGPT', body: codexPrompt },
+            block: { kind: 'prompt', title: 'Paste this into the Claude Code CLI', body: claudeCodePrompt },
           },
           {
             type: 'p',
-            body: 'Then save every file by hand to a taskboard folder on your Desktop. Easiest way:',
-          },
-          {
-            type: 'list',
-            items: [
-              'In PowerShell: cd $HOME\\Desktop then mkdir taskboard then cd taskboard',
-              "Install VS Code (free) if you don't have it: code.visualstudio.com",
-              'In PowerShell inside taskboard: code .',
-              'In VS Code, right-click the left sidebar → New File → type the file path exactly as ChatGPT labeled it (e.g. src/App.tsx) → Enter.',
-              'Copy the file contents from ChatGPT, paste into VS Code, press Ctrl+S to save.',
-              'Repeat for every file ChatGPT gave you.',
-            ],
-          },
-          {
-            type: 'callout',
-            callout: {
-              kind: 'warn',
-              title: 'Avoid nested folders',
-              body: "If ChatGPT labels a file 'taskboard/src/App.tsx' and you're already inside taskboard, create it as 'src/App.tsx' without the leading taskboard/. Nested taskboard/taskboard folders will break everything.",
-            },
+            body: "When Claude Code asks for permission, press 'a' to approve all file writes. It creates the taskboard folder and writes every file on your Desktop automatically.",
           },
         ],
       },
@@ -850,8 +951,8 @@ export const lessons: LessonDef[] = [
         type: 'callout',
         callout: {
           kind: 'tip',
-          title: "In Claude Code, say 'apply that'",
-          body: "When Claude Code proposes a fix, type 'apply that' and it will edit the file on disk. Your browser auto-reloads. In ChatGPT, you'll copy the new file contents manually and save.",
+          title: 'How to apply a fix from your AI tool',
+          body: "In ChatGPT or Claude.ai: the AI gives you corrected file contents. Copy them, open the file in the taskboard folder (right-click → Open with Notepad, or use VS Code), paste, and save. Your browser auto-reloads. With Claude Code CLI: type 'apply that' and it edits the file on disk for you.",
         },
       },
 
@@ -871,7 +972,7 @@ export const lessons: LessonDef[] = [
         callout: {
           kind: 'note',
           title: "That's the whole course.",
-          body: "Brief → Claude Code → Desktop folder → npm install → npm run dev → iterate. Every app you vibe-code uses this exact loop. The optional Design Vocabulary lesson is next if you want to level up your briefs.",
+          body: "Brief → AI website (ChatGPT / Claude.ai / Codex) → Desktop folder → npm install → npm run dev → iterate. Every app you vibe-code uses this exact loop. The optional Design Vocabulary lesson is next if you want to level up your briefs.",
         },
       },
 
