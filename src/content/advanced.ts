@@ -376,7 +376,7 @@ export const advancedLessons: LessonDef[] = [
     id: 'agentic-ai',
     number: 3,
     title: 'Work with agentic AI',
-    subtitle: 'ChatGPT, Codex, and Claude as teammates — not answer machines.',
+    subtitle: 'ChatGPT 5.4, Codex 5.3, and Claude as teammates — not answer machines.',
     goal: 'You know the difference between one-shot prompting and agentic AI, and can run a multi-step Agent session that reads your files, writes code, and iterates.',
     endState: 'You have used an AI agent to add at least one complete feature to your app, verified it in the browser, and the changed files are committed.',
     estMinutes: 18,
@@ -393,15 +393,15 @@ export const advancedLessons: LessonDef[] = [
       {
         type: 'jargon',
         term: 'Context window',
-        plain: "The maximum amount of text an AI can 'see' at once. Modern agents (Claude 4.7, GPT-4.5, Codex) have large context windows — enough to hold your entire small project.",
+        plain: "The maximum amount of text an AI can 'see' at once. Modern agents (Claude 4.7, ChatGPT 5.4, Codex 5.3) have large context windows — enough to hold your entire small project.",
       },
       { type: 'h', body: 'The three AI tools this track uses' },
       {
         type: 'list',
         items: [
-          'GitHub Copilot (VS Code extension) — the fastest option if you are already in VS Code. Supports Claude 4.5, Claude 4.6, Claude 4.7, GPT-4.5, and o3 as the backing model. Switch the model in the Copilot Chat panel.',
+          'GitHub Copilot (VS Code extension) — the fastest option if you are already in VS Code. Supports Claude 4.5, Claude 4.6, Claude 4.7, ChatGPT 5.4, and Codex 5.3 as the backing model. Switch the model in the Copilot Chat panel.',
           'claude.ai — Anthropic\'s browser interface. Paste code directly. Claude 4.6 (Sonnet) is the best balance of speed and quality for code. Claude 4.7 (Opus) is slower but better at complex architecture decisions.',
-          'ChatGPT / ChatGPT with Codex — OpenAI\'s browser interface. GPT-4.5 is excellent at React and TypeScript. o3 (Codex) is a specialist code model — invoke it by selecting it from the model picker in ChatGPT.',
+          'ChatGPT / ChatGPT with Codex — OpenAI\'s browser interface. ChatGPT 5.4 is excellent at React and TypeScript. Codex 5.3 is a specialist code model — invoke it by selecting it from the model picker in ChatGPT.',
         ],
       },
       {
@@ -424,7 +424,7 @@ export const advancedLessons: LessonDef[] = [
         callout: {
           kind: 'tip',
           title: 'Which model should I pick?',
-          body: "Start with GitHub Copilot in VS Code — it has access to your entire file tree via @workspace. For complex architectural decisions, open claude.ai in a second tab and paste only the relevant files. Use o3/Codex when you need deep algorithmic logic.",
+          body: "Start with GitHub Copilot in VS Code — it has access to your entire file tree via @workspace. For complex architectural decisions, open claude.ai in a second tab and paste only the relevant files. Use Codex 5.3 when you need deep algorithmic logic.",
         },
       },
       { type: 'h', body: 'Using GitHub Copilot agent mode in VS Code' },
