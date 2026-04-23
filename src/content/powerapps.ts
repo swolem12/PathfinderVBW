@@ -121,11 +121,35 @@ export const powerAppsLessons: LessonDef[] = [
           'A container for your apps, flows, and Dataverse data. Every tenant has a Default environment. Production apps usually live in a dedicated environment so they can be promoted Dev → Test → Prod with solutions.',
       },
       {
+        type: 'powerAppsMock',
+        variant: 'home-screen',
+        caption:
+          'make.powerapps.com — the Home view. Left rail → + Create. We pick Blank canvas app.',
+        annotations: [
+          { x: 0, y: 0, label: '+ Create (rail)', note: 'Always in the left rail. Lands you on a gallery of new-app starting points.' },
+          { x: 0, y: 0, label: 'Blank canvas', note: 'Pixel-precise UI. What we want for a calendar grid.' },
+          { x: 0, y: 0, label: 'Start with data', note: 'Power Apps auto-generates a 3-screen CRUD UI from any table. Great for prototypes, wrong for this course.' },
+          { x: 0, y: 0, label: 'Blank responsive', note: 'One canvas that adapts tablet/phone/desktop via containers. Advanced — come back after you ship v1.' },
+        ],
+      },
+      {
         type: 'step',
         n: 3,
         title: 'Create a blank canvas app',
         body:
-          "Left nav → + Create → Blank canvas app. Name: EventsCalendar. Format: Tablet (wider canvas, best for calendar grids). Click Create. Power Apps Studio opens.",
+          "In Home → + Create → Blank canvas app. A dialog opens. Name: EventsCalendar. Format: Tablet (wider canvas, best for calendar grids). Click Create. Power Apps Studio opens in a new tab.",
+      },
+      {
+        type: 'powerAppsMock',
+        variant: 'create-dialog',
+        caption:
+          'The create dialog. Type the name, leave Tablet selected, click Create.',
+        annotations: [
+          { x: 0, y: 0, label: 'App name', note: 'Becomes the title bar and the default file name. You can rename later (File → Settings → Name).' },
+          { x: 0, y: 0, label: 'Tablet format', note: '1366×768 canvas. Best default for a calendar — your phone users can still open it, it just scales.' },
+          { x: 0, y: 0, label: 'Phone format', note: '640×1136 portrait. Pick this ONLY if your app is phone-first. Switching format later is painful.' },
+          { x: 0, y: 0, label: 'Create', note: 'Spins up the empty canvas and routes you to Studio in a new tab.' },
+        ],
       },
       {
         type: 'powerAppsMock',
@@ -228,9 +252,38 @@ export const powerAppsLessons: LessonDef[] = [
       {
         type: 'step',
         n: 4,
-        title: 'Connect the list to your app',
+        title: 'Open Add data in Studio',
         body:
-          "Back in Power Apps Studio: left rail → Data (cylinder icon) → + Add data → search SharePoint → pick your SharePoint connector → pick your site → pick Events → Connect. Events now appears in the Data pane with a green dot.",
+          "Back in Power Apps Studio: left rail → Data (cylinder icon) → + Add data. A search box appears — start typing 'SharePoint'. A ranked list of connectors renders below.",
+      },
+      {
+        type: 'powerAppsMock',
+        variant: 'connectors-list',
+        caption:
+          'Connector picker. Type SharePoint → click the SharePoint tile at the top.',
+        annotations: [
+          { x: 0, y: 0, label: 'Standard vs. Premium', note: 'SharePoint is Standard — included in most M365 plans. SQL and Dataverse are Premium — need a Power Apps license.' },
+          { x: 0, y: 0, label: 'Office 365 Users', note: 'Second-most-useful connector — returns User() details, photos, manager chain. We use it for the Owner avatar.' },
+          { x: 0, y: 0, label: 'Dataverse', note: "Microsoft's relational store. Come back here after you outgrow SharePoint." },
+        ],
+      },
+      {
+        type: 'step',
+        n: 5,
+        title: 'Pick your site and list',
+        body:
+          "Click SharePoint → pick an existing connection (or + New connection, sign in with your work account). Paste your site URL (e.g. https://contoso.sharepoint.com/sites/fieldops) → Connect → pick Events from the list of lists → Connect. Events now appears in the Data pane with a green dot.",
+      },
+      {
+        type: 'powerAppsMock',
+        variant: 'sharepoint-picker',
+        caption:
+          'Two-step picker. Site URL first, then the list. Connection is cached for the app.',
+        annotations: [
+          { x: 0, y: 0, label: 'Recent sites', note: 'Your own sites and sites you recently visited show as a dropdown. Paste a URL if yours is missing.' },
+          { x: 0, y: 0, label: 'List picker', note: "Shows every list and library on that site. 'Events' is what we created. Libraries (Documents) work too but treat files as rows." },
+          { x: 0, y: 0, label: 'Connect button', note: 'Creates a connection reference in your app. Reusable by any screen, any formula.' },
+        ],
       },
       {
         type: 'code',
@@ -287,6 +340,18 @@ Set(gblEventsCount, CountRows(Events))
         type: 'p',
         body:
           'A month grid is always 7 columns × 6 rows = 42 cells. It starts on the Sunday on-or-before the 1st of the month and runs forward. That trick turns the whole thing into a simple date-math loop: cell[i] = gridStart + i days.',
+      },
+      {
+        type: 'powerAppsMock',
+        variant: 'insert-menu',
+        caption:
+          'Insert → Layout → Gallery → Vertical. Galleries are the repeating control — we will use one for the 42-cell grid.',
+        annotations: [
+          { x: 0, y: 0, label: 'Search controls', note: 'Type to filter. Useful when you forget which category a control lives in.' },
+          { x: 0, y: 0, label: 'Gallery (highlighted)', note: "A repeating control. Set Items to a table and the template renders once per row. The template lives in its own sub-tree." },
+          { x: 0, y: 0, label: 'Blank vertical', note: "Also works — same gallery with no preset labels. Pick this if you want to design the day cell from scratch (what we do)." },
+          { x: 0, y: 0, label: 'WrapCount', note: "Set WrapCount = 7 on the gallery to turn a vertical list into a 7-column grid. That's the trick." },
+        ],
       },
       { type: 'h', body: 'Set up the month state in App.OnStart' },
       {
@@ -769,8 +834,276 @@ Set(locGridStart,
 
   /* ---------------------------------------------------------------- */
   {
-    id: 'style-responsive',
+    id: 'create-event-form',
     number: 7,
+    title: 'Let users create events in the app',
+    subtitle: 'A form screen with Start/End pickers, category chips, and integrated scheduling helpers.',
+    goal:
+      "Your app has a 'New event' screen with a Power Apps Form bound to Events, date/time pickers, duration shortcuts, a category picker, and a save button that writes a new row.",
+    endState:
+      "Tap + on the calendar → form opens with the selected day pre-filled. Save → the row appears in SharePoint and a new dot shows on the calendar.",
+    estMinutes: 12,
+    blocks: [
+      {
+        type: 'p',
+        body:
+          "Reading data is half the story. Real users want to schedule events from inside the app so they never leave the tab. Power Apps ships a Form control that auto-generates a CRUD UI from a data source — we'll use it, then polish it so it feels handmade.",
+      },
+      {
+        type: 'step',
+        n: 1,
+        title: 'Add a new screen',
+        body:
+          "Tree view → + New screen → Blank. Rename it NewEventScreen. Set its Fill to gblTheme.BgSoft (if you did lesson 9's theme — otherwise leave default).",
+      },
+      {
+        type: 'step',
+        n: 2,
+        title: 'Drop in a form',
+        body:
+          "Insert → Forms → Edit form. Rename it frmNewEvent. Right panel: DataSource = Events. Fields → Edit fields → add Title, Start, End, Category, Owner, Notes in that order. Layout: Vertical.",
+      },
+      {
+        type: 'step',
+        n: 3,
+        title: 'Make it a NEW record (not Edit)',
+        body:
+          "Select frmNewEvent → formula bar → pick the DefaultMode property → set it to FormMode.New. Then set Item to Defaults(Events). Without this the form thinks it's editing row 1.",
+      },
+      {
+        type: 'code',
+        block: {
+          kind: 'code',
+          language: 'powerfx',
+          title: 'Pre-fill Start with the day the user clicked',
+          body: `// On the Start DatePicker's DefaultDate property:
+If(
+  !IsBlank(gblSelectedDate),
+  gblSelectedDate + Time(9, 0, 0),   // default 9:00 AM on the selected day
+  Today() + Time(9, 0, 0)
+)
+
+// On the End DatePicker's DefaultDate property:
+If(
+  !IsBlank(gblSelectedDate),
+  gblSelectedDate + Time(10, 0, 0),  // default 1h block
+  Today() + Time(10, 0, 0)
+)`,
+        },
+      },
+      {
+        type: 'powerAppsMock',
+        variant: 'new-event-form',
+        caption:
+          'NewEventScreen — custom-styled on top of the built-in Form. Start/End pickers, duration chips, category chips, owner from User(), notify toggle.',
+        annotations: [
+          { x: 0, y: 0, label: 'Start picker', note: "DatePicker + time Dropdown. DefaultDate pre-fills the clicked day." },
+          { x: 0, y: 0, label: 'Duration chips', note: "Four Buttons: 30m, 1h, 2h, Custom. OnSelect of 1h: UpdateContext({locEnd: locStart + Time(1,0,0)}). Sets the End picker." },
+          { x: 0, y: 0, label: 'Category chips', note: "Four colored pills. OnSelect sets the Category datacard's value. Visually clearer than a Dropdown." },
+          { x: 0, y: 0, label: 'Owner', note: "Owner datacard's Default = User(). Signed-in user as default; editable." },
+          { x: 0, y: 0, label: 'Email toggle', note: "A Toggle bound to a context var. We'll read it from Power Automate next lesson." },
+          { x: 0, y: 0, label: 'Save button', note: 'OnSelect = SubmitForm(frmNewEvent). SubmitForm handles validation, write, and error messaging.' },
+        ],
+      },
+      {
+        type: 'h',
+        body: 'Integrated scheduling — three niceties that separate a prototype from a product',
+      },
+      {
+        type: 'list',
+        items: [
+          'Duration-chip math — never ask users to pick an end time. Infer it. Keep a small Collection of {label:"1h", minutes:60}; OnSelect: locEnd = locStart + Time(0, ThisItem.minutes, 0).',
+          "Collision detection — CountRows(Filter(Events, Owner.Email = User().Email && Start < locEnd && End > locStart)) > 0 means the user is double-booking. Show a warning banner next to Save.",
+          "Time-zone honesty — DateValue and Today() return values in the user's browser timezone. Store UTC in SharePoint (the default) and display in the user's tz. Don't mix.",
+        ],
+      },
+      {
+        type: 'code',
+        block: {
+          kind: 'code',
+          language: 'powerfx',
+          title: 'Open the form from the calendar and handle success/failure',
+          body: `// On the "+ New event" FAB on CalendarScreen:
+Navigate(NewEventScreen, ScreenTransition.CoverRight);
+ResetForm(frmNewEvent)
+
+// On frmNewEvent.OnSuccess (runs after a successful write):
+Set(gblLastCreatedId, frmNewEvent.LastSubmit.ID);
+Notify("Event saved", NotificationType.Success, 2000);
+Navigate(CalendarScreen, ScreenTransition.UnCoverRight)
+
+// On frmNewEvent.OnFailure:
+Notify("Couldn't save — " & frmNewEvent.Error, NotificationType.Error, 4000)`,
+        },
+      },
+      {
+        type: 'callout',
+        callout: {
+          kind: 'tip',
+          title: 'Use Patch() when the built-in Form feels too rigid',
+          body:
+            "Forms are fast to scaffold but awkward once you want custom layouts. Swap to raw Patch() once you know the shape: Patch(Events, Defaults(Events), { Title: txtTitle.Text, Start: dpStart.SelectedDate + Time(Value(ddStartHour.Selected.Value), 0, 0), End: ..., Category: { Value: locCategory }, Notes: txtNotes.Text }). Patch returns the new row — grab its ID to deep-link.",
+        },
+      },
+      {
+        type: 'powerAppsMock',
+        variant: 'app-checker',
+        caption:
+          "App Checker (shield icon, top bar) is where to go if your form won't save. It lists every formula error with the exact control and a fix hint.",
+      },
+      {
+        type: 'checklist',
+        items: [
+          'NewEventScreen has a Form bound to Events in New mode.',
+          'Start/End DatePickers pre-fill with the clicked day.',
+          'Save writes a row and navigates back — a new dot appears on that day.',
+          'App Checker is empty (0 errors, 0 warnings).',
+        ],
+      },
+    ],
+  },
+
+  /* ---------------------------------------------------------------- */
+  {
+    id: 'email-notifications',
+    number: 8,
+    title: 'Email notifications with Power Automate',
+    subtitle: 'A cloud flow that emails the Owner every time a new event is created.',
+    goal:
+      "A Power Automate flow is running in your environment that watches the Events list, looks up the owner's email, and sends a formatted Outlook email with the event details.",
+    endState:
+      'Create a new event from the app → within ~30 seconds, the Owner receives an email in Outlook with the title, time, and a direct link back to the app.',
+    estMinutes: 10,
+    blocks: [
+      {
+        type: 'p',
+        body:
+          "Power Automate is Power Apps' sibling in the Power Platform. It runs cloud flows — event-driven workflows with triggers and actions from the same 500+ connectors. The magic: a flow can be triggered by a SharePoint item creation, so you don't need to change your app at all to add notifications.",
+      },
+      {
+        type: 'jargon',
+        term: 'Cloud flow',
+        plain:
+          "A Power Automate workflow that lives in your Microsoft 365 tenant and runs in the cloud on a trigger (new SharePoint row, new email, schedule, button press, HTTP call). Each step is a connector action — 'Send an email', 'Create a Teams message', 'Post to a channel'.",
+      },
+      {
+        type: 'step',
+        n: 1,
+        title: 'Open Power Automate in the same environment',
+        body:
+          "Go to make.powerautomate.com. Confirm the environment picker (top-right) matches the one your Power App lives in. If they don't match, your flow can't see the SharePoint connection.",
+      },
+      {
+        type: 'step',
+        n: 2,
+        title: 'Create → Automated cloud flow',
+        body:
+          "+ Create → Automated cloud flow. Name: OnEventCreated. Trigger search: 'When an item is created' (SharePoint). Pick it → Create.",
+      },
+      {
+        type: 'step',
+        n: 3,
+        title: 'Configure the trigger',
+        body:
+          "Site Address: pick your SharePoint site (same one as the Events list). List Name: Events. That's the whole trigger — it fires once per new row.",
+      },
+      {
+        type: 'step',
+        n: 4,
+        title: 'Add: Get user profile (V2)',
+        body:
+          "+ New step → search 'Office 365 Users' → Get user profile (V2). User (UPN): in the dynamic content picker, pick Owner Email (from the SharePoint trigger). We need this because SharePoint only stores a claim — we want the full profile for a nicer email.",
+      },
+      {
+        type: 'step',
+        n: 5,
+        title: 'Add: Send an email (V2)',
+        body:
+          "+ New step → 'Office 365 Outlook' → Send an email (V2). To: Mail (dynamic content from the Get user profile step). Subject: 'New event: ' + Title. Body: use the dynamic picker to weave in Start, End, Category, Notes, and a hard-coded link back to the app URL.",
+      },
+      {
+        type: 'powerAppsMock',
+        variant: 'flow-designer',
+        caption:
+          'OnEventCreated — three steps: the SharePoint trigger, Office 365 Users lookup, Outlook send.',
+        annotations: [
+          { x: 0, y: 0, label: 'Trigger', note: 'When an item is created (SharePoint). Site + List only — the simplest trigger in Power Automate.' },
+          { x: 0, y: 0, label: 'Get user profile (V2)', note: 'Turns a claim/email into a full Office 365 user object. Gives you display name, photo URL, manager, timezone.' },
+          { x: 0, y: 0, label: 'Send an email (V2)', note: 'Sends FROM the flow owner (you). To send from a shared mailbox, use the shared-mailbox variant.' },
+        ],
+      },
+      {
+        type: 'code',
+        block: {
+          kind: 'code',
+          language: 'html',
+          title: 'Email body template (paste into the Send an email V2 Body field)',
+          body: `<p>Hi {Display Name},</p>
+<p>A new event has been added to <strong>EventsCalendar</strong>:</p>
+<table cellpadding="6" style="border-collapse:collapse">
+  <tr><td><strong>Title</strong></td><td>{Title}</td></tr>
+  <tr><td><strong>When</strong></td><td>{Start} – {End}</td></tr>
+  <tr><td><strong>Category</strong></td><td>{Category Value}</td></tr>
+  <tr><td><strong>Notes</strong></td><td>{Notes}</td></tr>
+</table>
+<p><a href="https://apps.powerapps.com/play/{your-app-id}">Open in Power Apps →</a></p>
+<p style="color:#888;font-size:11px">You received this because you are the Owner on the event.</p>`,
+        },
+      },
+      {
+        type: 'callout',
+        callout: {
+          kind: 'tip',
+          title: 'Dynamic content tokens vs. expressions',
+          body:
+            "The blue pills ({Title}, {Start}) are dynamic content — typed references into previous step outputs. For anything computed — e.g. formatDateTime(triggerOutputs()?['body/Start'], 'ddd MMM d, h:mm tt') — click the fx tab and write a Workflow Definition Language (WDL) expression. Start with formatDateTime(), coalesce(), and concat().",
+        },
+      },
+      {
+        type: 'step',
+        n: 6,
+        title: 'Test the flow',
+        body:
+          "Top-right → Test → Manually → Save & Test → Create a new event in your Power App. Flip back to Power Automate — you'll see a green check as each step runs. Check the Owner's inbox. Open the run history for any step's raw input/output.",
+      },
+      {
+        type: 'h',
+        body: 'Add-ons worth ten more minutes each',
+      },
+      {
+        type: 'list',
+        items: [
+          'Calendar invite instead of plain email — replace Send an email (V2) with Create event (V4) on the Office 365 Outlook connector. The Owner gets an Outlook calendar invite, blocking their time — true integrated scheduling.',
+          "Teams notification — add a parallel branch after the trigger: 'Post message in a chat or channel' (Microsoft Teams). Same Title/Start/End tokens. Your team sees events in Teams AND Outlook.",
+          "Update-event branch — add a second flow on 'When an item is modified'. Email the Owner that their event changed; if integrated with Outlook, update the existing invite instead of sending a new one (use the event's ICalUId).",
+          "Approval gate — for Category = Holiday, route through Approvals first (Start an approval → Condition → If Approved → Send email; else delete the row). Zero app-code change.",
+        ],
+      },
+      {
+        type: 'callout',
+        callout: {
+          kind: 'warn',
+          title: 'The Owner field in SharePoint is a Person, not a string',
+          body:
+            "SharePoint's Person type returns an object with Claims, DisplayName, Email, Department etc. In Power Automate, Owner Email is the right dynamic token. If you write Owner directly you get '[object Object]' in the email — a very common first-timer bug.",
+        },
+      },
+      {
+        type: 'checklist',
+        items: [
+          'Flow OnEventCreated is saved and turned on.',
+          'Creating an event in the app sends an email within ~30 seconds.',
+          'Run history shows green checks on all three steps.',
+          "I know where to add a Teams post, an Outlook calendar invite, or an approval.",
+        ],
+      },
+    ],
+  },
+
+  /* ---------------------------------------------------------------- */
+  {
+    id: 'style-responsive',
+    number: 9,
     title: 'Styling, themes, responsive',
     subtitle: "App-wide colors, icons, Fluent feel, behavior on narrow screens.",
     goal:
@@ -891,7 +1224,7 @@ Set(locGridStart,
   /* ---------------------------------------------------------------- */
   {
     id: 'publish-share',
-    number: 8,
+    number: 10,
     title: 'Publish and share',
     subtitle: 'Save → Publish → Share. Versions, data-source permissions, mobile.',
     goal:
@@ -908,13 +1241,35 @@ Set(locGridStart,
       {
         type: 'step',
         n: 1,
-        title: 'Final save + publish',
+        title: 'Run the app in Preview first (F5)',
         body:
-          "File → Save → then 'Publish this version'. Enter a release note like 'v1 — calendar grid, event dots, month nav, detail panel'. Wait for the green banner.",
+          "Top-right → ▶ (or press F5). Preview runs your app exactly as a user would see it — including all connector calls — but inside Studio. Click through: open a day, create an event, confirm the email arrives. Press Esc to exit.",
+      },
+      {
+        type: 'powerAppsMock',
+        variant: 'preview-mode',
+        caption:
+          'Preview mode. This is the real app, running against real data. Catch bugs here, not after publish.',
       },
       {
         type: 'step',
         n: 2,
+        title: 'Final save + publish',
+        body:
+          "File → Save → then 'Publish this version'. Enter a release note like 'v1 — calendar grid, event dots, month nav, detail panel, create form, email flow'. Wait for the green banner.",
+      },
+      {
+        type: 'powerAppsMock',
+        variant: 'publish-dialog',
+        caption:
+          'The publish dialog — yellow banner reminds you that sharing the app does NOT share the data. This is the #1 new-user gotcha.',
+        annotations: [
+          { x: 0, y: 0, label: 'Version notes', note: 'Appears in File → Versions. Future-you will thank present-you for writing a sentence here.' },
+        ],
+      },
+      {
+        type: 'step',
+        n: 3,
         title: 'Share',
         body:
           "File → Share. Enter a group name (e.g. 'Field Ops Team') or individual emails. Leave 'Co-owner' unchecked unless you want them to edit — most users should be 'User (can run)'.",
@@ -941,14 +1296,21 @@ Set(locGridStart,
       },
       {
         type: 'step',
-        n: 3,
-        title: 'Mobile — install the Power Apps app',
+        n: 4,
+        title: "Don't forget: share the flow's run-only users too",
         body:
-          "Users can open the web URL, or install Power Apps from the iOS/Android store and sign in. Your app shows in their library. The tablet canvas scales down; if you did lesson 7, it stacks on narrow screens.",
+          "If your users create events, your OnEventCreated flow runs as YOU by default, not them. That's fine for email-on-create. If you want per-user flows (e.g. approvals), open Power Automate → your flow → Edit → Run only users → add the same group. Your app users can now trigger flows in their own name.",
       },
       {
         type: 'step',
-        n: 4,
+        n: 5,
+        title: 'Mobile — install the Power Apps app',
+        body:
+          "Users can open the web URL, or install Power Apps from the iOS/Android store and sign in. Your app shows in their library. The tablet canvas scales down; if you did lesson 9, it stacks on narrow screens.",
+      },
+      {
+        type: 'step',
+        n: 6,
         title: 'Iterate — v2, v3, rollback',
         body:
           "Back in Studio, edit Draft, publish v2. Users on the same URL get v2 automatically. Need to roll back? File → Versions → pick the old version → Restore → Publish. Rolling back takes ~5 seconds.",
@@ -957,10 +1319,10 @@ Set(locGridStart,
       {
         type: 'list',
         items: [
-          'Add a create-event form: Insert → Form → DataSource = Events → Item = Defaults(Events). Wire a Floating action button.',
-          'Add Power Automate: trigger a flow when a new event is created to email the Owner.',
-          'Package your app as a Solution for promotion between environments (Dev → Test → Prod).',
+          'Package your app AND flow as a Solution for promotion between environments (Dev → Test → Prod).',
           'Swap SharePoint for Dataverse when your event count passes a few thousand or you need real relationships.',
+          'Add a RecurrencePattern column + a daily Power Automate flow that materializes tomorrow\'s recurring events.',
+          'Embed the calendar in a Teams tab — Teams admin center → Manage apps → Upload a Power App.',
           'Add Copilot — Power Apps ships a Copilot that can answer "what events do I have next week" over your data.',
         ],
       },

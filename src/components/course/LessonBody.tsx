@@ -2121,6 +2121,16 @@ type PowerAppsMockVariant =
   | 'calendar-preview'
   | 'calendar-live'
   | 'share-dialog'
+  | 'home-screen'
+  | 'create-dialog'
+  | 'connectors-list'
+  | 'sharepoint-picker'
+  | 'insert-menu'
+  | 'preview-mode'
+  | 'publish-dialog'
+  | 'app-checker'
+  | 'flow-designer'
+  | 'new-event-form'
 
 function PowerAppsChrome({
   title,
@@ -2936,6 +2946,1356 @@ function PowerAppsShareDialogMock() {
   )
 }
 
+/* --- New variants: onboarding + workflow mocks --- */
+
+function PowerAppsHomeScreenMock() {
+  const cards = [
+    { title: 'Start with a page design', sub: 'Model-driven · Dataverse', tag: 'App from template' },
+    { title: 'Start with data', sub: 'Canvas · pick an existing table', tag: 'Auto-generated UI' },
+    { title: 'Blank canvas app', sub: 'Pick a format, design from scratch', tag: "We click this", highlight: true },
+    { title: 'Blank responsive app', sub: 'Adapts to tablet / phone / desktop', tag: 'One canvas, all sizes' },
+  ]
+  const rail = [
+    { i: '＋', l: 'Create', active: true },
+    { i: '⌂', l: 'Home' },
+    { i: '✦', l: 'Learn' },
+    { i: '▦', l: 'Apps' },
+    { i: '☰', l: 'Tables' },
+    { i: '⇆', l: 'Flows' },
+    { i: '◎', l: 'Solutions' },
+  ]
+
+  return (
+    <PowerAppsChrome title="make.powerapps.com" app="Power Apps">
+      <div className="grid" style={{ gridTemplateColumns: '180px 1fr', minHeight: 340, background: '#faf9f8' }}>
+        {/* Left rail */}
+        <div style={{ borderRight: '1px solid #e1dfdd', background: '#ffffff', padding: '14px 0' }}>
+          {rail.map((r) => (
+            <div
+              key={r.l}
+              className="flex items-center gap-3 px-4 py-2.5"
+              style={{
+                fontSize: 12,
+                fontFamily: 'var(--font-body)',
+                color: r.active ? '#0078d4' : '#201f1e',
+                background: r.active ? '#deecf9' : 'transparent',
+                borderLeft: r.active ? '3px solid #0078d4' : '3px solid transparent',
+              }}
+            >
+              <span style={{ width: 16, textAlign: 'center', color: r.active ? '#0078d4' : '#605e5c' }}>
+                {r.i}
+              </span>
+              {r.l}
+            </div>
+          ))}
+        </div>
+
+        {/* Main */}
+        <div style={{ padding: '20px 28px' }}>
+          <p style={{ fontSize: 11, color: '#605e5c', letterSpacing: '0.04em', marginBottom: 4 }}>
+            + Create
+          </p>
+          <p
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 20,
+              color: '#201f1e',
+              fontWeight: 600,
+              marginBottom: 20,
+            }}
+          >
+            Create your own app
+          </p>
+          <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(4, minmax(0, 1fr))' }}>
+            {cards.map((c) => (
+              <div
+                key={c.title}
+                style={{
+                  background: '#ffffff',
+                  border: c.highlight ? '2px solid #0078d4' : '1px solid #e1dfdd',
+                  borderRadius: 4,
+                  padding: '14px 14px 16px',
+                  position: 'relative',
+                }}
+              >
+                {c.highlight && (
+                  <span
+                    style={{
+                      position: 'absolute',
+                      top: -10,
+                      left: 10,
+                      background: '#0078d4',
+                      color: '#fff',
+                      fontSize: 9,
+                      padding: '2px 6px',
+                      borderRadius: 2,
+                      letterSpacing: '0.1em',
+                    }}
+                  >
+                    START HERE
+                  </span>
+                )}
+                <div
+                  style={{
+                    width: 28,
+                    height: 28,
+                    background: c.highlight ? '#deecf9' : '#f3f2f1',
+                    borderRadius: 2,
+                    marginBottom: 10,
+                  }}
+                />
+                <p
+                  style={{
+                    fontFamily: 'var(--font-body)',
+                    fontSize: 13,
+                    color: '#201f1e',
+                    fontWeight: 600,
+                    marginBottom: 4,
+                  }}
+                >
+                  {c.title}
+                </p>
+                <p style={{ fontSize: 11, color: '#605e5c', lineHeight: 1.45 }}>{c.sub}</p>
+                <p
+                  style={{
+                    marginTop: 8,
+                    fontSize: 10,
+                    color: c.highlight ? '#0078d4' : '#8a8886',
+                    letterSpacing: '0.04em',
+                  }}
+                >
+                  {c.tag}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </PowerAppsChrome>
+  )
+}
+
+function PowerAppsCreateDialogMock() {
+  return (
+    <PowerAppsChrome title="Blank canvas app" app="Power Apps">
+      <div
+        style={{
+          position: 'relative',
+          minHeight: 320,
+          background: 'rgba(32,31,30,0.45)',
+          padding: 28,
+        }}
+      >
+        {/* Modal */}
+        <div
+          style={{
+            maxWidth: 480,
+            margin: '0 auto',
+            background: '#ffffff',
+            border: '1px solid #c8c6c4',
+            borderRadius: 4,
+            padding: '22px 24px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
+          }}
+        >
+          <p
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 16,
+              fontWeight: 600,
+              color: '#201f1e',
+              marginBottom: 16,
+            }}
+          >
+            Blank canvas app
+          </p>
+
+          <label style={{ fontSize: 11, color: '#605e5c', letterSpacing: '0.04em' }}>App name *</label>
+          <div
+            style={{
+              border: '1px solid #0078d4',
+              background: '#fff',
+              padding: '8px 10px',
+              marginTop: 4,
+              marginBottom: 18,
+              borderRadius: 2,
+              fontSize: 13,
+              color: '#201f1e',
+              fontFamily: 'var(--font-body)',
+            }}
+          >
+            EventsCalendar<span style={{ color: '#0078d4' }}>|</span>
+          </div>
+
+          <label style={{ fontSize: 11, color: '#605e5c', letterSpacing: '0.04em' }}>Format</label>
+          <div className="flex gap-2" style={{ marginTop: 6, marginBottom: 22 }}>
+            {['Tablet', 'Phone'].map((f, i) => (
+              <div
+                key={f}
+                style={{
+                  flex: 1,
+                  border: i === 0 ? '2px solid #0078d4' : '1px solid #c8c6c4',
+                  background: i === 0 ? '#deecf9' : '#fff',
+                  padding: '10px 12px',
+                  borderRadius: 2,
+                  fontSize: 12,
+                  color: '#201f1e',
+                  fontFamily: 'var(--font-body)',
+                }}
+              >
+                <div
+                  style={{
+                    width: i === 0 ? 36 : 16,
+                    height: 22,
+                    border: '1.5px solid ' + (i === 0 ? '#0078d4' : '#8a8886'),
+                    borderRadius: 2,
+                    marginBottom: 6,
+                  }}
+                />
+                {f}
+                {i === 0 && (
+                  <span style={{ fontSize: 10, color: '#0078d4', marginLeft: 6, letterSpacing: '0.06em' }}>
+                    · Selected
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div className="flex justify-end gap-2">
+            <div
+              style={{
+                padding: '7px 14px',
+                border: '1px solid #8a8886',
+                borderRadius: 2,
+                fontSize: 12,
+                color: '#201f1e',
+                fontFamily: 'var(--font-body)',
+              }}
+            >
+              Cancel
+            </div>
+            <div
+              style={{
+                padding: '7px 16px',
+                background: '#0078d4',
+                color: '#fff',
+                borderRadius: 2,
+                fontSize: 12,
+                fontFamily: 'var(--font-body)',
+                fontWeight: 600,
+              }}
+            >
+              Create
+            </div>
+          </div>
+        </div>
+      </div>
+    </PowerAppsChrome>
+  )
+}
+
+function PowerAppsConnectorsListMock() {
+  const connectors = [
+    { n: 'SharePoint', sub: 'Standard · Microsoft', selected: true, color: '#036c70' },
+    { n: 'Office 365 Users', sub: 'Standard · Microsoft', color: '#0078d4' },
+    { n: 'Dataverse', sub: 'Premium · Microsoft', color: '#742774' },
+    { n: 'SQL Server', sub: 'Premium · Microsoft', color: '#a4262c' },
+    { n: 'OneDrive for Business', sub: 'Standard · Microsoft', color: '#0364b8' },
+    { n: 'Excel Online (Business)', sub: 'Standard · Microsoft', color: '#217346' },
+  ]
+  return (
+    <PowerAppsChrome title="Add data" app="Data">
+      <div style={{ padding: 18, background: '#faf9f8', minHeight: 340 }}>
+        {/* Search */}
+        <div
+          style={{
+            background: '#fff',
+            border: '1px solid #0078d4',
+            borderRadius: 2,
+            padding: '7px 10px',
+            fontSize: 12,
+            color: '#201f1e',
+            marginBottom: 16,
+            fontFamily: 'var(--font-body)',
+          }}
+        >
+          🔍 <span style={{ color: '#201f1e' }}>SharePoint</span>
+          <span style={{ color: '#0078d4' }}>|</span>
+        </div>
+        <p style={{ fontSize: 11, color: '#605e5c', letterSpacing: '0.04em', marginBottom: 10 }}>
+          Connectors · showing results for "SharePoint"
+        </p>
+        <div className="grid gap-px" style={{ background: '#e1dfdd', border: '1px solid #e1dfdd' }}>
+          {connectors.map((c) => (
+            <div
+              key={c.n}
+              className="flex items-center gap-3"
+              style={{
+                background: c.selected ? '#deecf9' : '#ffffff',
+                padding: '10px 12px',
+              }}
+            >
+              <span
+                style={{
+                  width: 26,
+                  height: 26,
+                  background: c.color,
+                  borderRadius: 2,
+                  display: 'inline-block',
+                }}
+              />
+              <div className="flex-1">
+                <p
+                  style={{
+                    fontFamily: 'var(--font-body)',
+                    fontSize: 13,
+                    color: '#201f1e',
+                    fontWeight: c.selected ? 600 : 500,
+                  }}
+                >
+                  {c.n}
+                </p>
+                <p style={{ fontSize: 10, color: '#605e5c' }}>{c.sub}</p>
+              </div>
+              {c.selected && (
+                <span
+                  style={{
+                    fontSize: 10,
+                    letterSpacing: '0.08em',
+                    padding: '3px 8px',
+                    background: '#0078d4',
+                    color: '#fff',
+                    borderRadius: 2,
+                  }}
+                >
+                  CLICK
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </PowerAppsChrome>
+  )
+}
+
+function PowerAppsSharepointPickerMock() {
+  const lists = [
+    { n: 'Documents', sub: 'Document library · 412 items' },
+    { n: 'Events', sub: 'Custom list · 5 items', selected: true },
+    { n: 'Tasks', sub: 'Custom list · 28 items' },
+    { n: 'Announcements', sub: 'Custom list · 3 items' },
+  ]
+  return (
+    <PowerAppsChrome title="Connect · SharePoint" app="Data">
+      <div
+        className="grid gap-4"
+        style={{ gridTemplateColumns: '1fr 1fr', padding: 16, background: '#faf9f8' }}
+      >
+        {/* Step 1 */}
+        <div
+          style={{
+            background: '#ffffff',
+            border: '1px solid #e1dfdd',
+            borderRadius: 4,
+            padding: '14px 16px',
+          }}
+        >
+          <p style={{ fontSize: 10, color: '#0078d4', letterSpacing: '0.08em', marginBottom: 6 }}>
+            STEP 1 OF 2
+          </p>
+          <p
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 14,
+              fontWeight: 600,
+              color: '#201f1e',
+              marginBottom: 12,
+            }}
+          >
+            Connect to a SharePoint site
+          </p>
+          <label style={{ fontSize: 11, color: '#605e5c' }}>Recent sites</label>
+          <div
+            style={{
+              border: '1px solid #c8c6c4',
+              borderRadius: 2,
+              padding: '8px 10px',
+              marginTop: 6,
+              fontSize: 12,
+              color: '#201f1e',
+              background: '#fff',
+              fontFamily: 'var(--font-mono)',
+            }}
+          >
+            https://contoso.sharepoint.com/sites/fieldops
+          </div>
+          <div
+            style={{
+              marginTop: 14,
+              padding: '7px 14px',
+              background: '#0078d4',
+              color: '#fff',
+              borderRadius: 2,
+              fontSize: 12,
+              fontFamily: 'var(--font-body)',
+              fontWeight: 600,
+              textAlign: 'center',
+              width: 'fit-content',
+            }}
+          >
+            Connect →
+          </div>
+        </div>
+
+        {/* Step 2 */}
+        <div
+          style={{
+            background: '#ffffff',
+            border: '1px solid #e1dfdd',
+            borderRadius: 4,
+            padding: '14px 16px',
+          }}
+        >
+          <p style={{ fontSize: 10, color: '#0078d4', letterSpacing: '0.08em', marginBottom: 6 }}>
+            STEP 2 OF 2
+          </p>
+          <p
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 14,
+              fontWeight: 600,
+              color: '#201f1e',
+              marginBottom: 12,
+            }}
+          >
+            Choose a list
+          </p>
+          <div className="grid gap-px" style={{ background: '#e1dfdd', border: '1px solid #e1dfdd' }}>
+            {lists.map((l) => (
+              <div
+                key={l.n}
+                className="flex items-center gap-2"
+                style={{
+                  background: l.selected ? '#deecf9' : '#fff',
+                  padding: '8px 10px',
+                }}
+              >
+                <span
+                  style={{
+                    width: 12,
+                    height: 12,
+                    border: l.selected ? '4px solid #0078d4' : '1px solid #8a8886',
+                    borderRadius: 12,
+                    display: 'inline-block',
+                  }}
+                />
+                <div>
+                  <p style={{ fontSize: 12, color: '#201f1e', fontWeight: l.selected ? 600 : 500 }}>
+                    {l.n}
+                  </p>
+                  <p style={{ fontSize: 10, color: '#605e5c' }}>{l.sub}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div
+            style={{
+              marginTop: 14,
+              padding: '7px 14px',
+              background: '#0078d4',
+              color: '#fff',
+              borderRadius: 2,
+              fontSize: 12,
+              fontFamily: 'var(--font-body)',
+              fontWeight: 600,
+              textAlign: 'center',
+              width: 'fit-content',
+            }}
+          >
+            Connect
+          </div>
+        </div>
+      </div>
+    </PowerAppsChrome>
+  )
+}
+
+function PowerAppsInsertMenuMock() {
+  const cats = [
+    { h: 'Popular', items: ['Label', 'Text input', 'Button', 'Icon'] },
+    { h: 'Layout', items: ['Container', 'Horizontal', 'Vertical', 'Gallery'], highlight: 'Gallery' },
+    { h: 'Input', items: ['Date picker', 'Dropdown', 'Combo box', 'Toggle'] },
+    { h: 'Display', items: ['Image', 'HTML text', 'Rich text', 'Rating'] },
+  ]
+  return (
+    <PowerAppsChrome title="Insert" app="Power Apps Studio">
+      <div className="grid" style={{ gridTemplateColumns: '240px 1fr', minHeight: 340 }}>
+        {/* Left: search + categories */}
+        <div style={{ background: '#fff', borderRight: '1px solid #e1dfdd', padding: 14 }}>
+          <div
+            style={{
+              border: '1px solid #c8c6c4',
+              borderRadius: 2,
+              padding: '6px 8px',
+              fontSize: 11,
+              color: '#8a8886',
+              marginBottom: 14,
+              fontFamily: 'var(--font-body)',
+            }}
+          >
+            🔍 Search controls
+          </div>
+          {cats.map((c) => (
+            <div key={c.h} style={{ marginBottom: 14 }}>
+              <p
+                style={{
+                  fontSize: 10,
+                  letterSpacing: '0.12em',
+                  color: '#605e5c',
+                  marginBottom: 6,
+                  textTransform: 'uppercase',
+                }}
+              >
+                {c.h}
+              </p>
+              {c.items.map((i) => {
+                const hot = c.highlight === i
+                return (
+                  <div
+                    key={i}
+                    className="flex items-center gap-2"
+                    style={{
+                      padding: '5px 6px',
+                      fontSize: 12,
+                      color: hot ? '#0078d4' : '#201f1e',
+                      background: hot ? '#deecf9' : 'transparent',
+                      borderLeft: hot ? '2px solid #0078d4' : '2px solid transparent',
+                      fontWeight: hot ? 600 : 400,
+                      fontFamily: 'var(--font-body)',
+                    }}
+                  >
+                    <span
+                      style={{
+                        width: 14,
+                        height: 14,
+                        background: '#f3f2f1',
+                        border: '1px solid #c8c6c4',
+                        borderRadius: 1,
+                        display: 'inline-block',
+                      }}
+                    />
+                    {i}
+                  </div>
+                )
+              })}
+            </div>
+          ))}
+        </div>
+
+        {/* Right: Gallery submenu */}
+        <div style={{ padding: 18, background: '#faf9f8' }}>
+          <p
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 13,
+              fontWeight: 600,
+              color: '#201f1e',
+              marginBottom: 4,
+            }}
+          >
+            Gallery
+          </p>
+          <p style={{ fontSize: 11, color: '#605e5c', marginBottom: 14, lineHeight: 1.45 }}>
+            A repeating control. Set the Items property to a table; the template renders once per row.
+          </p>
+          <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
+            {[
+              { n: 'Vertical', pick: true },
+              { n: 'Horizontal' },
+              { n: 'Flexible height' },
+              { n: 'Blank vertical', pick: true },
+              { n: 'Blank horizontal' },
+              { n: 'Blank flexible' },
+            ].map((g) => (
+              <div
+                key={g.n}
+                style={{
+                  background: '#fff',
+                  border: g.pick ? '2px solid #0078d4' : '1px solid #e1dfdd',
+                  borderRadius: 2,
+                  padding: '10px 12px',
+                }}
+              >
+                <div
+                  style={{
+                    height: 46,
+                    background: '#f3f2f1',
+                    border: '1px solid #e1dfdd',
+                    borderRadius: 1,
+                    marginBottom: 8,
+                    position: 'relative',
+                  }}
+                >
+                  {[0, 1, 2].map((r) => (
+                    <div
+                      key={r}
+                      style={{
+                        position: 'absolute',
+                        left: 4,
+                        right: 4,
+                        top: 4 + r * 13,
+                        height: 10,
+                        background: '#e1dfdd',
+                        borderRadius: 1,
+                      }}
+                    />
+                  ))}
+                </div>
+                <p style={{ fontSize: 11, color: g.pick ? '#0078d4' : '#201f1e', fontWeight: g.pick ? 600 : 500 }}>
+                  {g.n}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </PowerAppsChrome>
+  )
+}
+
+function PowerAppsPreviewModeMock() {
+  return (
+    <PowerAppsChrome title="EventsCalendar · Preview (F5)" app="Power Apps">
+      <div
+        style={{
+          background: '#605e5c',
+          padding: '24px 24px 28px',
+          minHeight: 380,
+          position: 'relative',
+        }}
+      >
+        {/* Close X */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 12,
+            right: 12,
+            width: 28,
+            height: 28,
+            background: '#201f1e',
+            color: '#fff',
+            borderRadius: 2,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: 14,
+            fontFamily: 'var(--font-mono)',
+          }}
+        >
+          ×
+        </div>
+        <p
+          style={{
+            fontSize: 10,
+            color: '#fff',
+            letterSpacing: '0.14em',
+            marginBottom: 12,
+            opacity: 0.8,
+          }}
+        >
+          PREVIEW · BEHAVES EXACTLY LIKE THE PUBLISHED APP · PRESS ESC TO EXIT
+        </p>
+
+        {/* Device frame */}
+        <div
+          style={{
+            margin: '0 auto',
+            maxWidth: 560,
+            background: '#201f1e',
+            padding: 10,
+            borderRadius: 8,
+            boxShadow: '0 6px 20px rgba(0,0,0,0.35)',
+          }}
+        >
+          <div
+            style={{
+              background: '#faf9f8',
+              borderRadius: 4,
+              padding: '16px 18px',
+              minHeight: 280,
+            }}
+          >
+            <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
+              <span
+                style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 15,
+                  fontWeight: 600,
+                  color: '#201f1e',
+                }}
+              >
+                April 2026
+              </span>
+              <span style={{ fontSize: 11, color: '#605e5c' }}>◀  Today  ▶</span>
+            </div>
+            <div className="grid" style={{ gridTemplateColumns: 'repeat(7, 1fr)', gap: 2 }}>
+              {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d) => (
+                <div
+                  key={d}
+                  style={{
+                    fontSize: 10,
+                    color: '#605e5c',
+                    textAlign: 'center',
+                    letterSpacing: '0.06em',
+                    paddingBottom: 4,
+                  }}
+                >
+                  {d}
+                </div>
+              ))}
+              {Array.from({ length: 30 }).map((_, i) => {
+                const n = i + 1
+                const today = n === 23
+                const hasEvents = [2, 7, 10, 15, 17, 22, 25, 28].includes(n)
+                return (
+                  <div
+                    key={n}
+                    style={{
+                      height: 28,
+                      background: today ? '#0078d4' : '#fff',
+                      color: today ? '#fff' : '#201f1e',
+                      border: '1px solid #edebe9',
+                      fontSize: 11,
+                      textAlign: 'center',
+                      paddingTop: 2,
+                      position: 'relative',
+                    }}
+                  >
+                    {n}
+                    {hasEvents && !today && (
+                      <span
+                        style={{
+                          position: 'absolute',
+                          bottom: 2,
+                          left: '50%',
+                          transform: 'translateX(-50%)',
+                          width: 4,
+                          height: 4,
+                          background: '#0078d4',
+                          borderRadius: 4,
+                        }}
+                      />
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+    </PowerAppsChrome>
+  )
+}
+
+function PowerAppsPublishDialogMock() {
+  return (
+    <PowerAppsChrome title="Publish · EventsCalendar" app="Power Apps">
+      <div
+        style={{
+          position: 'relative',
+          minHeight: 340,
+          background: 'rgba(32,31,30,0.45)',
+          padding: 28,
+        }}
+      >
+        <div
+          style={{
+            maxWidth: 520,
+            margin: '0 auto',
+            background: '#fff',
+            border: '1px solid #c8c6c4',
+            borderRadius: 4,
+            padding: '22px 24px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
+          }}
+        >
+          <p
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 16,
+              fontWeight: 600,
+              color: '#201f1e',
+              marginBottom: 10,
+            }}
+          >
+            Publish this version
+          </p>
+          <p style={{ fontSize: 12, color: '#605e5c', lineHeight: 1.55, marginBottom: 16 }}>
+            Users who already have access will see <strong style={{ color: '#201f1e' }}>v1.0.2</strong>
+            {' '}the next time they open the app. You can restore a previous version at any time.
+          </p>
+
+          <label style={{ fontSize: 11, color: '#605e5c', letterSpacing: '0.04em' }}>
+            Version notes (optional)
+          </label>
+          <div
+            style={{
+              border: '1px solid #0078d4',
+              background: '#fff',
+              padding: '8px 10px',
+              marginTop: 4,
+              marginBottom: 18,
+              borderRadius: 2,
+              fontSize: 12,
+              color: '#201f1e',
+              fontFamily: 'var(--font-body)',
+              minHeight: 60,
+            }}
+          >
+            v1 — calendar grid, event dots, month nav, detail panel, Fluent theme.
+          </div>
+
+          <div
+            style={{
+              background: '#fff4ce',
+              border: '1px solid #fde293',
+              padding: '8px 10px',
+              fontSize: 11,
+              color: '#8a6116',
+              borderRadius: 2,
+              marginBottom: 16,
+              lineHeight: 1.5,
+            }}
+          >
+            ⚠ Sharing the app does not grant access to its data sources. Make sure your users have
+            Read on the Events SharePoint list.
+          </div>
+
+          <div className="flex justify-end gap-2">
+            <div
+              style={{
+                padding: '7px 14px',
+                border: '1px solid #8a8886',
+                borderRadius: 2,
+                fontSize: 12,
+                color: '#201f1e',
+                fontFamily: 'var(--font-body)',
+              }}
+            >
+              Cancel
+            </div>
+            <div
+              style={{
+                padding: '7px 16px',
+                background: '#0078d4',
+                color: '#fff',
+                borderRadius: 2,
+                fontSize: 12,
+                fontFamily: 'var(--font-body)',
+                fontWeight: 600,
+              }}
+            >
+              Publish this version
+            </div>
+          </div>
+        </div>
+      </div>
+    </PowerAppsChrome>
+  )
+}
+
+function PowerAppsAppCheckerMock() {
+  const issues = [
+    {
+      kind: 'error',
+      ctl: 'GalleryDays.Items',
+      msg: 'Name isn\'t valid. "locGridStart" isn\'t recognized.',
+      hint: 'Define it in App.OnStart first, then Run OnStart from the App menu.',
+    },
+    {
+      kind: 'warning',
+      ctl: 'galDots.Items',
+      msg: 'Delegation warning — DateValue(Start) not delegable to SharePoint.',
+      hint: 'Acceptable for < 500 rows per query. Otherwise, ClearCollect a local copy.',
+    },
+    {
+      kind: 'info',
+      ctl: 'App.OnStart',
+      msg: 'Consider using named formulas for gblTheme (read-only, cached).',
+      hint: 'File → Settings → Upcoming features → Named formulas = On.',
+    },
+  ]
+  const color = (k: string) =>
+    k === 'error' ? '#a80000' : k === 'warning' ? '#8a6116' : '#0078d4'
+  const bg = (k: string) =>
+    k === 'error' ? '#fde7e9' : k === 'warning' ? '#fff4ce' : '#deecf9'
+  const icon = (k: string) => (k === 'error' ? '✕' : k === 'warning' ? '⚠' : 'ℹ')
+
+  return (
+    <PowerAppsChrome title="App checker" app="Power Apps Studio">
+      <div style={{ padding: 0, background: '#faf9f8' }}>
+        <div
+          className="flex items-center gap-4 px-3 py-1.5"
+          style={{ borderBottom: '1px solid #e1dfdd', background: '#fff', fontSize: 11 }}
+        >
+          {['Formulas', 'Rules', 'Performance', 'Runtime'].map((t, i) => (
+            <span
+              key={t}
+              style={{
+                color: i === 0 ? '#0078d4' : '#605e5c',
+                borderBottom: i === 0 ? '2px solid #0078d4' : '2px solid transparent',
+                paddingBottom: 2,
+              }}
+            >
+              {t} {i === 0 && '(3)'}
+            </span>
+          ))}
+        </div>
+
+        <div className="grid gap-px" style={{ background: '#e1dfdd', padding: '0 0 1px' }}>
+          {issues.map((it, i) => (
+            <div key={i} style={{ background: '#fff', padding: '12px 14px' }}>
+              <div className="flex items-start gap-3">
+                <span
+                  style={{
+                    width: 22,
+                    height: 22,
+                    borderRadius: 22,
+                    background: bg(it.kind),
+                    color: color(it.kind),
+                    fontSize: 12,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontWeight: 600,
+                    flexShrink: 0,
+                  }}
+                >
+                  {icon(it.kind)}
+                </span>
+                <div className="flex-1">
+                  <p
+                    style={{
+                      fontSize: 10,
+                      letterSpacing: '0.12em',
+                      color: color(it.kind),
+                      textTransform: 'uppercase',
+                      marginBottom: 2,
+                    }}
+                  >
+                    {it.kind} · {it.ctl}
+                  </p>
+                  <p
+                    style={{
+                      fontFamily: 'var(--font-body)',
+                      fontSize: 13,
+                      color: '#201f1e',
+                      marginBottom: 4,
+                    }}
+                  >
+                    {it.msg}
+                  </p>
+                  <p style={{ fontSize: 11, color: '#605e5c', lineHeight: 1.5 }}>{it.hint}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </PowerAppsChrome>
+  )
+}
+
+/* --- Power Automate flow designer + in-app create-event form --- */
+
+function PowerAppsFlowDesignerMock() {
+  const steps = [
+    {
+      role: 'TRIGGER',
+      tag: 'SharePoint',
+      tagColor: '#036c70',
+      title: 'When an item is created',
+      sub: 'Site Address · Contoso / Field Ops   List Name · Events',
+      pick: ['Site Address', 'List Name'],
+    },
+    {
+      role: 'ACTION 1',
+      tag: 'Office 365 Users',
+      tagColor: '#0078d4',
+      title: 'Get user profile (V2)',
+      sub: 'User (UPN) · triggerOutputs()?[\'body/Owner/Email\']',
+      pick: ['User (UPN)'],
+    },
+    {
+      role: 'ACTION 2',
+      tag: 'Office 365 Outlook',
+      tagColor: '#0078d4',
+      title: 'Send an email (V2)',
+      sub: 'To · Owner  ·  Subject · "New event: " + Title  ·  Body · Start, End, Notes',
+      pick: ['To', 'Subject', 'Body'],
+    },
+  ]
+  return (
+    <PowerAppsChrome title="OnEventCreated · Automated cloud flow" app="Power Automate">
+      <div style={{ padding: 20, background: '#faf9f8' }}>
+        {steps.map((s, i) => (
+          <div key={s.title} style={{ position: 'relative' }}>
+            <div
+              style={{
+                background: '#fff',
+                border: '1px solid #e1dfdd',
+                borderRadius: 4,
+                padding: '14px 16px',
+                maxWidth: 560,
+                margin: '0 auto',
+                boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
+              }}
+            >
+              <div className="flex items-center gap-2" style={{ marginBottom: 6 }}>
+                <span
+                  style={{
+                    fontSize: 9,
+                    letterSpacing: '0.14em',
+                    background: s.role === 'TRIGGER' ? '#107c10' : '#605e5c',
+                    color: '#fff',
+                    padding: '2px 8px',
+                    borderRadius: 2,
+                  }}
+                >
+                  {s.role}
+                </span>
+                <span
+                  style={{
+                    fontSize: 10,
+                    letterSpacing: '0.08em',
+                    color: '#fff',
+                    background: s.tagColor,
+                    padding: '2px 8px',
+                    borderRadius: 2,
+                  }}
+                >
+                  {s.tag}
+                </span>
+              </div>
+              <p
+                style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 14,
+                  fontWeight: 600,
+                  color: '#201f1e',
+                  marginBottom: 6,
+                }}
+              >
+                {s.title}
+              </p>
+              <p
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 11,
+                  color: '#605e5c',
+                  lineHeight: 1.55,
+                  marginBottom: 10,
+                }}
+              >
+                {s.sub}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {s.pick.map((p) => (
+                  <span
+                    key={p}
+                    style={{
+                      fontSize: 10,
+                      letterSpacing: '0.08em',
+                      padding: '3px 8px',
+                      background: '#deecf9',
+                      color: '#0078d4',
+                      borderRadius: 2,
+                      border: '1px solid #c7e0f4',
+                    }}
+                  >
+                    {p}
+                  </span>
+                ))}
+              </div>
+            </div>
+            {i < steps.length - 1 && (
+              <div
+                aria-hidden
+                style={{
+                  width: 2,
+                  height: 24,
+                  background: '#c8c6c4',
+                  margin: '4px auto',
+                }}
+              />
+            )}
+          </div>
+        ))}
+
+        <div
+          style={{
+            marginTop: 18,
+            padding: '10px 14px',
+            border: '1px dashed #107c10',
+            background: '#dff6dd',
+            color: '#0b6a0b',
+            fontSize: 11,
+            fontFamily: 'var(--font-mono)',
+            textAlign: 'center',
+            borderRadius: 2,
+          }}
+        >
+          ✓ Flow saved. Runs automatically every time a new Events row is created — including rows
+          created from the Power App.
+        </div>
+      </div>
+    </PowerAppsChrome>
+  )
+}
+
+function PowerAppsNewEventFormMock() {
+  return (
+    <PowerAppsChrome title="New event · frmNewEvent" app="Power Apps Studio">
+      <div
+        style={{
+          padding: 20,
+          background: '#faf9f8',
+          minHeight: 360,
+        }}
+      >
+        <div
+          style={{
+            margin: '0 auto',
+            maxWidth: 460,
+            background: '#fff',
+            border: '1px solid #e1dfdd',
+            borderRadius: 4,
+            padding: '18px 20px',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+          }}
+        >
+          <p
+            style={{
+              fontSize: 10,
+              letterSpacing: '0.14em',
+              color: '#0078d4',
+              marginBottom: 6,
+            }}
+          >
+            FRIDAY · APRIL 17 · 2026
+          </p>
+          <p
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 18,
+              fontWeight: 600,
+              color: '#201f1e',
+              marginBottom: 16,
+            }}
+          >
+            New event
+          </p>
+
+          {/* Title */}
+          <label style={{ fontSize: 11, color: '#605e5c' }}>Title *</label>
+          <div
+            style={{
+              border: '1px solid #c8c6c4',
+              borderRadius: 2,
+              padding: '7px 10px',
+              fontSize: 13,
+              color: '#201f1e',
+              marginTop: 4,
+              marginBottom: 12,
+              fontFamily: 'var(--font-body)',
+            }}
+          >
+            Vendor demo · calendar v2
+          </div>
+
+          {/* Date row */}
+          <div className="grid gap-3" style={{ gridTemplateColumns: '1fr 1fr' }}>
+            <div>
+              <label style={{ fontSize: 11, color: '#605e5c' }}>Start</label>
+              <div
+                className="flex items-center justify-between"
+                style={{
+                  border: '1px solid #0078d4',
+                  borderRadius: 2,
+                  padding: '7px 10px',
+                  fontSize: 13,
+                  marginTop: 4,
+                  marginBottom: 12,
+                  fontFamily: 'var(--font-body)',
+                }}
+              >
+                <span>Fri, Apr 17 · 11:30 AM</span>
+                <span style={{ color: '#0078d4' }}>▾</span>
+              </div>
+            </div>
+            <div>
+              <label style={{ fontSize: 11, color: '#605e5c' }}>End</label>
+              <div
+                className="flex items-center justify-between"
+                style={{
+                  border: '1px solid #c8c6c4',
+                  borderRadius: 2,
+                  padding: '7px 10px',
+                  fontSize: 13,
+                  marginTop: 4,
+                  marginBottom: 12,
+                  fontFamily: 'var(--font-body)',
+                }}
+              >
+                <span>Fri, Apr 17 · 12:30 PM</span>
+                <span style={{ color: '#8a8886' }}>▾</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Duration helper */}
+          <p style={{ fontSize: 11, color: '#605e5c', marginBottom: 12 }}>
+            Duration · 1h 0m
+            <span style={{ marginLeft: 8, color: '#0078d4' }}>30m · 1h · 2h · Custom</span>
+          </p>
+
+          {/* Category */}
+          <label style={{ fontSize: 11, color: '#605e5c' }}>Category</label>
+          <div className="flex gap-2" style={{ marginTop: 6, marginBottom: 14 }}>
+            {[
+              { n: 'Work', pick: true, c: '#0078d4' },
+              { n: 'Personal', c: '#107c10' },
+              { n: 'On-call', c: '#ca5010' },
+              { n: 'Holiday', c: '#881798' },
+            ].map((c) => (
+              <span
+                key={c.n}
+                style={{
+                  fontSize: 11,
+                  padding: '5px 10px',
+                  border: c.pick ? `2px solid ${c.c}` : '1px solid #c8c6c4',
+                  background: c.pick ? '#deecf9' : '#fff',
+                  color: c.pick ? c.c : '#201f1e',
+                  borderRadius: 2,
+                  fontWeight: c.pick ? 600 : 400,
+                  fontFamily: 'var(--font-body)',
+                }}
+              >
+                {c.n}
+              </span>
+            ))}
+          </div>
+
+          {/* Owner */}
+          <label style={{ fontSize: 11, color: '#605e5c' }}>Owner</label>
+          <div
+            className="flex items-center gap-2"
+            style={{
+              border: '1px solid #c8c6c4',
+              borderRadius: 2,
+              padding: '5px 8px',
+              marginTop: 4,
+              marginBottom: 16,
+            }}
+          >
+            <span
+              style={{
+                width: 22,
+                height: 22,
+                borderRadius: 22,
+                background: '#0078d4',
+                color: '#fff',
+                fontSize: 10,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontFamily: 'var(--font-body)',
+              }}
+            >
+              JR
+            </span>
+            <span style={{ fontSize: 12, color: '#201f1e', fontFamily: 'var(--font-body)' }}>
+              J. Rivera
+            </span>
+            <span style={{ fontSize: 10, color: '#605e5c', marginLeft: 'auto' }}>User()</span>
+          </div>
+
+          {/* Notify toggle */}
+          <div
+            className="flex items-center justify-between"
+            style={{
+              padding: '10px 12px',
+              background: '#f3f2f1',
+              borderRadius: 2,
+              marginBottom: 18,
+            }}
+          >
+            <div>
+              <p style={{ fontSize: 12, color: '#201f1e', fontFamily: 'var(--font-body)' }}>
+                Email the owner
+              </p>
+              <p style={{ fontSize: 10, color: '#605e5c' }}>
+                Sends via the OnEventCreated flow
+              </p>
+            </div>
+            <div
+              style={{
+                width: 34,
+                height: 18,
+                background: '#0078d4',
+                borderRadius: 18,
+                position: 'relative',
+              }}
+            >
+              <span
+                style={{
+                  position: 'absolute',
+                  top: 2,
+                  right: 2,
+                  width: 14,
+                  height: 14,
+                  background: '#fff',
+                  borderRadius: 14,
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Buttons */}
+          <div className="flex justify-end gap-2">
+            <div
+              style={{
+                padding: '7px 14px',
+                border: '1px solid #8a8886',
+                borderRadius: 2,
+                fontSize: 12,
+                fontFamily: 'var(--font-body)',
+              }}
+            >
+              Cancel
+            </div>
+            <div
+              style={{
+                padding: '7px 16px',
+                background: '#0078d4',
+                color: '#fff',
+                borderRadius: 2,
+                fontSize: 12,
+                fontFamily: 'var(--font-body)',
+                fontWeight: 600,
+              }}
+            >
+              Save event
+            </div>
+          </div>
+        </div>
+      </div>
+    </PowerAppsChrome>
+  )
+}
+
 function PowerAppsMock({
   variant,
   caption,
@@ -2953,6 +4313,16 @@ function PowerAppsMock({
     'calendar-preview': 'Calendar canvas preview',
     'calendar-live': 'Your published calendar',
     'share-dialog': 'Share dialog',
+    'home-screen': 'Power Apps home (make.powerapps.com)',
+    'create-dialog': 'Create app dialog',
+    'connectors-list': 'Add data · connectors',
+    'sharepoint-picker': 'Connect to SharePoint',
+    'insert-menu': 'Insert panel',
+    'preview-mode': 'Preview mode (F5)',
+    'publish-dialog': 'Publish this version',
+    'app-checker': 'App checker · formula errors',
+    'flow-designer': 'Power Automate · flow designer',
+    'new-event-form': 'New event form',
   }
 
   return (
@@ -2998,6 +4368,16 @@ function PowerAppsMock({
         {variant === 'calendar-preview' && <PowerAppsCalendarPreviewMock />}
         {variant === 'calendar-live' && <PowerAppsCalendarPreviewMock live />}
         {variant === 'share-dialog' && <PowerAppsShareDialogMock />}
+        {variant === 'home-screen' && <PowerAppsHomeScreenMock />}
+        {variant === 'create-dialog' && <PowerAppsCreateDialogMock />}
+        {variant === 'connectors-list' && <PowerAppsConnectorsListMock />}
+        {variant === 'sharepoint-picker' && <PowerAppsSharepointPickerMock />}
+        {variant === 'insert-menu' && <PowerAppsInsertMenuMock />}
+        {variant === 'preview-mode' && <PowerAppsPreviewModeMock />}
+        {variant === 'publish-dialog' && <PowerAppsPublishDialogMock />}
+        {variant === 'app-checker' && <PowerAppsAppCheckerMock />}
+        {variant === 'flow-designer' && <PowerAppsFlowDesignerMock />}
+        {variant === 'new-event-form' && <PowerAppsNewEventFormMock />}
         {annotations && annotations.length > 0 && (
           <div
             className="mt-3 grid gap-2 sm:grid-cols-2"

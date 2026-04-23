@@ -56,6 +56,16 @@ export type LessonBlock =
         | 'calendar-preview'
         | 'calendar-live'
         | 'share-dialog'
+        | 'home-screen'
+        | 'create-dialog'
+        | 'connectors-list'
+        | 'sharepoint-picker'
+        | 'insert-menu'
+        | 'preview-mode'
+        | 'publish-dialog'
+        | 'app-checker'
+        | 'flow-designer'
+        | 'new-event-form'
       caption?: string
       annotations?: { x: number; y: number; label: string; note: string }[]
     }
