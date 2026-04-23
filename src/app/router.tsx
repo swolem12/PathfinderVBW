@@ -5,6 +5,8 @@ import { CourseIndexPage } from '../pages/CourseIndexPage'
 import { LessonPage } from '../pages/LessonPage'
 import { PalantirIndexPage } from '../pages/PalantirIndexPage'
 import { PalantirLessonPage } from '../pages/PalantirLessonPage'
+import { PalantirAdvancedIndexPage } from '../pages/PalantirAdvancedIndexPage'
+import { PalantirAdvancedLessonPage } from '../pages/PalantirAdvancedLessonPage'
 import { PowerAppsIndexPage } from '../pages/PowerAppsIndexPage'
 import { PowerAppsLessonPage } from '../pages/PowerAppsLessonPage'
 import { NotFoundPage } from '../pages/NotFoundPage'
@@ -20,6 +22,8 @@ export const router = createBrowserRouter(
         { path: 'course/:id', element: <LessonPage /> },
         { path: 'palantir', element: <PalantirIndexPage /> },
         { path: 'palantir/:id', element: <PalantirLessonPage /> },
+        { path: 'foundry-engineer', element: <PalantirAdvancedIndexPage /> },
+        { path: 'foundry-engineer/:id', element: <PalantirAdvancedLessonPage /> },
         { path: 'powerapps', element: <PowerAppsIndexPage /> },
         { path: 'powerapps/:id', element: <PowerAppsLessonPage /> },
         { path: '*', element: <NotFoundPage /> },

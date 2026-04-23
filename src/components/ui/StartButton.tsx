@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { ArrowRight, X } from 'lucide-react'
 import { lessons as beginnerLessons } from '../../content/course'
 import { palantirLessons } from '../../content/palantir'
+import { palantirAdvancedLessons } from '../../content/palantir-advanced'
 import { powerAppsLessons } from '../../content/powerapps'
 
 interface StartButtonProps {
@@ -31,11 +32,14 @@ export function StartButton({ children, className = 'btn btn-primary' }: StartBu
   const beginnerMinutes = beginnerCritical.reduce((n, l) => n + l.estMinutes, 0)
   const palantirCritical = palantirLessons.filter((l) => !l.optional)
   const palantirMinutes = palantirCritical.reduce((n, l) => n + l.estMinutes, 0)
+  const palantirAdvCritical = palantirAdvancedLessons.filter((l) => !l.optional)
+  const palantirAdvMinutes = palantirAdvCritical.reduce((n, l) => n + l.estMinutes, 0)
   const powerAppsCritical = powerAppsLessons.filter((l) => !l.optional)
   const powerAppsMinutes = powerAppsCritical.reduce((n, l) => n + l.estMinutes, 0)
 
   const firstBeginner = beginnerLessons[0]
   const firstPalantir = palantirLessons[0]
+  const firstPalantirAdv = palantirAdvancedLessons[0]
   const firstPowerApps = powerAppsLessons[0]
 
   return (
@@ -98,7 +102,7 @@ export function StartButton({ children, className = 'btn btn-primary' }: StartBu
               className="grid gap-px overflow-hidden"
               style={{ background: 'var(--edge)', borderTop: '1px solid var(--edge)' }}
             >
-              <div className="grid gap-px sm:grid-cols-3">
+              <div className="grid gap-px sm:grid-cols-2 lg:grid-cols-4">
                 <Link
                   to={`/course/${firstBeginner.id}`}
                   onClick={() => setOpen(false)}
@@ -174,7 +178,7 @@ export function StartButton({ children, className = 'btn btn-primary' }: StartBu
                       color: 'var(--accent)',
                     }}
                   >
-                    Track 02 · Palantir
+                    Track 02 · Palantir Slate
                   </p>
                   <h3
                     style={{
@@ -220,6 +224,66 @@ export function StartButton({ children, className = 'btn btn-primary' }: StartBu
                 </Link>
 
                 <Link
+                  to={`/foundry-engineer/${firstPalantirAdv.id}`}
+                  onClick={() => setOpen(false)}
+                  className="group block p-7 transition-colors hover:bg-[color:var(--bg-2)]"
+                  style={{ background: 'var(--bg)' }}
+                >
+                  <p
+                    className="mb-3 uppercase"
+                    style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: 10,
+                      letterSpacing: '0.28em',
+                      color: 'var(--accent)',
+                    }}
+                  >
+                    Track 03 · Foundry Engineer
+                  </p>
+                  <h3
+                    style={{
+                      fontFamily: 'var(--font-display)',
+                      fontSize: '1.35rem',
+                      color: 'var(--ink)',
+                      marginBottom: 8,
+                      lineHeight: 1.2,
+                    }}
+                  >
+                    Code Repos, PySpark, AIP, Workshop
+                  </h3>
+                  <p style={{ color: 'var(--paper)', fontSize: 14, lineHeight: 1.55 }}>
+                    The practitioner track. TypeScript Functions, transforms, Lineage.
+                  </p>
+                  <div
+                    className="mt-5 flex flex-wrap items-center gap-3"
+                    style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: 10,
+                      letterSpacing: '0.22em',
+                      color: 'var(--ink-dim)',
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    <span>{palantirAdvCritical.length} lessons</span>
+                    <span style={{ color: 'var(--edge)' }}>•</span>
+                    <span>~{palantirAdvMinutes} min</span>
+                  </div>
+                  <div className="mt-5 inline-flex items-center gap-2" style={{ color: 'var(--accent)' }}>
+                    <span
+                      style={{
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: 11,
+                        letterSpacing: '0.22em',
+                        textTransform: 'uppercase',
+                      }}
+                    >
+                      Start lesson 1
+                    </span>
+                    <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+                  </div>
+                </Link>
+
+                <Link
                   to={`/powerapps/${firstPowerApps.id}`}
                   onClick={() => setOpen(false)}
                   className="group block p-7 transition-colors hover:bg-[color:var(--bg-2)]"
@@ -234,7 +298,7 @@ export function StartButton({ children, className = 'btn btn-primary' }: StartBu
                       color: 'var(--accent)',
                     }}
                   >
-                    Track 03 · Power Apps
+                    Track 04 · Power Apps
                   </p>
                   <h3
                     style={{
