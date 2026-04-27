@@ -55,6 +55,14 @@ export type LessonBlock =
         | 'plane-cut-mesh'
         | 'export-formats'
         | 'section-analysis'
+        | 'solid-primitives'
+        | 'profile-features'
+        | 'direct-edit-booleans'
+        | 'construction-inspect'
+        | 'mesh-repair-suite'
+        | 'mesh-section-convert'
+        | 'sketch-shape-suite'
+        | 'sketch-edit-suite'
       caption?: string
       helpUrl?: string
       tutorialQuery?: string

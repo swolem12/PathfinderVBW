@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import type { ReactNode } from 'react'
 
 /* ------------------------------------------------------------------ */
 /*  Fusion360Mock — native animated SVG/HTML mocks of Fusion 360      */
@@ -24,6 +25,14 @@ export type Fusion360MockVariant =
   | 'plane-cut-mesh'
   | 'export-formats'
   | 'section-analysis'
+  | 'solid-primitives'
+  | 'profile-features'
+  | 'direct-edit-booleans'
+  | 'construction-inspect'
+  | 'mesh-repair-suite'
+  | 'mesh-section-convert'
+  | 'sketch-shape-suite'
+  | 'sketch-edit-suite'
 
 const LABEL: Record<Fusion360MockVariant, string> = {
   'workspace-map': 'Fusion 360 — workspace map',
@@ -44,6 +53,14 @@ const LABEL: Record<Fusion360MockVariant, string> = {
   'plane-cut-mesh': 'Mesh — plane cut',
   'export-formats': 'Export — file formats',
   'section-analysis': 'Inspect — section analysis',
+  'solid-primitives': 'Solid — primitive components',
+  'profile-features': 'Solid — profile-driven features',
+  'direct-edit-booleans': 'Modify — direct edits + booleans',
+  'construction-inspect': 'Construct + inspect — references',
+  'mesh-repair-suite': 'Mesh — repair + close workflow',
+  'mesh-section-convert': 'Mesh — section sketch + convert',
+  'sketch-shape-suite': 'Sketch — shape creation tools',
+  'sketch-edit-suite': 'Sketch — edit + reference tools',
 }
 
 const EASE = [0.22, 1, 0.36, 1] as const
@@ -189,6 +206,22 @@ function renderVariant(variant: Fusion360MockVariant) {
       return <ExportFormats />
     case 'section-analysis':
       return <SectionAnalysis />
+    case 'solid-primitives':
+      return <SolidPrimitives />
+    case 'profile-features':
+      return <ProfileFeatures />
+    case 'direct-edit-booleans':
+      return <DirectEditBooleans />
+    case 'construction-inspect':
+      return <ConstructionInspect />
+    case 'mesh-repair-suite':
+      return <MeshRepairSuite />
+    case 'mesh-section-convert':
+      return <MeshSectionConvert />
+    case 'sketch-shape-suite':
+      return <SketchShapeSuite />
+    case 'sketch-edit-suite':
+      return <SketchEditSuite />
   }
 }
 
@@ -1565,5 +1598,249 @@ function SectionAnalysis() {
         </text>
       </svg>
     </div>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  Additional course-wide Fusion 360 recreation animations            */
+/* ------------------------------------------------------------------ */
+
+function MockCanvas({ children }: { children: ReactNode }) {
+  return (
+    <div
+      style={{
+        border: '1px solid var(--edge)',
+        borderRadius: 8,
+        background: 'var(--bg)',
+        height: 280,
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      <svg viewBox="0 0 400 280" width="100%" height="100%">
+        <line x1="0" y1="210" x2="400" y2="210" stroke="var(--edge)" strokeDasharray="3 4" />
+        <line x1="200" y1="0" x2="200" y2="280" stroke="var(--edge)" strokeDasharray="3 4" />
+        {children}
+      </svg>
+    </div>
+  )
+}
+
+function SolidPrimitives() {
+  const items = ['Box', 'Cylinder', 'Sphere', 'Torus', 'Coil', 'Pipe']
+  return (
+    <MockCanvas>
+      {items.map((label, i) => {
+        const x = 42 + i * 63
+        const selectedTimes = [0, i / items.length, (i + 0.45) / items.length, 1]
+        return (
+          <g key={label} transform={`translate(${x}, 76)`}>
+            <motion.rect
+              x="-22"
+              y="-28"
+              width="48"
+              height="92"
+              rx="6"
+              fill="none"
+              stroke="var(--accent)"
+              strokeWidth="2"
+              animate={{ opacity: [0, 1, 0, 0] }}
+              transition={{ duration: 7, repeat: Infinity, times: selectedTimes }}
+            />
+            {label === 'Box' && <rect x="-14" y="2" width="34" height="34" fill="rgba(120,160,200,0.18)" stroke="var(--ink)" />}
+            {label === 'Cylinder' && (
+              <>
+                <ellipse cx="3" cy="3" rx="18" ry="8" fill="rgba(120,160,200,0.18)" stroke="var(--ink)" />
+                <rect x="-15" y="3" width="36" height="42" fill="rgba(120,160,200,0.12)" stroke="var(--ink)" />
+                <ellipse cx="3" cy="45" rx="18" ry="8" fill="rgba(80,120,160,0.22)" stroke="var(--ink)" />
+              </>
+            )}
+            {label === 'Sphere' && <circle cx="3" cy="25" r="22" fill="rgba(120,160,200,0.18)" stroke="var(--ink)" />}
+            {label === 'Torus' && (
+              <>
+                <ellipse cx="3" cy="25" rx="24" ry="16" fill="rgba(120,160,200,0.16)" stroke="var(--ink)" />
+                <ellipse cx="3" cy="25" rx="10" ry="6" fill="var(--bg)" stroke="var(--accent)" />
+              </>
+            )}
+            {label === 'Coil' && (
+              <path d="M-18,48 C10,38 -18,28 10,18 C38,8 10,-2 28,-12" fill="none" stroke="var(--accent)" strokeWidth="2" />
+            )}
+            {label === 'Pipe' && <path d="M-18,48 C-5,5 20,5 26,-18" fill="none" stroke="var(--accent)" strokeWidth="10" strokeLinecap="round" />}
+            <text x="3" y="85" fill="var(--ink-dim)" fontSize="9" fontFamily="var(--font-mono)" textAnchor="middle">
+              {label}
+            </text>
+          </g>
+        )
+      })}
+      <text x="200" y="250" fill="var(--ink-dim)" fontSize="11" fontFamily="var(--font-mono)" textAnchor="middle">
+        primitive bodies are fast starting points for real parts and placeholders
+      </text>
+    </MockCanvas>
+  )
+}
+
+function ProfileFeatures() {
+  const cycle = 8
+  return (
+    <MockCanvas>
+      <text x="200" y="28" fill="var(--ink-dim)" fontSize="11" fontFamily="var(--font-mono)" textAnchor="middle">
+        revolve · sweep · loft · rib/web
+      </text>
+      <motion.g animate={{ opacity: [1, 1, 0.25, 0.25] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.24, 0.31, 1] }}>
+        <line x1="82" y1="72" x2="82" y2="178" stroke="var(--accent)" strokeDasharray="4 4" />
+        <path d="M82,176 L118,176 L110,96 L92,82 Z" fill="rgba(120,160,200,0.14)" stroke="var(--ink)" />
+        <motion.path d="M82,82 C145,96 145,160 82,176" fill="none" stroke="var(--accent)" strokeWidth="2" animate={{ pathLength: [0, 1, 1] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.2, 1] }} />
+        <text x="100" y="204" fill="var(--ink-dim)" fontSize="10" fontFamily="var(--font-mono)" textAnchor="middle">revolve</text>
+      </motion.g>
+      <motion.g animate={{ opacity: [0.25, 0.25, 1, 1, 0.25] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.25, 0.36, 0.49, 1] }}>
+        <path d="M172,180 C142,110 204,84 184,52" fill="none" stroke="var(--accent)" strokeWidth="2" />
+        <motion.circle cx="172" cy="180" r="10" fill="rgba(120,160,200,0.22)" stroke="var(--ink)" animate={{ cx: [172, 150, 204, 184], cy: [180, 120, 84, 52] }} transition={{ duration: 2.3, repeat: Infinity, ease: 'easeInOut' }} />
+        <text x="172" y="204" fill="var(--ink-dim)" fontSize="10" fontFamily="var(--font-mono)" textAnchor="middle">sweep</text>
+      </motion.g>
+      <motion.g animate={{ opacity: [0.25, 0.25, 0.25, 1, 1, 0.25] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.48, 0.52, 0.62, 0.74, 1] }}>
+        <ellipse cx="272" cy="170" rx="28" ry="14" fill="none" stroke="var(--accent)" />
+        <ellipse cx="310" cy="82" rx="14" ry="28" fill="none" stroke="var(--accent)" />
+        <path d="M244,170 C260,120 296,104 296,82 M300,170 C320,132 324,110 324,82" fill="none" stroke="var(--ink)" strokeWidth="1.5" />
+        <text x="292" y="204" fill="var(--ink-dim)" fontSize="10" fontFamily="var(--font-mono)" textAnchor="middle">loft</text>
+      </motion.g>
+      <motion.g animate={{ opacity: [0.25, 0.25, 0.25, 0.25, 1, 1] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.72, 0.76, 0.8, 0.9, 1] }}>
+        <rect x="318" y="150" width="52" height="24" fill="rgba(120,160,200,0.14)" stroke="var(--ink)" />
+        <motion.polygon points="342,150 356,150 356,92 342,92" fill="rgba(120,160,200,0.18)" stroke="var(--accent)" animate={{ scaleY: [0, 1, 1] }} style={{ transformOrigin: '349px 150px' }} transition={{ duration: 2, repeat: Infinity }} />
+        <text x="344" y="204" fill="var(--ink-dim)" fontSize="10" fontFamily="var(--font-mono)" textAnchor="middle">rib/web</text>
+      </motion.g>
+    </MockCanvas>
+  )
+}
+
+function DirectEditBooleans() {
+  const ops = ['Press Pull', 'Offset Face', 'Move/Copy', 'Combine', 'Split', 'Scale']
+  return (
+    <MockCanvas>
+      {ops.map((op, i) => (
+        <motion.g key={op} animate={{ opacity: [0.25, 1, 0.25] }} transition={{ duration: 6, repeat: Infinity, delay: i * 0.55 }}>
+          <rect x={35 + i * 58} y="92" width="42" height="60" fill="rgba(120,160,200,0.16)" stroke="var(--ink)" />
+          <circle cx={56 + i * 58} cy="122" r="14" fill={op === 'Combine' ? 'rgba(80,120,160,0.26)' : 'var(--bg)'} stroke="var(--accent)" />
+          {op === 'Split' && <line x1={35 + i * 58} y1="122" x2={77 + i * 58} y2="122" stroke="var(--accent)" strokeDasharray="4 3" />}
+          {op === 'Move/Copy' && <path d={`M${48 + i * 58},70 L${72 + i * 58},70 M72,70 L64,64 M72,70 L64,76`} stroke="var(--accent)" fill="none" />}
+          {op === 'Scale' && <path d={`M${50 + i * 58},78 L${70 + i * 58},58 M70,58 L70,72 M70,58 L56,58`} stroke="var(--accent)" fill="none" />}
+          <text x={56 + i * 58} y="184" fill="var(--ink-dim)" fontSize="9" fontFamily="var(--font-mono)" textAnchor="middle">{op}</text>
+        </motion.g>
+      ))}
+      <text x="200" y="246" fill="var(--ink-dim)" fontSize="11" fontFamily="var(--font-mono)" textAnchor="middle">
+        direct edits change faces/bodies; booleans join, cut, intersect, or split solids
+      </text>
+    </MockCanvas>
+  )
+}
+
+function ConstructionInspect() {
+  const cycle = 6
+  return (
+    <MockCanvas>
+      <motion.polygon points="90,196 300,196 330,160 120,160" fill="rgba(120,160,200,0.14)" stroke="var(--ink)" />
+      <motion.line x1="90" y1="90" x2="330" y2="70" stroke="var(--accent)" strokeWidth="2" strokeDasharray="6 4" animate={{ y1: [90, 120, 90], y2: [70, 102, 70] }} transition={{ duration: cycle, repeat: Infinity }} />
+      <motion.line x1="200" y1="60" x2="200" y2="220" stroke="var(--accent)" strokeWidth="2" animate={{ rotate: [0, 35, -25, 0] }} style={{ transformOrigin: '200px 140px' }} transition={{ duration: cycle, repeat: Infinity }} />
+      <motion.g animate={{ opacity: [0, 1, 1, 0] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.25, 0.78, 1] }}>
+        <line x1="124" y1="206" x2="290" y2="206" stroke="var(--ink)" />
+        <text x="207" y="226" fill="var(--accent)" fontSize="11" fontFamily="var(--font-mono)" textAnchor="middle">measure: 166.0 mm</text>
+      </motion.g>
+      <text x="200" y="38" fill="var(--ink-dim)" fontSize="11" fontFamily="var(--font-mono)" textAnchor="middle">
+        construction plane + axis + measure references
+      </text>
+    </MockCanvas>
+  )
+}
+
+function MeshRepairSuite() {
+  const cycle = 7
+  return (
+    <MockCanvas>
+      {Array.from({ length: 16 }).map((_, i) => {
+        const col = i % 4
+        const row = Math.floor(i / 4)
+        return (
+          <motion.polygon
+            key={i}
+            points={`${92 + col * 28},${70 + row * 28} ${118 + col * 28},${78 + row * 28} ${104 + col * 28},${100 + row * 28}`}
+            fill={i === 6 || i === 10 ? 'var(--bg)' : 'rgba(120,160,200,0.14)'}
+            stroke={i === 6 || i === 10 ? 'var(--accent)' : 'var(--ink-dim)'}
+            strokeWidth="1"
+            animate={{ opacity: i === 6 || i === 10 ? [0.15, 1, 0.15] : [0.65, 0.9, 0.65] }}
+            transition={{ duration: cycle, repeat: Infinity, delay: i * 0.05 }}
+          />
+        )
+      })}
+      <motion.path d="M235,78 C292,62 326,100 314,150 C302,202 238,198 218,158 C196,116 210,86 235,78 Z" fill="rgba(120,160,200,0.14)" stroke="var(--ink)" />
+      <motion.path d="M246,122 C270,105 294,116 294,146 C274,138 256,140 246,122 Z" fill="var(--bg)" stroke="var(--accent)" animate={{ opacity: [1, 0.15, 1] }} transition={{ duration: cycle, repeat: Infinity }} />
+      <motion.path d="M246,122 C270,105 294,116 294,146 C274,138 256,140 246,122 Z" fill="rgba(120,160,200,0.24)" stroke="var(--accent)" animate={{ opacity: [0, 1, 0] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.55, 1] }} />
+      <text x="200" y="246" fill="var(--ink-dim)" fontSize="11" fontFamily="var(--font-mono)" textAnchor="middle">
+        repair holes · erase/fill bad triangles · close mesh · reverse normals
+      </text>
+    </MockCanvas>
+  )
+}
+
+function MeshSectionConvert() {
+  const cycle = 7
+  return (
+    <MockCanvas>
+      <motion.path d="M80,170 C95,96 145,70 200,94 C260,120 292,90 322,158 C280,202 136,210 80,170 Z" fill="rgba(120,160,200,0.12)" stroke="var(--ink-dim)" />
+      <motion.line x1="56" y1="140" x2="344" y2="140" stroke="var(--accent)" strokeWidth="2" strokeDasharray="6 4" animate={{ y1: [92, 140, 140], y2: [92, 140, 140] }} transition={{ duration: cycle, repeat: Infinity }} />
+      <motion.path d="M92,140 C130,126 174,152 210,140 C250,128 288,134 318,140" fill="none" stroke="var(--accent)" strokeWidth="3" animate={{ pathLength: [0, 0, 1, 1] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.35, 0.62, 1] }} />
+      <motion.rect x="146" y="172" width="120" height="38" fill="rgba(120,160,200,0.18)" stroke="var(--ink)" animate={{ opacity: [0, 0, 0.2, 1] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.55, 0.68, 1] }} />
+      <text x="200" y="246" fill="var(--ink-dim)" fontSize="11" fontFamily="var(--font-mono)" textAnchor="middle">
+        create mesh section sketch → trace clean curves → convert/rebuild solid
+      </text>
+    </MockCanvas>
+  )
+}
+
+function SketchShapeSuite() {
+  const labels = ['Rectangle', 'Circle', 'Arc', 'Polygon', 'Ellipse', 'Slot', 'Spline', 'Text']
+  return (
+    <MockCanvas>
+      {labels.map((label, i) => {
+        const x = 54 + (i % 4) * 96
+        const y = 70 + Math.floor(i / 4) * 92
+        return (
+          <motion.g key={label} initial={{ opacity: 0, scale: 0.85 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.05, duration: 0.35, ease: EASE }}>
+            {label === 'Rectangle' && <rect x={x - 22} y={y} width="44" height="28" fill="none" stroke="var(--accent)" strokeWidth="2" />}
+            {label === 'Circle' && <circle cx={x} cy={y + 14} r="18" fill="none" stroke="var(--accent)" strokeWidth="2" />}
+            {label === 'Arc' && <path d={`M${x - 24},${y + 28} Q${x},${y - 12} ${x + 24},${y + 28}`} fill="none" stroke="var(--accent)" strokeWidth="2" />}
+            {label === 'Polygon' && <polygon points={`${x},${y-4} ${x+24},${y+12} ${x+14},${y+38} ${x-14},${y+38} ${x-24},${y+12}`} fill="none" stroke="var(--accent)" strokeWidth="2" />}
+            {label === 'Ellipse' && <ellipse cx={x} cy={y + 18} rx="28" ry="13" fill="none" stroke="var(--accent)" strokeWidth="2" />}
+            {label === 'Slot' && <path d={`M${x - 22},${y + 10} L${x + 22},${y + 10} A14,14 0 0 1 ${x + 22},${y + 38} L${x - 22},${y + 38} A14,14 0 0 1 ${x - 22},${y + 10}`} fill="none" stroke="var(--accent)" strokeWidth="2" />}
+            {label === 'Spline' && <path d={`M${x - 30},${y + 32} C${x - 10},${y - 10} ${x + 12},${y + 52} ${x + 30},${y + 10}`} fill="none" stroke="var(--accent)" strokeWidth="2" />}
+            {label === 'Text' && <text x={x} y={y + 28} fill="var(--accent)" fontSize="22" fontFamily="var(--font-display, var(--font-mono))" textAnchor="middle">ABC</text>}
+            <text x={x} y={y + 60} fill="var(--ink-dim)" fontSize="9" fontFamily="var(--font-mono)" textAnchor="middle">{label}</text>
+          </motion.g>
+        )
+      })}
+    </MockCanvas>
+  )
+}
+
+function SketchEditSuite() {
+  const labels = ['Project', 'Intersect', 'Offset', 'Trim', 'Extend', 'Break', 'Scale', 'Dimension']
+  return (
+    <MockCanvas>
+      {labels.map((label, i) => {
+        const x = 54 + (i % 4) * 96
+        const y = 74 + Math.floor(i / 4) * 92
+        return (
+          <motion.g key={label} animate={{ opacity: [0.45, 1, 0.45] }} transition={{ duration: 5, repeat: Infinity, delay: i * 0.35 }}>
+            <path d={`M${x - 26},${y + 28} H${x + 26}`} stroke="var(--ink-dim)" strokeWidth="1.5" />
+            {label === 'Offset' && <path d={`M${x - 26},${y + 15} H${x + 26}`} stroke="var(--accent)" strokeWidth="2" strokeDasharray="4 3" />}
+            {label === 'Trim' && <path d={`M${x - 18},${y + 8} L${x + 18},${y + 48} M${x - 18},${y + 48} L${x + 18},${y + 8}`} stroke="var(--accent)" strokeWidth="2" />}
+            {label === 'Extend' && <line x1={x + 26} y1={y + 28} x2={x + 42} y2={y + 28} stroke="var(--accent)" strokeWidth="2" strokeDasharray="4 3" />}
+            {label === 'Break' && <path d={`M${x - 5},${y + 20} L${x - 13},${y + 36} M${x + 13},${y + 20} L${x + 5},${y + 36}`} stroke="var(--accent)" strokeWidth="2" />}
+            {label === 'Scale' && <rect x={x - 14} y={y + 12} width="28" height="28" fill="none" stroke="var(--accent)" strokeWidth="2" />}
+            {label === 'Dimension' && <text x={x} y={y + 16} fill="var(--accent)" fontSize="10" fontFamily="var(--font-mono)" textAnchor="middle">42 mm</text>}
+            {(label === 'Project' || label === 'Intersect') && <circle cx={x} cy={y + 28} r="14" fill="none" stroke="var(--accent)" strokeWidth="2" />}
+            <text x={x} y={y + 60} fill="var(--ink-dim)" fontSize="9" fontFamily="var(--font-mono)" textAnchor="middle">{label}</text>
+          </motion.g>
+        )
+      })}
+    </MockCanvas>
   )
 }
