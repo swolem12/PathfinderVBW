@@ -19,6 +19,12 @@ export interface MediaBlock {
   alt: string
   caption: string
   src?: string
+  /** YouTube video id to embed (e.g. "4OO0kEKKwT0"). Renders an inline player. */
+  youtubeId?: string
+  /** Direct link to the Autodesk Help Center article for this tool/topic. */
+  helpUrl?: string
+  /** Query used to open YouTube search results for an Autodesk tutorial. */
+  tutorialQuery?: string
 }
 
 export type LessonBlock =

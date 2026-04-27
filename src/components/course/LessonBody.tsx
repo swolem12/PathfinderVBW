@@ -190,6 +190,12 @@ function MediaCard({ media }: { media: MediaBlock }) {
           ? 'Picture'
           : 'Reference graphic'
 
+  const tutorialUrl = media.tutorialQuery
+    ? `https://www.youtube.com/results?search_query=${encodeURIComponent(
+        `Autodesk Fusion 360 ${media.tutorialQuery} tutorial`,
+      )}`
+    : null
+
   return (
     <figure
       className="my-8 overflow-hidden rounded-lg border"
@@ -212,7 +218,25 @@ function MediaCard({ media }: { media: MediaBlock }) {
         </span>
       </div>
 
-      {media.src ? (
+      {media.youtubeId ? (
+        <div style={{ position: 'relative', paddingTop: '56.25%', background: '#000' }}>
+          <iframe
+            src={`https://www.youtube-nocookie.com/embed/${media.youtubeId}?rel=0&modestbranding=1`}
+            title={media.alt}
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              border: 0,
+            }}
+          />
+        </div>
+      ) : media.src ? (
         media.kind === 'video' ? (
           <video className="w-full" controls preload="metadata" aria-label={media.alt}>
             <source src={media.src} />
@@ -234,9 +258,53 @@ function MediaCard({ media }: { media: MediaBlock }) {
               {media.title}
             </p>
             <p className="mx-auto mt-2 max-w-[520px]" style={{ color: 'var(--paper)', lineHeight: 1.6, fontSize: 14 }}>
-              Asset slot ready: add a {label.toLowerCase()} to public/fusion360 and set this block’s src when media is available.
+              Open the official Autodesk reference and a tutorial for {media.title} below.
             </p>
           </div>
+        </div>
+      )}
+
+      {(media.helpUrl || tutorialUrl) && (
+        <div
+          className="flex flex-wrap items-center gap-3 border-t px-4 py-3"
+          style={{ borderColor: 'var(--edge)' }}
+        >
+          {media.helpUrl && (
+            <a
+              href={media.helpUrl}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="inline-flex items-center gap-2 rounded border px-3 py-1.5 transition-colors hover:bg-[color:var(--bg)]"
+              style={{
+                borderColor: 'var(--edge)',
+                fontFamily: 'var(--font-mono)',
+                fontSize: 11,
+                letterSpacing: '0.18em',
+                textTransform: 'uppercase',
+                color: 'var(--ink)',
+              }}
+            >
+              Autodesk Help reference ↗
+            </a>
+          )}
+          {tutorialUrl && (
+            <a
+              href={tutorialUrl}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="inline-flex items-center gap-2 rounded border px-3 py-1.5 transition-colors hover:bg-[color:var(--bg)]"
+              style={{
+                borderColor: 'var(--edge)',
+                fontFamily: 'var(--font-mono)',
+                fontSize: 11,
+                letterSpacing: '0.18em',
+                textTransform: 'uppercase',
+                color: 'var(--ink)',
+              }}
+            >
+              Watch tutorials ↗
+            </a>
+          )}
         </div>
       )}
 

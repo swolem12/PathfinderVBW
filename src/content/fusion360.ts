@@ -7,16 +7,22 @@ type FusionTool = {
   steps: string[]
   watchFor?: string
   mediaKind?: MediaBlock['kind']
+  helpUrl?: string
 }
+
+const HELP_BASE = 'https://help.autodesk.com/view/fusion360/ENU/'
+const HELP_SEARCH = (q: string) =>
+  `${HELP_BASE}?query=${encodeURIComponent(q)}`
 
 const mediaSlot = (
   kind: MediaBlock['kind'],
   title: string,
   caption: string,
   alt: string,
+  extra: Partial<MediaBlock> = {},
 ): LessonBlock => ({
   type: 'media',
-  media: { kind, title, caption, alt },
+  media: { kind, title, caption, alt, ...extra },
 })
 
 const toolBlock = (workspace: 'Solid' | 'Mesh' | 'Sketch', tool: FusionTool): LessonBlock => ({
@@ -37,9 +43,13 @@ const toolBlock = (workspace: 'Solid' | 'Mesh' | 'Sketch', tool: FusionTool): Le
     },
     mediaSlot(
       tool.mediaKind ?? 'gif',
-      `${tool.name} demo`,
-      `${workspace} workspace quick visual: ${tool.name}`,
-      `Demonstration placeholder showing Fusion 360 ${workspace} tool ${tool.name}`,
+      `${tool.name} — official reference`,
+      `Open Autodesk Help and watch a tutorial showing the ${workspace} ${tool.name} tool.`,
+      `Reference media for Fusion 360 ${workspace} tool ${tool.name}`,
+      {
+        helpUrl: tool.helpUrl ?? HELP_SEARCH(`${workspace} ${tool.name}`),
+        tutorialQuery: `${workspace} ${tool.name}`,
+      },
     ),
   ],
 })
@@ -510,7 +520,16 @@ const toolReferenceBlocks: LessonBlock[] = [
     type: 'p',
     body: 'This quick reference is built to be used side-by-side with Fusion 360. Open one tool at a time, read what it does, then practice the same operation on a simple part. Media slots are already wired for GIFs, footage, pictures, and reference graphics so production assets can be dropped in without changing the lesson layout.',
   },
-  mediaSlot('reference', 'Fusion 360 workspace map', 'Reference graphic slot: top toolbar, browser, timeline, canvas, view cube, and navigation bar.', 'Fusion 360 interface map reference graphic'),
+  mediaSlot(
+    'reference',
+    'Fusion 360 workspace map',
+    'Open the official Autodesk interface reference and a YouTube walkthrough of the Fusion 360 workspace.',
+    'Fusion 360 interface and workspace reference',
+    {
+      helpUrl: HELP_SEARCH('user interface workspace overview'),
+      tutorialQuery: 'interface tour workspaces toolbar browser timeline',
+    },
+  ),
   { type: 'h', body: 'Solid workspace tools' },
   ...solidTools.map((tool) => toolBlock('Solid', tool)),
   { type: 'h', body: 'Mesh workspace tools' },
@@ -542,7 +561,17 @@ export const fusion360Lessons: LessonDef[] = [
         type: 'p',
         body: 'Fusion 360 is parametric CAD: the order of your features matters. The browser organizes components and bodies; the timeline stores every operation; sketches define intent; and parameters let a model update without redrawing it.',
       },
-      mediaSlot('video', 'Interface walkthrough footage', 'Footage slot: create project, open design, orbit/pan/zoom, browser, timeline, view cube.', 'Fusion 360 interface walkthrough footage placeholder'),
+      mediaSlot(
+        'video',
+        'Interface walkthrough',
+        'Embedded Autodesk Fusion 360 "Get to know the interface" overview.',
+        'Autodesk Fusion 360 interface walkthrough video',
+        {
+          youtubeId: 'l3Ly3yZiTDA',
+          helpUrl: HELP_SEARCH('user interface tour'),
+          tutorialQuery: 'beginner interface tour orbit pan zoom',
+        },
+      ),
       { type: 'jargon', term: 'Component', plain: 'A part or assembly container with its own origin, sketches, bodies, joints, and timeline references. Use components for anything that might move or be manufactured separately.' },
       { type: 'jargon', term: 'Body', plain: 'A single chunk of geometry inside a component. Bodies are usually intermediate solids until you decide how the product is assembled.' },
       { type: 'jargon', term: 'Timeline', plain: 'The row of feature icons at the bottom. It records modeling history so earlier sketches and features can be edited later.' },
@@ -596,7 +625,17 @@ export const fusion360Lessons: LessonDef[] = [
     estMinutes: 40,
     blocks: [
       { type: 'p', body: 'Good Fusion models come from good sketches. A sketch should describe design intent, not just shape. If a line should stay horizontal, constrain it. If two holes should stay equal, constrain and dimension them. If a thickness may change, use a parameter.' },
-      mediaSlot('gif', 'Fully constrained sketch demo', 'GIF slot: rough lines become black/fully constrained as dimensions and constraints are added.', 'Fusion 360 fully constrained sketch GIF placeholder'),
+      mediaSlot(
+        'video',
+        'Fully constrained sketches',
+        'Embedded Autodesk Fusion 360 sketching fundamentals tutorial covering constraints and dimensions.',
+        'Autodesk Fusion 360 sketching fundamentals video',
+        {
+          youtubeId: '4OO0kEKKwT0',
+          helpUrl: HELP_SEARCH('sketch constraints dimensions'),
+          tutorialQuery: 'fully constrained sketch constraints dimensions',
+        },
+      ),
       { type: 'step', n: 1, title: 'Create named parameters', body: 'Open Modify → Change Parameters. Add width, height, thickness, holeDiameter, and holeSpacing. Use real starter values.' },
       { type: 'step', n: 2, title: 'Sketch only half when symmetric', body: 'Create a centerline through the origin. Draw one side of the bracket and mirror it across the centerline.' },
       { type: 'step', n: 3, title: 'Dimension with parameter names', body: 'Use D for dimension, then type names like width, thickness, or holeSpacing instead of raw numbers.' },
@@ -622,7 +661,17 @@ export const fusion360Lessons: LessonDef[] = [
     estMinutes: 55,
     blocks: [
       { type: 'p', body: 'A solid workflow is a chain: sketch → base feature → secondary cuts/additions → edge treatments → inspection. Model big forms first, details second, and fillets/chamfers last unless they control other geometry.' },
-      mediaSlot('video', 'Bracket solid modeling footage', 'Footage slot: extrude base, add holes, round edges, inspect section, update parameters.', 'Fusion 360 bracket solid modeling footage placeholder'),
+      mediaSlot(
+        'video',
+        'Solid modeling fundamentals',
+        'Embedded Autodesk Fusion 360 solid modeling fundamentals video.',
+        'Autodesk Fusion 360 solid modeling fundamentals video',
+        {
+          youtubeId: 'Kfaa4y6tBMk',
+          helpUrl: HELP_SEARCH('solid modeling create modify'),
+          tutorialQuery: 'solid modeling extrude fillet shell hole',
+        },
+      ),
       { type: 'step', n: 1, title: 'Extrude the base', body: 'Select the closed bracket profile and extrude it by the thickness parameter as a New Body or Join inside the active component.' },
       { type: 'step', n: 2, title: 'Add precise holes', body: 'Use the Hole tool on sketch points or create circles and cut extrude. Prefer Hole for fasteners because it stores hardware intent.' },
       { type: 'step', n: 3, title: 'Add functional clearances', body: 'Use Offset Face or Press Pull to tune pockets and clearances. Keep important values parameter-driven.' },
@@ -642,7 +691,17 @@ export const fusion360Lessons: LessonDef[] = [
     estMinutes: 45,
     blocks: [
       { type: 'p', body: 'Meshes are triangle surfaces. Solids are parametric boundary representations. Fusion can work with both, but they behave differently. The safest beginner workflow is: import mesh → orient/scale → repair/reduce → section sketch → rebuild important features as sketches and solids.' },
-      mediaSlot('gif', 'Mesh cleanup workflow', 'GIF slot: import STL, reduce triangles, plane cut base, create mesh section sketch, rebuild solid.', 'Fusion 360 mesh cleanup workflow GIF placeholder'),
+      mediaSlot(
+        'video',
+        'Mesh workspace fundamentals',
+        'Embedded Autodesk Fusion 360 mesh workflow tutorial covering import, repair, reduce, and convert.',
+        'Autodesk Fusion 360 mesh workflow video',
+        {
+          youtubeId: 'Ucp0Tn4lJ24',
+          helpUrl: HELP_SEARCH('mesh workspace import repair convert'),
+          tutorialQuery: 'mesh workspace import STL repair reduce convert',
+        },
+      ),
       { type: 'step', n: 1, title: 'Import and set units', body: 'Insert Mesh and verify units immediately. Many STL files have no real units, so a model can import 25.4× too large or too small.' },
       { type: 'step', n: 2, title: 'Repair before editing', body: 'Run Repair to fix holes, non-manifold edges, flipped normals, and self-intersections before conversion or printing.' },
       { type: 'step', n: 3, title: 'Reduce only as much as needed', body: 'Use Reduce to make the mesh manageable while preserving important edges and curves.' },
@@ -662,7 +721,17 @@ export const fusion360Lessons: LessonDef[] = [
     estMinutes: 75,
     blocks: [
       { type: 'p', body: 'This project ties the course together. You will model a simple wall hook with parameters, a fully constrained sketch, solid features, optional mesh reference, and export checks.' },
-      mediaSlot('video', 'Wall hook project full walkthrough', 'Footage slot: complete wall hook build from blank design to exported STL/STEP.', 'Fusion 360 wall hook full walkthrough footage placeholder'),
+      mediaSlot(
+        'video',
+        'Beginner project walkthrough',
+        'Embedded Autodesk Fusion 360 beginner project tutorial that mirrors the steps in this lesson.',
+        'Autodesk Fusion 360 beginner project video',
+        {
+          youtubeId: 'GYCpzcpHOl4',
+          helpUrl: HELP_SEARCH('beginner project export step stl'),
+          tutorialQuery: 'beginner full project parametric export step stl',
+        },
+      ),
       { type: 'step', n: 1, title: 'Define parameters', body: 'Create hookDepth, hookHeight, materialThickness, screwDiameter, screwSpacing, filletRadius, and clearance.' },
       { type: 'step', n: 2, title: 'Sketch the side profile', body: 'Create a side sketch for the hook silhouette. Use lines, arcs, tangent constraints, dimensions, and construction geometry.' },
       { type: 'step', n: 3, title: 'Extrude the hook body', body: 'Extrude the profile to materialThickness. Rename the feature base-extrude.' },
