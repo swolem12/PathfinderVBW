@@ -146,6 +146,83 @@ function ShellSession({
   )
 }
 
+function YouTubePlaylist({
+  playlistId,
+  title,
+  caption,
+  startVideoId,
+}: {
+  playlistId: string
+  title: string
+  caption?: string
+  startVideoId?: string
+}) {
+  const embedSrc = startVideoId
+    ? `https://www.youtube-nocookie.com/embed/${startVideoId}?list=${playlistId}&rel=0&modestbranding=1`
+    : `https://www.youtube-nocookie.com/embed/videoseries?list=${playlistId}&rel=0&modestbranding=1`
+  const watchUrl = `https://www.youtube.com/playlist?list=${playlistId}`
+  return (
+    <figure
+      className="my-8 overflow-hidden rounded-lg border"
+      style={{ borderColor: 'var(--edge)', background: 'var(--bg-2)' }}
+    >
+      <div
+        className="flex items-center border-b px-4 py-2"
+        style={{ borderColor: 'var(--edge)' }}
+      >
+        <span
+          className="uppercase"
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: 10,
+            letterSpacing: '0.22em',
+            color: 'var(--ink-dim)',
+          }}
+        >
+          {title}
+        </span>
+      </div>
+      <div style={{ padding: 16 }}>
+        <div style={{ position: 'relative', paddingTop: '56.25%', borderRadius: 6, overflow: 'hidden', background: 'var(--bg)' }}>
+          <iframe
+            src={embedSrc}
+            title={title}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+            referrerPolicy="strict-origin-when-cross-origin"
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 0 }}
+          />
+        </div>
+        <div className="mt-3" style={{ fontFamily: 'var(--font-mono)', fontSize: 11 }}>
+          <a
+            href={watchUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="rounded border px-3 py-1.5"
+            style={{ borderColor: 'var(--edge)', color: 'var(--ink)', background: 'var(--bg)' }}
+          >
+            Open full playlist on YouTube ↗
+          </a>
+        </div>
+      </div>
+      {caption && (
+        <figcaption
+          className="border-t px-4 py-2 text-center"
+          style={{
+            borderColor: 'var(--edge)',
+            color: 'var(--ink-dim)',
+            fontFamily: 'var(--font-mono)',
+            fontSize: 10,
+            letterSpacing: '0.15em',
+          }}
+        >
+          {caption}
+        </figcaption>
+      )}
+    </figure>
+  )
+}
+
 function CalloutCard({
   kind,
   title,
@@ -5317,6 +5394,16 @@ function renderBlock(block: LessonBlock, i: number): React.ReactNode {
           caption={block.caption}
           helpUrl={block.helpUrl}
           tutorialQuery={block.tutorialQuery}
+        />
+      )
+    case 'youtubePlaylist':
+      return (
+        <YouTubePlaylist
+          key={i}
+          playlistId={block.playlistId}
+          title={block.title}
+          caption={block.caption}
+          startVideoId={block.startVideoId}
         />
       )
     default:

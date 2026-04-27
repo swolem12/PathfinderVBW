@@ -12,6 +12,18 @@ export type Fusion360MockVariant =
   | 'solid-extrude'
   | 'mesh-cleanup'
   | 'parametric-timeline'
+  | 'orbit-pan-zoom'
+  | 'save-versions'
+  | 'parameters-dialog'
+  | 'joint-types'
+  | 'fillet-chamfer'
+  | 'shell-tool'
+  | 'hole-types'
+  | 'pattern-mirror'
+  | 'sketch-tools'
+  | 'plane-cut-mesh'
+  | 'export-formats'
+  | 'section-analysis'
 
 const LABEL: Record<Fusion360MockVariant, string> = {
   'workspace-map': 'Fusion 360 — workspace map',
@@ -20,6 +32,18 @@ const LABEL: Record<Fusion360MockVariant, string> = {
   'solid-extrude': 'Solid — extrude + fillet animation',
   'mesh-cleanup': 'Mesh — STL cleanup workflow',
   'parametric-timeline': 'Parametric project — timeline build',
+  'orbit-pan-zoom': 'Navigation — orbit · pan · zoom',
+  'save-versions': 'Saves — version history',
+  'parameters-dialog': 'Modify — change parameters',
+  'joint-types': 'Assemble — joint types',
+  'fillet-chamfer': 'Modify — fillet vs chamfer',
+  'shell-tool': 'Modify — shell',
+  'hole-types': 'Create — hole types',
+  'pattern-mirror': 'Create — pattern + mirror',
+  'sketch-tools': 'Sketch — primary draw tools',
+  'plane-cut-mesh': 'Mesh — plane cut',
+  'export-formats': 'Export — file formats',
+  'section-analysis': 'Inspect — section analysis',
 }
 
 const EASE = [0.22, 1, 0.36, 1] as const
@@ -141,6 +165,30 @@ function renderVariant(variant: Fusion360MockVariant) {
       return <MeshCleanup />
     case 'parametric-timeline':
       return <ParametricTimeline />
+    case 'orbit-pan-zoom':
+      return <OrbitPanZoom />
+    case 'save-versions':
+      return <SaveVersions />
+    case 'parameters-dialog':
+      return <ParametersDialog />
+    case 'joint-types':
+      return <JointTypes />
+    case 'fillet-chamfer':
+      return <FilletChamfer />
+    case 'shell-tool':
+      return <ShellTool />
+    case 'hole-types':
+      return <HoleTypes />
+    case 'pattern-mirror':
+      return <PatternMirror />
+    case 'sketch-tools':
+      return <SketchTools />
+    case 'plane-cut-mesh':
+      return <PlaneCutMesh />
+    case 'export-formats':
+      return <ExportFormats />
+    case 'section-analysis':
+      return <SectionAnalysis />
   }
 }
 
@@ -869,6 +917,653 @@ function ParametricTimeline() {
           />
         </svg>
       </div>
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  Variant: orbit-pan-zoom                                           */
+/* ------------------------------------------------------------------ */
+
+function OrbitPanZoom() {
+  const cycle = 9
+  return (
+    <div
+      style={{
+        border: '1px solid var(--edge)',
+        borderRadius: 8,
+        background: 'var(--bg)',
+        height: 280,
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      <svg viewBox="0 0 400 280" width="100%" height="100%">
+        <line x1="0" y1="200" x2="400" y2="200" stroke="var(--edge)" strokeDasharray="3 4" />
+        {/* Orbit rotation (rotate body around center) */}
+        <motion.g
+          style={{ transformOrigin: '200px 160px' }}
+          animate={{ rotate: [0, 25, -15, 0, 0, 0] }}
+          transition={{ duration: cycle, repeat: Infinity, times: [0, 0.18, 0.32, 0.45, 0.7, 1] }}
+        >
+          {/* Pan (translate) */}
+          <motion.g
+            animate={{ x: [0, 0, 0, 0, -50, 30, 0], y: [0, 0, 0, 0, 10, -20, 0] }}
+            transition={{ duration: cycle, repeat: Infinity, times: [0, 0.45, 0.5, 0.55, 0.7, 0.85, 1] }}
+          >
+            {/* Zoom (scale) */}
+            <motion.g
+              style={{ transformOrigin: '200px 160px' }}
+              animate={{ scale: [1, 1, 1, 1, 1, 1.4, 0.85, 1] }}
+              transition={{ duration: cycle, repeat: Infinity, times: [0, 0.45, 0.5, 0.55, 0.7, 0.78, 0.92, 1] }}
+            >
+              <polygon points="170,180 230,180 250,160 250,120 230,140 170,140" fill="rgba(120,160,200,0.18)" stroke="var(--ink)" strokeWidth="1.5" />
+              <polygon points="230,180 250,160 250,120 230,140" fill="rgba(80,120,160,0.30)" stroke="var(--ink)" strokeWidth="1.2" />
+              <polygon points="170,140 230,140 250,120 190,120" fill="rgba(160,200,240,0.18)" stroke="var(--ink)" strokeWidth="1.2" />
+            </motion.g>
+          </motion.g>
+        </motion.g>
+        {/* Labels */}
+        <motion.text x="20" y="30" fill="var(--accent)" fontSize="11" fontFamily="var(--font-mono)" animate={{ opacity: [1, 1, 0, 0, 0, 0, 0] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.4, 0.45, 0.5, 0.7, 0.85, 1] }}>
+          orbit · MMB drag (or shift+MMB)
+        </motion.text>
+        <motion.text x="20" y="30" fill="var(--accent)" fontSize="11" fontFamily="var(--font-mono)" animate={{ opacity: [0, 0, 0, 1, 1, 0, 0] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.4, 0.45, 0.5, 0.7, 0.75, 1] }}>
+          pan · MMB drag
+        </motion.text>
+        <motion.text x="20" y="30" fill="var(--accent)" fontSize="11" fontFamily="var(--font-mono)" animate={{ opacity: [0, 0, 0, 0, 0, 1, 1] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.4, 0.45, 0.7, 0.74, 0.78, 1] }}>
+          zoom · scroll wheel
+        </motion.text>
+      </svg>
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  Variant: save-versions                                            */
+/* ------------------------------------------------------------------ */
+
+function SaveVersions() {
+  const versions = [
+    { v: 'v01', note: 'setup + parameters' },
+    { v: 'v02', note: 'sketch fully constrained' },
+    { v: 'v03', note: 'base extrude' },
+    { v: 'v04', note: 'holes + fillets' },
+    { v: 'v05', note: 'inspected + exported' },
+  ]
+  const cycle = versions.length * 1.0
+  return (
+    <div
+      style={{
+        border: '1px solid var(--edge)',
+        borderRadius: 8,
+        background: 'var(--bg)',
+        height: 280,
+        padding: 16,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 10,
+      }}
+    >
+      <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-dim)' }}>
+        version history · Ctrl/Cmd+S
+      </div>
+      {versions.map((v, i) => (
+        <motion.div
+          key={v.v}
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: [0, 0, 1, 1], x: [-10, -10, 0, 0] }}
+          transition={{ duration: cycle, repeat: Infinity, times: [0, i / versions.length, (i + 0.2) / versions.length, 1] }}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
+            padding: '8px 12px',
+            border: '1px solid var(--edge)',
+            borderRadius: 6,
+            background: 'var(--bg-2)',
+          }}
+        >
+          <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--accent)' }} />
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink)', minWidth: 36 }}>{v.v}</span>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-dim)' }}>{v.note}</span>
+        </motion.div>
+      ))}
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  Variant: parameters-dialog                                        */
+/* ------------------------------------------------------------------ */
+
+function ParametersDialog() {
+  const cycle = 6
+  const rows = [
+    { name: 'width', value: ['80 mm', '100 mm', '120 mm'] },
+    { name: 'height', value: ['40 mm', '50 mm', '60 mm'] },
+    { name: 'thickness', value: ['3 mm', '4 mm', '5 mm'] },
+    { name: 'holeDiameter', value: ['4 mm', '4 mm', '5 mm'] },
+    { name: 'holeSpacing', value: ['30 mm', '40 mm', '50 mm'] },
+  ]
+  return (
+    <div
+      style={{
+        border: '1px solid var(--edge)',
+        borderRadius: 8,
+        background: 'var(--bg)',
+        height: 280,
+        padding: 16,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 6,
+        fontFamily: 'var(--font-mono)',
+        fontSize: 11,
+      }}
+    >
+      <div style={{ color: 'var(--ink-dim)', display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr', gap: 8, paddingBottom: 6, borderBottom: '1px solid var(--edge)' }}>
+        <span>name</span>
+        <span>expression</span>
+        <span>value</span>
+      </div>
+      {rows.map((r, i) => (
+        <div key={r.name} style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr', gap: 8, padding: '4px 0', alignItems: 'center' }}>
+          <span style={{ color: 'var(--accent)' }}>{r.name}</span>
+          <span style={{ color: 'var(--ink-dim)' }}>= user input</span>
+          <motion.span
+            style={{ color: 'var(--ink)' }}
+            animate={{ opacity: [0.4, 1, 0.4, 1, 0.4] }}
+            transition={{ duration: cycle, repeat: Infinity, delay: i * 0.1 }}
+          >
+            <motion.span animate={{ opacity: [1, 0, 0] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.34, 1] }} style={{ position: 'absolute' }}>{r.value[0]}</motion.span>
+            <motion.span animate={{ opacity: [0, 1, 0] }} transition={{ duration: cycle, repeat: Infinity, times: [0.34, 0.5, 0.66] }} style={{ position: 'absolute' }}>{r.value[1]}</motion.span>
+            <motion.span animate={{ opacity: [0, 0, 1] }} transition={{ duration: cycle, repeat: Infinity, times: [0.66, 0.8, 1] }} style={{ position: 'absolute' }}>{r.value[2]}</motion.span>
+            <span style={{ visibility: 'hidden' }}>{r.value[2]}</span>
+          </motion.span>
+        </div>
+      ))}
+      <div style={{ marginTop: 'auto', color: 'var(--ink-dim)' }}>
+        Modify → Change Parameters · drives every dimension that uses the name.
+      </div>
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  Variant: joint-types                                              */
+/* ------------------------------------------------------------------ */
+
+function JointTypes() {
+  const joints = [
+    { name: 'Rigid', desc: '0 DOF — locked together' },
+    { name: 'Revolute', desc: '1 DOF — rotation' },
+    { name: 'Slider', desc: '1 DOF — translation' },
+    { name: 'Cylindrical', desc: '2 DOF — rotate + slide' },
+    { name: 'Pin-Slot', desc: '2 DOF — rotate + slot' },
+    { name: 'Planar', desc: '3 DOF — flat constrained' },
+    { name: 'Ball', desc: '3 DOF — rotational' },
+  ]
+  return (
+    <div
+      style={{
+        border: '1px solid var(--edge)',
+        borderRadius: 8,
+        background: 'var(--bg)',
+        height: 280,
+        padding: 16,
+        display: 'grid',
+        gridTemplateColumns: 'repeat(4, 1fr)',
+        gap: 8,
+      }}
+    >
+      {joints.map((j, i) => (
+        <motion.div
+          key={j.name}
+          initial={{ opacity: 0, y: 6 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: i * 0.06, duration: 0.35, ease: EASE }}
+          style={{
+            border: '1px solid var(--edge)',
+            borderRadius: 6,
+            padding: 8,
+            background: 'var(--bg-2)',
+            position: 'relative',
+            overflow: 'hidden',
+          }}
+        >
+          <motion.span
+            aria-hidden
+            animate={{ opacity: [0, 0.18, 0] }}
+            transition={{ duration: 2.4, repeat: Infinity, delay: i * 0.3 }}
+            style={{ position: 'absolute', inset: 0, background: 'var(--accent)' }}
+          />
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink)', fontWeight: 600 }}>{j.name}</div>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--ink-dim)', marginTop: 4 }}>{j.desc}</div>
+        </motion.div>
+      ))}
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  Variant: fillet-chamfer                                           */
+/* ------------------------------------------------------------------ */
+
+function FilletChamfer() {
+  const cycle = 5
+  return (
+    <div
+      style={{
+        border: '1px solid var(--edge)',
+        borderRadius: 8,
+        background: 'var(--bg)',
+        height: 280,
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      <svg viewBox="0 0 400 280" width="100%" height="100%">
+        <text x="80" y="40" fill="var(--ink-dim)" fontSize="11" fontFamily="var(--font-mono)" textAnchor="middle">FILLET (radius)</text>
+        <text x="320" y="40" fill="var(--ink-dim)" fontSize="11" fontFamily="var(--font-mono)" textAnchor="middle">CHAMFER (bevel)</text>
+        {/* Fillet morph */}
+        <motion.path
+          fill="rgba(120,160,200,0.18)"
+          stroke="var(--ink)"
+          strokeWidth="1.5"
+          animate={{
+            d: [
+              'M30,200 L30,80 L130,80 L130,200 Z',
+              'M30,200 L30,90 Q30,80 40,80 L120,80 Q130,80 130,90 L130,200 Z',
+              'M30,200 L30,110 Q30,80 60,80 L100,80 Q130,80 130,110 L130,200 Z',
+            ],
+          }}
+          transition={{ duration: cycle, repeat: Infinity, times: [0, 0.5, 1], ease: 'easeInOut' }}
+        />
+        {/* Chamfer morph */}
+        <motion.path
+          fill="rgba(120,160,200,0.18)"
+          stroke="var(--ink)"
+          strokeWidth="1.5"
+          animate={{
+            d: [
+              'M270,200 L270,80 L370,80 L370,200 Z',
+              'M270,200 L270,88 L278,80 L362,80 L370,88 L370,200 Z',
+              'M270,200 L270,108 L298,80 L342,80 L370,108 L370,200 Z',
+            ],
+          }}
+          transition={{ duration: cycle, repeat: Infinity, times: [0, 0.5, 1], ease: 'easeInOut' }}
+        />
+        <text x="200" y="260" fill="var(--ink-dim)" fontSize="10" fontFamily="var(--font-mono)" textAnchor="middle">
+          fillet softens · chamfer adds an angled lead-in
+        </text>
+      </svg>
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  Variant: shell-tool                                               */
+/* ------------------------------------------------------------------ */
+
+function ShellTool() {
+  const cycle = 5
+  return (
+    <div
+      style={{
+        border: '1px solid var(--edge)',
+        borderRadius: 8,
+        background: 'var(--bg)',
+        height: 280,
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      <svg viewBox="0 0 400 280" width="100%" height="100%">
+        {/* solid box */}
+        <motion.polygon
+          points="120,180 280,180 320,140 320,60 160,60 120,100"
+          fill="rgba(120,160,200,0.18)"
+          stroke="var(--ink)"
+          strokeWidth="1.5"
+          animate={{ opacity: [1, 1, 0.4, 0.4] }}
+          transition={{ duration: cycle, repeat: Infinity, times: [0, 0.4, 0.5, 1] }}
+        />
+        <motion.polygon
+          points="280,180 320,140 320,60"
+          fill="rgba(80,120,160,0.32)"
+          stroke="var(--ink)"
+          strokeWidth="1.2"
+          animate={{ opacity: [1, 1, 0.4, 0.4] }}
+          transition={{ duration: cycle, repeat: Infinity, times: [0, 0.4, 0.5, 1] }}
+        />
+        {/* hollow inner walls (visible after shell) */}
+        <motion.polygon
+          points="135,170 275,170 310,135 310,75 165,75 135,105"
+          fill="none"
+          stroke="var(--accent)"
+          strokeWidth="1.5"
+          strokeDasharray="4 3"
+          animate={{ opacity: [0, 0, 1, 1] }}
+          transition={{ duration: cycle, repeat: Infinity, times: [0, 0.4, 0.6, 1] }}
+        />
+        <text x="200" y="240" fill="var(--ink-dim)" fontSize="11" fontFamily="var(--font-mono)" textAnchor="middle">
+          select top face → shell removes it and leaves wall thickness
+        </text>
+      </svg>
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  Variant: hole-types                                               */
+/* ------------------------------------------------------------------ */
+
+function HoleTypes() {
+  const types = ['Simple', 'Counterbore', 'Countersink', 'Tapped']
+  const cycle = 6
+  return (
+    <div
+      style={{
+        border: '1px solid var(--edge)',
+        borderRadius: 8,
+        background: 'var(--bg)',
+        height: 280,
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      <svg viewBox="0 0 400 280" width="100%" height="100%">
+        {types.map((t, i) => (
+          <g key={t} transform={`translate(${50 + i * 90}, 60)`}>
+            <text x="35" y="0" fill="var(--ink-dim)" fontSize="10" fontFamily="var(--font-mono)" textAnchor="middle">{t}</text>
+            <rect x="0" y="20" width="70" height="160" fill="rgba(120,160,200,0.10)" stroke="var(--ink)" strokeWidth="1.2" />
+            {i === 0 && <rect x="28" y="20" width="14" height="160" fill="var(--bg)" stroke="var(--accent)" strokeWidth="1" />}
+            {i === 1 && (
+              <>
+                <rect x="20" y="20" width="30" height="40" fill="var(--bg)" stroke="var(--accent)" strokeWidth="1" />
+                <rect x="28" y="60" width="14" height="120" fill="var(--bg)" stroke="var(--accent)" strokeWidth="1" />
+              </>
+            )}
+            {i === 2 && (
+              <>
+                <polygon points="18,20 52,20 42,60 28,60" fill="var(--bg)" stroke="var(--accent)" strokeWidth="1" />
+                <rect x="28" y="60" width="14" height="120" fill="var(--bg)" stroke="var(--accent)" strokeWidth="1" />
+              </>
+            )}
+            {i === 3 && (
+              <>
+                <rect x="28" y="20" width="14" height="160" fill="var(--bg)" stroke="var(--accent)" strokeWidth="1" />
+                {Array.from({ length: 8 }).map((_, k) => (
+                  <line key={k} x1="28" y1={30 + k * 20} x2="42" y2={38 + k * 20} stroke="var(--accent)" strokeWidth="0.8" />
+                ))}
+              </>
+            )}
+            <motion.rect
+              x="-5"
+              y="15"
+              width="80"
+              height="170"
+              fill="none"
+              stroke="var(--accent)"
+              strokeWidth="2"
+              rx="3"
+              animate={{ opacity: [0, 0, 1, 0, 0] }}
+              transition={{ duration: cycle, repeat: Infinity, times: [0, i / types.length, (i + 0.3) / types.length, (i + 0.7) / types.length, 1] }}
+            />
+          </g>
+        ))}
+      </svg>
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  Variant: pattern-mirror                                           */
+/* ------------------------------------------------------------------ */
+
+function PatternMirror() {
+  const cycle = 5
+  return (
+    <div
+      style={{
+        border: '1px solid var(--edge)',
+        borderRadius: 8,
+        background: 'var(--bg)',
+        height: 280,
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      <svg viewBox="0 0 400 280" width="100%" height="100%">
+        <text x="100" y="40" fill="var(--ink-dim)" fontSize="11" fontFamily="var(--font-mono)" textAnchor="middle">RECTANGULAR PATTERN</text>
+        <text x="300" y="40" fill="var(--ink-dim)" fontSize="11" fontFamily="var(--font-mono)" textAnchor="middle">MIRROR</text>
+        <line x1="200" y1="60" x2="200" y2="240" stroke="var(--edge)" strokeDasharray="3 4" />
+        {/* pattern grid */}
+        {[0, 1, 2].map((r) => [0, 1, 2].map((c) => (
+          <motion.circle
+            key={`p-${r}-${c}`}
+            cx={40 + c * 30}
+            cy={120 + r * 30}
+            r="8"
+            fill="var(--accent)"
+            opacity="0.5"
+            initial={{ scale: 0 }}
+            animate={{ scale: [0, 0, 1, 1, 0] }}
+            transition={{ duration: cycle, repeat: Infinity, times: [0, 0.05 + (r * 3 + c) * 0.06, 0.1 + (r * 3 + c) * 0.06, 0.85, 1], ease: EASE }}
+          />
+        )))}
+        {/* mirror left */}
+        <motion.circle cx="240" cy="150" r="10" fill="rgba(120,160,200,0.30)" stroke="var(--ink)" strokeWidth="1.2" animate={{ opacity: [1, 1, 1, 1, 0.3] }} transition={{ duration: cycle, repeat: Infinity }} />
+        {/* mirror right */}
+        <motion.circle
+          cx="360"
+          cy="150"
+          r="10"
+          fill="rgba(120,160,200,0.30)"
+          stroke="var(--ink)"
+          strokeWidth="1.2"
+          animate={{ opacity: [0, 0, 1, 1, 0.3], cx: [240, 240, 360, 360, 360] }}
+          transition={{ duration: cycle, repeat: Infinity, times: [0, 0.3, 0.6, 0.85, 1] }}
+        />
+      </svg>
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  Variant: sketch-tools                                             */
+/* ------------------------------------------------------------------ */
+
+function SketchTools() {
+  const cycle = 8
+  return (
+    <div
+      style={{
+        border: '1px solid var(--edge)',
+        borderRadius: 8,
+        background: 'var(--bg)',
+        height: 280,
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      <svg viewBox="0 0 400 280" width="100%" height="100%">
+        <line x1="0" y1="140" x2="400" y2="140" stroke="var(--edge)" strokeDasharray="3 4" />
+        <line x1="200" y1="0" x2="200" y2="280" stroke="var(--edge)" strokeDasharray="3 4" />
+        {/* line */}
+        <motion.line x1="50" y1="200" x2="120" y2="80" stroke="var(--accent)" strokeWidth="2"
+          animate={{ pathLength: [0, 1, 1, 1, 1] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.18, 0.95, 0.98, 1] }} />
+        <text x="85" y="220" fill="var(--ink-dim)" fontSize="10" fontFamily="var(--font-mono)" textAnchor="middle">L · line</text>
+        {/* rectangle */}
+        <motion.rect x="150" y="80" width="100" height="60" fill="none" stroke="var(--accent)" strokeWidth="2"
+          animate={{ pathLength: [0, 0, 1, 1, 1] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.2, 0.4, 0.95, 1] }} />
+        <text x="200" y="160" fill="var(--ink-dim)" fontSize="10" fontFamily="var(--font-mono)" textAnchor="middle">R · rectangle</text>
+        {/* circle */}
+        <motion.circle cx="320" cy="100" r="30" fill="none" stroke="var(--accent)" strokeWidth="2"
+          animate={{ pathLength: [0, 0, 0, 1, 1] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.4, 0.55, 0.75, 1] }} />
+        <text x="320" y="155" fill="var(--ink-dim)" fontSize="10" fontFamily="var(--font-mono)" textAnchor="middle">C · circle</text>
+        {/* arc */}
+        <motion.path d="M50,260 Q120,180 190,260" fill="none" stroke="var(--accent)" strokeWidth="2"
+          animate={{ pathLength: [0, 0, 0, 0, 1] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.6, 0.7, 0.8, 0.95] }} />
+        <text x="120" y="275" fill="var(--ink-dim)" fontSize="10" fontFamily="var(--font-mono)" textAnchor="middle">A · arc</text>
+        {/* polygon */}
+        <motion.polygon points="320,200 350,220 340,255 300,255 290,220" fill="none" stroke="var(--accent)" strokeWidth="2"
+          animate={{ pathLength: [0, 0, 0, 0, 0, 1] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.7, 0.78, 0.85, 0.9, 0.98] }} />
+        <text x="320" y="275" fill="var(--ink-dim)" fontSize="10" fontFamily="var(--font-mono)" textAnchor="middle">polygon</text>
+      </svg>
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  Variant: plane-cut-mesh                                           */
+/* ------------------------------------------------------------------ */
+
+function PlaneCutMesh() {
+  const cycle = 5
+  return (
+    <div
+      style={{
+        border: '1px solid var(--edge)',
+        borderRadius: 8,
+        background: 'var(--bg)',
+        height: 280,
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      <svg viewBox="0 0 400 280" width="100%" height="100%">
+        {/* mesh blob (triangulated dome) */}
+        {Array.from({ length: 14 }).map((_, i) => {
+          const a1 = Math.PI * (i / 14)
+          const a2 = Math.PI * ((i + 1) / 14)
+          const r = 80
+          const cx = 200
+          const cy = 180
+          return (
+            <polygon
+              key={i}
+              points={`${cx + Math.cos(a1) * r},${cy - Math.sin(a1) * r} ${cx + Math.cos(a2) * r},${cy - Math.sin(a2) * r} ${cx},${cy}`}
+              fill="rgba(120,160,200,0.12)"
+              stroke="var(--ink-dim)"
+              strokeWidth="0.8"
+            />
+          )
+        })}
+        {/* sweeping plane */}
+        <motion.line
+          x1="60"
+          x2="340"
+          stroke="var(--accent)"
+          strokeWidth="2"
+          strokeDasharray="6 4"
+          animate={{ y1: [70, 180, 180], y2: [70, 180, 180] }}
+          transition={{ duration: cycle, repeat: Infinity, times: [0, 0.6, 1], ease: 'easeInOut' }}
+        />
+        <text x="200" y="240" fill="var(--ink-dim)" fontSize="11" fontFamily="var(--font-mono)" textAnchor="middle">
+          plane cut · trims everything below the plane (or fills it flat)
+        </text>
+      </svg>
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  Variant: export-formats                                           */
+/* ------------------------------------------------------------------ */
+
+function ExportFormats() {
+  const formats = [
+    { ext: 'F3D', use: 'Fusion archive · keeps timeline + parameters' },
+    { ext: 'STEP', use: 'Standard CAD interchange · solids' },
+    { ext: 'IGES', use: 'Legacy CAD interchange · surfaces' },
+    { ext: 'STL', use: '3D printing · triangulated mesh' },
+    { ext: '3MF', use: '3D printing · color + units + metadata' },
+    { ext: 'OBJ', use: 'Mesh interchange · render/modeling tools' },
+    { ext: 'DXF', use: '2D laser/CNC · sketch profiles' },
+    { ext: 'PDF', use: '2D drawings · sheets + dimensions' },
+  ]
+  return (
+    <div
+      style={{
+        border: '1px solid var(--edge)',
+        borderRadius: 8,
+        background: 'var(--bg)',
+        height: 280,
+        padding: 16,
+        display: 'grid',
+        gridTemplateColumns: 'repeat(4, 1fr)',
+        gap: 8,
+      }}
+    >
+      {formats.map((f, i) => (
+        <motion.div
+          key={f.ext}
+          initial={{ opacity: 0, y: 6 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: i * 0.05, duration: 0.35, ease: EASE }}
+          style={{
+            border: '1px solid var(--edge)',
+            borderRadius: 6,
+            padding: 10,
+            background: 'var(--bg-2)',
+          }}
+        >
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 13, color: 'var(--accent)', fontWeight: 600 }}>{f.ext}</div>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--ink-dim)', marginTop: 4 }}>{f.use}</div>
+        </motion.div>
+      ))}
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  Variant: section-analysis                                         */
+/* ------------------------------------------------------------------ */
+
+function SectionAnalysis() {
+  const cycle = 6
+  return (
+    <div
+      style={{
+        border: '1px solid var(--edge)',
+        borderRadius: 8,
+        background: 'var(--bg)',
+        height: 280,
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      <svg viewBox="0 0 400 280" width="100%" height="100%">
+        {/* solid box outline */}
+        <rect x="100" y="80" width="220" height="120" fill="rgba(120,160,200,0.15)" stroke="var(--ink)" strokeWidth="1.5" />
+        {/* inner cavity (revealed by section) */}
+        <motion.rect
+          x="130"
+          y="100"
+          width="160"
+          height="80"
+          fill="var(--bg)"
+          stroke="var(--accent)"
+          strokeWidth="1.5"
+          strokeDasharray="4 3"
+          animate={{ opacity: [0, 0, 1, 1, 0] }}
+          transition={{ duration: cycle, repeat: Infinity, times: [0, 0.3, 0.5, 0.85, 1] }}
+        />
+        {/* sweeping section plane */}
+        <motion.line
+          x1="80" y1="40" x2="80" y2="240"
+          stroke="var(--accent)"
+          strokeWidth="2"
+          strokeDasharray="6 4"
+          animate={{ x1: [80, 210, 210, 80], x2: [80, 210, 210, 80] }}
+          transition={{ duration: cycle, repeat: Infinity, times: [0, 0.4, 0.85, 1], ease: 'easeInOut' }}
+        />
+        <text x="200" y="260" fill="var(--ink-dim)" fontSize="11" fontFamily="var(--font-mono)" textAnchor="middle">
+          inspect → section analysis · slide the plane to reveal internal walls
+        </text>
+      </svg>
     </div>
   )
 }

@@ -8,11 +8,34 @@ type FusionTool = {
   watchFor?: string
   mediaKind?: MediaBlock['kind']
   helpUrl?: string
+  mockVariant?:
+    | 'sketch-tools'
+    | 'sketch-constraints'
+    | 'solid-extrude'
+    | 'fillet-chamfer'
+    | 'shell-tool'
+    | 'hole-types'
+    | 'pattern-mirror'
+    | 'plane-cut-mesh'
+    | 'mesh-cleanup'
+    | 'parameters-dialog'
+    | 'joint-types'
+    | 'section-analysis'
 }
 
 const HELP_BASE = 'https://help.autodesk.com/view/fusion360/ENU/'
 const HELP_SEARCH = (q: string) =>
   `${HELP_BASE}?query=${encodeURIComponent(q)}`
+
+/** Autodesk Fusion 360 official tutorial playlist supplied by the course. */
+const FUSION_PLAYLIST_ID = 'PLrZ2zKOtC_-C4rWfapgngoe9o2-ng8ZBr'
+
+const playlistBlock = (caption: string): LessonBlock => ({
+  type: 'youtubePlaylist',
+  playlistId: FUSION_PLAYLIST_ID,
+  title: 'Autodesk Fusion 360 — official tutorial playlist',
+  caption,
+})
 
 const mediaSlot = (
   kind: MediaBlock['kind'],
@@ -41,6 +64,17 @@ const toolBlock = (workspace: 'Solid' | 'Mesh' | 'Sketch', tool: FusionTool): Le
         ...(tool.watchFor ? [`Watch for: ${tool.watchFor}`] : []),
       ],
     },
+    ...(tool.mockVariant
+      ? [
+          {
+            type: 'fusion360Mock' as const,
+            variant: tool.mockVariant,
+            caption: `Animated reference: ${workspace} · ${tool.name}.`,
+            helpUrl: tool.helpUrl ?? HELP_SEARCH(`${workspace} ${tool.name}`),
+            tutorialQuery: `${workspace} ${tool.name}`,
+          },
+        ]
+      : []),
     mediaSlot(
       tool.mediaKind ?? 'gif',
       `${tool.name} — official reference`,
@@ -68,6 +102,7 @@ const solidTools: FusionTool[] = [
     purpose: 'Turns a sketch profile or face into a solid by pushing it in a straight direction.',
     useWhen: 'making plates, blocks, brackets, cutouts, bosses, pockets, or through-cuts.',
     steps: ['Select a closed profile or face.', 'Choose Join, Cut, Intersect, or New Body.', 'Set distance, direction, taper, and extent.'],
+    mockVariant: 'solid-extrude',
   },
   {
     name: 'Revolve',
@@ -104,6 +139,7 @@ const solidTools: FusionTool[] = [
     purpose: 'Creates precise drilled, counterbored, countersunk, tapped, or clearance holes.',
     useWhen: 'placing fastener holes, threaded holes, locating holes, or standard hardware clearances.',
     steps: ['Pick a face or sketch point.', 'Choose simple, counterbore, countersink, or tapped.', 'Set diameter, depth, thread, and termination.'],
+    mockVariant: 'hole-types',
   },
   {
     name: 'Thread',
@@ -154,18 +190,21 @@ const solidTools: FusionTool[] = [
     useWhen: 'softening edges, improving manufacturability, removing stress risers, and making parts feel finished.',
     steps: ['Select edges or faces.', 'Enter radius.', 'Use tangent chain and variable radius when needed.'],
     mediaKind: 'image',
+    mockVariant: 'fillet-chamfer',
   },
   {
     name: 'Chamfer',
     purpose: 'Bevels edges with flat angled cuts.',
     useWhen: 'adding lead-ins for assembly, removing sharp corners, or creating machined bevels.',
     steps: ['Select edges.', 'Choose equal distance, two distances, or distance/angle.', 'Set values and confirm.'],
+    mockVariant: 'fillet-chamfer',
   },
   {
     name: 'Shell',
     purpose: 'Hollows a solid body by removing selected faces and leaving wall thickness.',
     useWhen: 'making enclosures, cups, housings, and lightweight plastic parts.',
     steps: ['Select the face or faces to remove.', 'Set inside, outside, or both-side wall thickness.', 'Inspect corners for failed thin geometry.'],
+    mockVariant: 'shell-tool',
   },
   {
     name: 'Draft',
@@ -215,6 +254,7 @@ const solidTools: FusionTool[] = [
     useWhen: 'you want a design to resize predictably, such as materialThickness, clearance, or boltSpacing.',
     steps: ['Open Modify → Change Parameters.', 'Create named user parameters.', 'Use parameter names instead of raw numbers in dimensions.'],
     mediaKind: 'video',
+    mockVariant: 'parameters-dialog',
   },
   {
     name: 'Construction Plane',
@@ -241,6 +281,7 @@ const solidTools: FusionTool[] = [
     useWhen: 'checking walls, holes, fit, and hidden features without modifying the actual body.',
     steps: ['Choose Inspect → Section Analysis.', 'Pick a plane or face.', 'Drag the section depth and save the analysis if needed.'],
     mediaKind: 'reference',
+    mockVariant: 'section-analysis',
   },
 ]
 
@@ -251,6 +292,7 @@ const meshTools: FusionTool[] = [
     useWhen: 'bringing in 3D scans, downloaded printable files, or mesh references.',
     steps: ['Use Insert → Insert Mesh.', 'Select file and units.', 'Place and orient the mesh before editing.'],
     mediaKind: 'image',
+    mockVariant: 'mesh-cleanup',
   },
   {
     name: 'Create Mesh Section Sketch',
@@ -270,6 +312,7 @@ const meshTools: FusionTool[] = [
     purpose: 'Lowers the triangle count of a mesh.',
     useWhen: 'an imported mesh is too heavy to edit or convert.',
     steps: ['Select mesh faces or body.', 'Choose percentage, face count, or tolerance reduction.', 'Preserve sharp boundaries when accuracy matters.'],
+    mockVariant: 'mesh-cleanup',
   },
   {
     name: 'Remesh',
@@ -288,6 +331,7 @@ const meshTools: FusionTool[] = [
     purpose: 'Cuts a mesh with a plane and optionally fills the cut.',
     useWhen: 'flattening the bottom of a scan, trimming an STL, or preparing a model for printing.',
     steps: ['Pick the mesh body.', 'Position the cutting plane.', 'Choose trim side and fill behavior.'],
+    mockVariant: 'plane-cut-mesh',
   },
   {
     name: 'Separate',
@@ -340,6 +384,7 @@ const sketchTools: FusionTool[] = [
     purpose: 'Draws straight sketch segments.',
     useWhen: 'creating profiles, construction geometry, centerlines, and reference edges.',
     steps: ['Click the start point.', 'Click endpoints for each segment.', 'Press Esc or click the checkmark to finish.'],
+    mockVariant: 'sketch-tools',
   },
   {
     name: 'Two-Point Rectangle',
@@ -444,6 +489,7 @@ const sketchTools: FusionTool[] = [
     purpose: 'Reflects sketch geometry across a line.',
     useWhen: 'creating symmetric sketches while only drawing one side.',
     steps: ['Select geometry.', 'Select a mirror line, usually construction geometry.', 'Confirm and keep original constraints clean.'],
+    mockVariant: 'pattern-mirror',
   },
   {
     name: 'Circular Pattern',
@@ -456,6 +502,7 @@ const sketchTools: FusionTool[] = [
     purpose: 'Repeats sketch geometry in rows and columns.',
     useWhen: 'creating grids, ventilation holes, tabs, and repeated slots.',
     steps: ['Select objects.', 'Set directions.', 'Enter spacing and quantity.'],
+    mockVariant: 'pattern-mirror',
   },
   {
     name: 'Move/Copy',
@@ -512,20 +559,29 @@ const sketchTools: FusionTool[] = [
     useWhen: 'you need sketches that update predictably when dimensions change.',
     steps: ['Select the geometry involved.', 'Apply the correct relationship.', 'Watch sketch color to confirm it becomes fully constrained.'],
     mediaKind: 'reference',
+    mockVariant: 'sketch-constraints',
   },
 ]
 
 const toolReferenceBlocks: LessonBlock[] = [
   {
     type: 'p',
-    body: 'This quick reference is built to be used side-by-side with Fusion 360. Open one tool at a time, read what it does, then practice the same operation on a simple part. Media slots are already wired for GIFs, footage, pictures, and reference graphics so production assets can be dropped in without changing the lesson layout.',
+    body: 'This quick reference is built to be used side-by-side with Fusion 360. Open one tool at a time, read what it does, then practice the same operation on a simple part. Each tool entry includes an animated reference plus deep links to the official Autodesk Help article and YouTube tutorials.',
   },
+  playlistBlock('The full Autodesk Fusion 360 official tutorial playlist — use it alongside the per-tool references below.'),
   {
     type: 'fusion360Mock',
     variant: 'workspace-map',
     caption: 'Fusion 360 ships these workspaces. Design is where most modeling happens; the others activate task-specific toolbars.',
     helpUrl: HELP_SEARCH('user interface workspace overview'),
     tutorialQuery: 'interface tour workspaces toolbar browser timeline',
+  },
+  {
+    type: 'fusion360Mock',
+    variant: 'orbit-pan-zoom',
+    caption: 'Mouse navigation: orbit (Shift+MMB), pan (MMB), zoom (scroll). Memorize these first.',
+    helpUrl: HELP_SEARCH('view navigation orbit pan zoom'),
+    tutorialQuery: 'navigation orbit pan zoom shortcuts',
   },
   { type: 'h', body: 'Solid workspace tools' },
   ...solidTools.map((tool) => toolBlock('Solid', tool)),
@@ -558,12 +614,20 @@ export const fusion360Lessons: LessonDef[] = [
         type: 'p',
         body: 'Fusion 360 is parametric CAD: the order of your features matters. The browser organizes components and bodies; the timeline stores every operation; sketches define intent; and parameters let a model update without redrawing it.',
       },
+      playlistBlock('Watch the Autodesk Fusion 360 official tutorial playlist while you work through this lesson.'),
       {
         type: 'fusion360Mock',
         variant: 'interface-tour',
         caption: 'Animated tour: toolbar tabs, browser tree, modeling canvas, view cube, and timeline at the bottom.',
         helpUrl: HELP_SEARCH('user interface tour'),
         tutorialQuery: 'beginner interface tour orbit pan zoom',
+      },
+      {
+        type: 'fusion360Mock',
+        variant: 'orbit-pan-zoom',
+        caption: 'Memorize the three navigation moves before you model anything: orbit, pan, zoom.',
+        helpUrl: HELP_SEARCH('view navigation orbit pan zoom'),
+        tutorialQuery: 'navigation orbit pan zoom shortcuts',
       },
       { type: 'jargon', term: 'Component', plain: 'A part or assembly container with its own origin, sketches, bodies, joints, and timeline references. Use components for anything that might move or be manufactured separately.' },
       { type: 'jargon', term: 'Body', plain: 'A single chunk of geometry inside a component. Bodies are usually intermediate solids until you decide how the product is assembled.' },
@@ -572,6 +636,13 @@ export const fusion360Lessons: LessonDef[] = [
       { type: 'step', n: 2, title: 'Set units and navigation', body: 'Open Document Settings, set units to millimeters or inches based on your shop standard, and practice orbit, pan, zoom, home view, and fit view.' },
       { type: 'step', n: 3, title: 'Make the first component', body: 'Right-click the top design node, choose New Component, and name it Practice Bracket. Activate the component before sketching.' },
       { type: 'step', n: 4, title: 'Save early', body: 'Save the design before modeling. Fusion versions every save, so use meaningful milestones like v01 setup, v02 sketch, v03 solid body.' },
+      {
+        type: 'fusion360Mock',
+        variant: 'save-versions',
+        caption: 'Every Save creates a numbered version with a description — you can always roll back.',
+        helpUrl: HELP_SEARCH('save version history'),
+        tutorialQuery: 'save versions data panel history',
+      },
       {
         type: 'callout',
         callout: {
@@ -618,6 +689,14 @@ export const fusion360Lessons: LessonDef[] = [
     estMinutes: 40,
     blocks: [
       { type: 'p', body: 'Good Fusion models come from good sketches. A sketch should describe design intent, not just shape. If a line should stay horizontal, constrain it. If two holes should stay equal, constrain and dimension them. If a thickness may change, use a parameter.' },
+      playlistBlock('Sketching topics in the official Autodesk Fusion 360 playlist.'),
+      {
+        type: 'fusion360Mock',
+        variant: 'sketch-tools',
+        caption: 'The five sketch tools you will use most: line, rectangle, circle, arc, polygon.',
+        helpUrl: HELP_SEARCH('sketch tools line rectangle circle arc'),
+        tutorialQuery: 'sketch tools line rectangle circle arc polygon',
+      },
       {
         type: 'fusion360Mock',
         variant: 'sketch-constraints',
@@ -626,7 +705,21 @@ export const fusion360Lessons: LessonDef[] = [
         tutorialQuery: 'fully constrained sketch constraints dimensions',
       },
       { type: 'step', n: 1, title: 'Create named parameters', body: 'Open Modify → Change Parameters. Add width, height, thickness, holeDiameter, and holeSpacing. Use real starter values.' },
+      {
+        type: 'fusion360Mock',
+        variant: 'parameters-dialog',
+        caption: 'Named parameters drive every dimension that uses the name — change one value and the whole sketch updates.',
+        helpUrl: HELP_SEARCH('change parameters user parameters'),
+        tutorialQuery: 'change parameters user parameters dimensions',
+      },
       { type: 'step', n: 2, title: 'Sketch only half when symmetric', body: 'Create a centerline through the origin. Draw one side of the bracket and mirror it across the centerline.' },
+      {
+        type: 'fusion360Mock',
+        variant: 'pattern-mirror',
+        caption: 'Mirror across a centerline (or use Rectangular Pattern for grids of holes).',
+        helpUrl: HELP_SEARCH('sketch mirror pattern'),
+        tutorialQuery: 'sketch mirror rectangular pattern',
+      },
       { type: 'step', n: 3, title: 'Dimension with parameter names', body: 'Use D for dimension, then type names like width, thickness, or holeSpacing instead of raw numbers.' },
       { type: 'step', n: 4, title: 'Apply constraints deliberately', body: 'Use horizontal/vertical, equal, concentric, midpoint, tangent, and symmetry constraints until the sketch is fully constrained.' },
       { type: 'step', n: 5, title: 'Stress test the sketch', body: 'Change parameters one at a time. If geometry flips, overlaps, or moves unexpectedly, add the missing constraint before continuing.' },
@@ -650,6 +743,7 @@ export const fusion360Lessons: LessonDef[] = [
     estMinutes: 55,
     blocks: [
       { type: 'p', body: 'A solid workflow is a chain: sketch → base feature → secondary cuts/additions → edge treatments → inspection. Model big forms first, details second, and fillets/chamfers last unless they control other geometry.' },
+      playlistBlock('Solid modeling lessons in the official Autodesk Fusion 360 playlist.'),
       {
         type: 'fusion360Mock',
         variant: 'solid-extrude',
@@ -659,9 +753,37 @@ export const fusion360Lessons: LessonDef[] = [
       },
       { type: 'step', n: 1, title: 'Extrude the base', body: 'Select the closed bracket profile and extrude it by the thickness parameter as a New Body or Join inside the active component.' },
       { type: 'step', n: 2, title: 'Add precise holes', body: 'Use the Hole tool on sketch points or create circles and cut extrude. Prefer Hole for fasteners because it stores hardware intent.' },
+      {
+        type: 'fusion360Mock',
+        variant: 'hole-types',
+        caption: 'Simple, counterbore, countersink, and tapped — the Hole tool encodes hardware intent so the timeline stays editable.',
+        helpUrl: HELP_SEARCH('hole simple counterbore countersink tapped'),
+        tutorialQuery: 'hole tool simple counterbore countersink tapped',
+      },
       { type: 'step', n: 3, title: 'Add functional clearances', body: 'Use Offset Face or Press Pull to tune pockets and clearances. Keep important values parameter-driven.' },
       { type: 'step', n: 4, title: 'Add edge treatment last', body: 'Apply fillets to stress-prone or touch edges. Apply chamfers to lead-ins and machined edges. Rename features like fillet-touch-edges.' },
+      {
+        type: 'fusion360Mock',
+        variant: 'fillet-chamfer',
+        caption: 'Fillet rounds an edge with a radius; chamfer adds a flat angled bevel.',
+        helpUrl: HELP_SEARCH('fillet chamfer edge'),
+        tutorialQuery: 'fillet chamfer edges radius',
+      },
+      {
+        type: 'fusion360Mock',
+        variant: 'shell-tool',
+        caption: 'Shell hollows the body and leaves a uniform wall thickness — ideal for enclosures and housings.',
+        helpUrl: HELP_SEARCH('shell wall thickness'),
+        tutorialQuery: 'shell tool wall thickness enclosure',
+      },
       { type: 'step', n: 5, title: 'Inspect before moving on', body: 'Use Measure and Section Analysis to verify wall thickness, hole spacing, and internal clearance.' },
+      {
+        type: 'fusion360Mock',
+        variant: 'section-analysis',
+        caption: 'Section Analysis slides a plane through the body so you can verify internal walls and clearances.',
+        helpUrl: HELP_SEARCH('section analysis inspect'),
+        tutorialQuery: 'section analysis inspect internal walls',
+      },
       { type: 'callout', callout: { kind: 'warn', title: 'Fillets can break later edits', body: 'If a model starts failing, suppress or roll back late fillets/chamfers first. They are usually the most fragile timeline features.' } },
       { type: 'checklist', items: ['The base body is driven by a sketch and named parameters', 'Holes are centered and dimensioned', 'Fillets and chamfers are applied intentionally', 'Measure confirms the part matches the design intent'] },
     ],
@@ -676,6 +798,7 @@ export const fusion360Lessons: LessonDef[] = [
     estMinutes: 45,
     blocks: [
       { type: 'p', body: 'Meshes are triangle surfaces. Solids are parametric boundary representations. Fusion can work with both, but they behave differently. The safest beginner workflow is: import mesh → orient/scale → repair/reduce → section sketch → rebuild important features as sketches and solids.' },
+      playlistBlock('Mesh workflow lessons in the official Autodesk Fusion 360 playlist.'),
       {
         type: 'fusion360Mock',
         variant: 'mesh-cleanup',
@@ -687,6 +810,13 @@ export const fusion360Lessons: LessonDef[] = [
       { type: 'step', n: 2, title: 'Repair before editing', body: 'Run Repair to fix holes, non-manifold edges, flipped normals, and self-intersections before conversion or printing.' },
       { type: 'step', n: 3, title: 'Reduce only as much as needed', body: 'Use Reduce to make the mesh manageable while preserving important edges and curves.' },
       { type: 'step', n: 4, title: 'Cut and flatten references', body: 'Use Plane Cut to remove uneven scan bottoms or isolate the useful section of the model.' },
+      {
+        type: 'fusion360Mock',
+        variant: 'plane-cut-mesh',
+        caption: 'Plane Cut trims everything below the cutting plane and can fill the cut to leave a flat base.',
+        helpUrl: HELP_SEARCH('plane cut mesh'),
+        tutorialQuery: 'plane cut mesh STL flat base',
+      },
       { type: 'step', n: 5, title: 'Rebuild parametric geometry', body: 'Use Create Mesh Section Sketch, then trace clean lines/arcs/circles and extrude/revolve them as normal solid features.' },
       { type: 'callout', callout: { kind: 'tip', title: 'Convert mesh only when it helps', body: 'Converting a messy scan directly often creates thousands of tiny faces. For editable CAD, section and rebuild the important features instead.' } },
       { type: 'checklist', items: ['I can import a mesh at correct scale', 'I can repair and reduce a mesh', 'I can plane cut a mesh cleanly', 'I can create a mesh section sketch and rebuild a solid feature from it'] },
@@ -702,6 +832,7 @@ export const fusion360Lessons: LessonDef[] = [
     estMinutes: 75,
     blocks: [
       { type: 'p', body: 'This project ties the course together. You will model a simple wall hook with parameters, a fully constrained sketch, solid features, optional mesh reference, and export checks.' },
+      playlistBlock('Beginner project walkthroughs in the official Autodesk Fusion 360 playlist.'),
       {
         type: 'fusion360Mock',
         variant: 'parametric-timeline',
@@ -715,6 +846,13 @@ export const fusion360Lessons: LessonDef[] = [
       { type: 'step', n: 4, title: 'Add mounting plate and holes', body: 'Sketch the front plate, extrude it, then use Hole for two screw holes driven by screwSpacing and screwDiameter.' },
       { type: 'step', n: 5, title: 'Round and inspect', body: 'Add fillets to touch edges and stress corners. Use Section Analysis and Measure to verify thickness and hole spacing.' },
       { type: 'step', n: 6, title: 'Export for manufacturing', body: 'Export STEP for CAD sharing and STL/3MF for 3D printing. Name files with units and version, such as wall-hook-mm-v01.step.' },
+      {
+        type: 'fusion360Mock',
+        variant: 'export-formats',
+        caption: 'Common Fusion 360 export formats and what each one is for.',
+        helpUrl: HELP_SEARCH('export step stl 3mf iges dxf'),
+        tutorialQuery: 'export step stl 3mf iges dxf',
+      },
       { type: 'details', summary: 'Acceptance criteria', blocks: [{ type: 'list', items: ['Parameters resize the hook without breaking the timeline.', 'Sketches are fully constrained.', 'Mounting holes are centered and equal.', 'Edges are comfortable to touch.', 'Exported files use clear names and correct units.'] }] },
       { type: 'checklist', items: ['I completed the wall hook model', 'I changed at least two parameters and the model updated correctly', 'I inspected dimensions before export', 'I exported both STEP and STL/3MF formats'] },
     ],

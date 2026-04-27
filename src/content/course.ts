@@ -43,9 +43,29 @@ export type LessonBlock =
         | 'solid-extrude'
         | 'mesh-cleanup'
         | 'parametric-timeline'
+        | 'orbit-pan-zoom'
+        | 'save-versions'
+        | 'parameters-dialog'
+        | 'joint-types'
+        | 'fillet-chamfer'
+        | 'shell-tool'
+        | 'hole-types'
+        | 'pattern-mirror'
+        | 'sketch-tools'
+        | 'plane-cut-mesh'
+        | 'export-formats'
+        | 'section-analysis'
       caption?: string
       helpUrl?: string
       tutorialQuery?: string
+    }
+  | {
+      type: 'youtubePlaylist'
+      playlistId: string
+      title: string
+      caption?: string
+      /** First videoId in the playlist (optional). When set, the iframe loads it explicitly so the playlist plays even on hosts where bare videoseries embeds 404. */
+      startVideoId?: string
     }
   | { type: 'callout'; callout: Callout }
   | { type: 'shellSession'; lines: { prompt?: string; command?: string; output?: string }[] }
