@@ -181,37 +181,53 @@ export function Fusion360Mock({
 /* ============================================================== */
 
 const FT = {
-  appBar: '#F2F2F2',
-  ribbon: '#ECECEC',
-  ribbonHover: '#DDE3EB',
-  panel: '#F5F5F5',
-  panelDeep: '#E0E0E0',
-  divider: '#C8C8C8',
-  stroke: '#B8B8B8',
-  strokeSoft: '#D6D6D6',
-  text: '#2E2E2E',
-  textDim: '#6E6E6E',
-  textSubtle: '#9A9A9A',
-  accent: '#FF7A00',
-  accentSoft: '#FFC089',
-  selBlue: '#0696D7',
-  selBlueSoft: '#B7E1F1',
-  sketchBlue: '#4FA3E6',
-  // Shaded body 3-tone (top/front/side) — matches Fusion's default appearance
-  bodyTop: '#5A6473',
-  bodyFront: '#3F4754',
-  bodySide: '#2C3340',
-  bodyEdge: '#FFFFFF',
-  bodyEdgeDim: '#9AA4B2',
-  ghost: 'rgba(79,163,230,0.10)',
-  ghostEdge: '#4FA3E6',
+  // Classic Fusion 360 light theme (matches Lars Christensen sketch tutorial UI)
+  titleBar: '#3D3D3D',
+  titleText: '#E0E0E0',
+  appBar: '#5C5C5C',
+  appBarText: '#F0F0F0',
+  workspacePill: '#3F4F66',
+  workspacePillHover: '#56698A',
+  ribbon: '#E6E6E6',
+  ribbonRow2: '#D9D9D9',
+  ribbonHover: '#CFE3F4',
+  ribbonActive: '#B5D7EE',
+  panel: '#EDEDED',
+  panelDeep: '#D6D6D6',
+  divider: '#B0B0B0',
+  stroke: '#9A9A9A',
+  strokeSoft: '#C8C8C8',
+  text: '#1F1F1F',
+  textDim: '#555555',
+  textSubtle: '#7A7A7A',
+  accent: '#F58220',     // Fusion orange (Stop Sketch button, active accents)
+  accentSoft: '#FBC798',
+  tabBlue: '#2778C4',    // Active ribbon tab text
+  selBlue: '#1B79C0',
+  selBlueSoft: '#CEE3F2',
+  sketchBlue: '#1E6FB6', // sketch line
+  sketchPlane: '#FFFFFF',
+  // Cream / peach Fusion sketch-profile fill
+  profileFill: '#F8E5C5',
+  profileEdge: '#C9A06B',
+  // Dimension blue
+  dimLine: '#1E6FB6',
+  dimText: '#1F1F1F',
+  // Shaded body 3-tone (top/front/side) — matches Fusion's default body appearance on the white canvas
+  bodyTop: '#E2E5EA',
+  bodyFront: '#B8BEC8',
+  bodySide: '#8B93A0',
+  bodyEdge: '#1F1F1F',
+  bodyEdgeDim: '#5C6473',
+  ghost: 'rgba(30,111,182,0.08)',
+  ghostEdge: '#1E6FB6',
   originX: '#E14B4B',
   originY: '#34B859',
   originZ: '#2E8FD6',
-  // Dark canvas — matches Fusion 2025 dark UI
-  canvasA: '#1A1C20',
-  canvasB: '#0D0F12',
-  horizon: 'rgba(255,255,255,0.18)',
+  // White Fusion canvas
+  canvasA: '#FFFFFF',
+  canvasB: '#F2F2F2',
+  horizon: 'rgba(0,0,0,0.10)',
   shadow: '0 1px 0 rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.08)',
   font: 'var(--font-sans)',
 } as const
@@ -503,50 +519,37 @@ function FusionIcon({
 
 /* 3-face isometric ViewCube. `face` chooses the highlighted face. */
 function ViewCube({ face = 'home' as 'home' | 'top' | 'front' | 'right' }) {
-  // Dark-canvas ViewCube: dark faces, light edges + labels.
-  const hi = (target: string) => (face === target ? '#3F4754' : '#2A2D33')
+  // Classic light Fusion ViewCube: gray faces, dark edges, dark labels.
+  const hi = (target: string) => (face === target ? '#FFE2C2' : '#F4F4F4')
   return (
-    <svg width="62" height="62" viewBox="0 0 62 62" style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.45))' }}>
-      {/* compass ring */}
-      <circle cx="31" cy="31" r="29" fill="none" stroke="rgba(255,255,255,0.25)" strokeDasharray="2 3" />
-      <text x="31" y="6" fill="rgba(255,255,255,0.5)" fontSize="6" fontFamily="var(--font-mono)" textAnchor="middle">N</text>
-      {/* top face (rhombus) */}
-      <path d="M31 10 L52 22 L31 34 L10 22 Z" fill={hi('top')} stroke="#E6E7EA" strokeWidth="1" strokeLinejoin="round" />
-      {/* front face */}
-      <path d="M10 22 L31 34 L31 54 L10 42 Z" fill={hi('front')} stroke="#E6E7EA" strokeWidth="1" strokeLinejoin="round" />
-      {/* right face */}
-      <path d="M52 22 L31 34 L31 54 L52 42 Z" fill={hi('right')} stroke="#E6E7EA" strokeWidth="1" strokeLinejoin="round" />
-      <text x="31" y="25" fill="#E6E7EA" fontSize="6.5" fontFamily="var(--font-mono)" textAnchor="middle">TOP</text>
-      <text x="20" y="46" fill="#E6E7EA" fontSize="6" fontFamily="var(--font-mono)" textAnchor="middle">FRONT</text>
-      <text x="42" y="46" fill="#E6E7EA" fontSize="6" fontFamily="var(--font-mono)" textAnchor="middle">RIGHT</text>
-      {/* axis arrows */}
-      <g>
-        <path d="M52 22 L58 18" stroke={FT.originX} strokeWidth="1.6" />
-        <text x="60" y="18" fill={FT.originX} fontSize="6" fontFamily="var(--font-mono)">X</text>
-        <path d="M10 22 L4 18" stroke={FT.originY} strokeWidth="1.6" />
-        <text x="2" y="18" fill={FT.originY} fontSize="6" fontFamily="var(--font-mono)">Y</text>
-        <path d="M31 10 L31 2" stroke={FT.originZ} strokeWidth="1.6" />
-        <text x="34" y="6" fill={FT.originZ} fontSize="6" fontFamily="var(--font-mono)">Z</text>
-      </g>
+    <svg width="58" height="58" viewBox="0 0 62 62">
+      <path d="M31 10 L52 22 L31 34 L10 22 Z" fill={hi('top')} stroke="#3A3A3A" strokeWidth="1" strokeLinejoin="round" />
+      <path d="M10 22 L31 34 L31 54 L10 42 Z" fill={hi('front')} stroke="#3A3A3A" strokeWidth="1" strokeLinejoin="round" />
+      <path d="M52 22 L31 34 L31 54 L52 42 Z" fill={hi('right')} stroke="#3A3A3A" strokeWidth="1" strokeLinejoin="round" />
+      <text x="31" y="25" fill="#3A3A3A" fontSize="6.5" fontFamily="var(--font-sans)" textAnchor="middle">TOP</text>
+      <text x="20" y="46" fill="#3A3A3A" fontSize="6" fontFamily="var(--font-sans)" textAnchor="middle">FRONT</text>
+      <text x="42" y="46" fill="#3A3A3A" fontSize="6" fontFamily="var(--font-sans)" textAnchor="middle">RIGHT</text>
     </svg>
   )
 }
 
-function NavBar() {
+function BottomViewBar() {
+  // Bottom-of-canvas toolbar: orbit, look-at, pan, zoom, fit, display, grid, viewports.
   const items: IconName[] = ['orbit', 'lookAt', 'pan', 'zoom', 'fit', 'display', 'grid', 'viewports']
   return (
     <div
       style={{
         display: 'inline-flex',
-        gap: 1,
-        padding: 3,
-        borderRadius: 4,
-        background: 'rgba(255,255,255,0.06)',
-        border: '1px solid rgba(255,255,255,0.18)',
-        backdropFilter: 'blur(2px)',
+        gap: 4,
+        padding: '4px 10px',
+        background: '#EFEFEF',
+        borderTop: `1px solid ${FT.divider}`,
+        borderLeft: `1px solid ${FT.divider}`,
+        borderRight: `1px solid ${FT.divider}`,
+        borderRadius: '6px 6px 0 0',
       }}
     >
-      {items.map((n) => (
+      {items.map((n, i) => (
         <span
           key={n}
           style={{
@@ -554,39 +557,28 @@ function NavBar() {
             alignItems: 'center',
             justifyContent: 'center',
             width: 22,
-            height: 22,
-            borderRadius: 3,
+            height: 20,
           }}
         >
-          <FusionIcon name={n} size={14} color="rgba(230,231,234,0.85)" />
+          <FusionIcon name={n} size={14} color={FT.textDim} />
+          {(i === 2 || i === 4 || i === 6) && (
+            <FusionIcon name="chevronD" size={8} color={FT.textSubtle} />
+          )}
         </span>
       ))}
     </div>
   )
 }
 
-function Horizon() {
-  // Single dashed ground line, like Fusion's default dark scene.
+function OriginGizmo() {
+  // Tiny RGB origin marker drawn in canvas (top-left corner area).
   return (
-    <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
-      <line x1="0" y1="78%" x2="100%" y2="78%" stroke={FT.horizon} strokeWidth="1" strokeDasharray="3 5" />
+    <svg width="14" height="14" viewBox="0 0 14 14" style={{ position: 'absolute', left: 8, top: 8 }}>
+      <circle cx="3" cy="11" r="3" fill="#FFC04A" stroke="#1F1F1F" strokeWidth="0.6" />
     </svg>
   )
 }
 
-function OriginTriad({ x = 28, y = 232 }: { x?: number; y?: number }) {
-  return (
-    <svg width="60" height="60" viewBox="0 0 60 60" style={{ position: 'absolute', left: x - 30, top: y - 30, pointerEvents: 'none' }}>
-      <line x1="30" y1="30" x2="54" y2="30" stroke={FT.originX} strokeWidth="1.6" />
-      <line x1="30" y1="30" x2="14" y2="42" stroke={FT.originY} strokeWidth="1.6" />
-      <line x1="30" y1="30" x2="30" y2="6" stroke={FT.originZ} strokeWidth="1.6" />
-      <text x="56" y="32" fill={FT.originX} fontSize="7" fontFamily="var(--font-mono)">X</text>
-      <text x="6" y="46" fill={FT.originY} fontSize="7" fontFamily="var(--font-mono)">Y</text>
-      <text x="32" y="6" fill={FT.originZ} fontSize="7" fontFamily="var(--font-mono)">Z</text>
-      <circle cx="30" cy="30" r="1.5" fill={FT.text} />
-    </svg>
-  )
-}
 
 /* ============================================================== */
 /*  Workspace + ribbon + browser + timeline maps                   */
@@ -836,8 +828,91 @@ function timelineFeaturesForVariant(variant: Fusion360MockVariant): TimelineFeat
 }
 
 /* ============================================================== */
-/*  FusionUiShell — light Fusion 360 chrome                        */
+/*  FusionUiShell — classic light Fusion 360 chrome                 */
 /* ============================================================== */
+
+function SketchPalette() {
+  const options: { label: string; checked?: boolean; icon?: IconName }[] = [
+    { label: 'Look At', icon: 'lookAt' },
+    { label: 'Sketch Grid', checked: false },
+    { label: 'Snap', checked: true },
+    { label: 'Slice' },
+    { label: 'Show Profile', checked: true },
+    { label: 'Show Points', checked: true },
+    { label: 'Show Constraints', checked: true },
+    { label: '3D Sketch' },
+  ]
+  const constraints: { label: string; icon: IconName }[] = [
+    { label: 'Coincident', icon: 'coincident' },
+    { label: 'Colinear', icon: 'horiz' },
+    { label: 'Concentric', icon: 'circle' },
+    { label: 'Midpoint', icon: 'point' },
+    { label: 'Fix/UnFix', icon: 'fix' },
+    { label: 'Parallel', icon: 'parallel' },
+    { label: 'Perpendicular', icon: 'perp' },
+    { label: 'Horizontal/Vertical', icon: 'horiz' },
+  ]
+  return (
+    <div
+      style={{
+        background: FT.panel,
+        borderLeft: `1px solid ${FT.divider}`,
+        fontSize: 10.5,
+        color: FT.text,
+        width: 168,
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 6,
+          padding: '5px 8px',
+          background: FT.panelDeep,
+          borderBottom: `1px solid ${FT.divider}`,
+          fontSize: 10,
+          letterSpacing: '0.08em',
+        }}
+      >
+        <span style={{ color: FT.tabBlue }}>●</span>
+        <span style={{ fontWeight: 600 }}>SKETCH PALETTE</span>
+        <span style={{ marginLeft: 'auto', color: FT.textDim }}>▸</span>
+      </div>
+      <div style={{ padding: '4px 8px', color: FT.textDim, fontSize: 10, fontWeight: 600 }}>▾ Options</div>
+      {options.map((o) => (
+        <div
+          key={o.label}
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '2px 10px 2px 16px', fontSize: 10.5 }}
+        >
+          <span>{o.label}</span>
+          {o.icon ? (
+            <FusionIcon name={o.icon} size={11} color={FT.textDim} />
+          ) : (
+            <span
+              style={{
+                width: 11,
+                height: 11,
+                border: `1px solid ${FT.stroke}`,
+                background: o.checked ? FT.tabBlue : '#FFFFFF',
+                display: 'inline-block',
+              }}
+            />
+          )}
+        </div>
+      ))}
+      <div style={{ padding: '6px 8px 4px', color: FT.textDim, fontSize: 10, fontWeight: 600 }}>▾ Constraints</div>
+      {constraints.map((c) => (
+        <div
+          key={c.label}
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '2px 10px 2px 16px', fontSize: 10.5 }}
+        >
+          <span>{c.label}</span>
+          <FusionIcon name={c.icon} size={11} color={FT.tabBlue} />
+        </div>
+      ))}
+    </div>
+  )
+}
 
 function FusionUiShell({
   variant,
@@ -850,12 +925,13 @@ function FusionUiShell({
   const ribbon = ribbonForWorkspace(ws)
   const tree = browserTreeForVariant(variant)
   const timeline = timelineFeaturesForVariant(variant)
+  const showSketchPalette = ws === 'Sketch'
 
   return (
     <div
       style={{
         border: `1px solid ${FT.divider}`,
-        borderRadius: 6,
+        borderRadius: 4,
         overflow: 'hidden',
         background: FT.panel,
         color: FT.text,
@@ -863,117 +939,146 @@ function FusionUiShell({
         boxShadow: FT.shadow,
       }}
     >
-      {/* Application bar */}
+      {/* Title bar — dark gray with file name */}
       <div
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: 8,
-          height: 30,
+          gap: 10,
+          height: 22,
           padding: '0 10px',
-          background: FT.appBar,
-          borderBottom: `1px solid ${FT.divider}`,
+          background: FT.titleBar,
+          color: FT.titleText,
+          fontSize: 10.5,
         }}
       >
-        <div style={{ display: 'flex', gap: 5 }}>
-          <span style={{ width: 9, height: 9, borderRadius: 9, background: '#FF5F57' }} />
-          <span style={{ width: 9, height: 9, borderRadius: 9, background: '#FEBC2E' }} />
-          <span style={{ width: 9, height: 9, borderRadius: 9, background: '#28C840' }} />
-        </div>
-        <span style={{ width: 1, height: 16, background: FT.divider, marginLeft: 6 }} />
-        <span title="Show Data Panel" style={{ display: 'inline-flex', padding: 3 }}>
-          <FusionIcon name="folder" size={14} color={FT.textDim} />
+        <span style={{ display: 'inline-flex', gap: 4, marginRight: 4 }}>
+          <FusionIcon name="folder" size={11} color={FT.titleText} />
+          <FusionIcon name="newFile" size={11} color={FT.titleText} />
+          <FusionIcon name="save" size={11} color={FT.titleText} />
+          <FusionIcon name="undo" size={11} color={FT.titleText} />
+          <FusionIcon name="redo" size={11} color={FT.titleText} />
         </span>
-        <span style={{ display: 'inline-flex', padding: 3 }}><FusionIcon name="save" size={14} color={FT.textDim} /></span>
-        <span style={{ display: 'inline-flex', padding: 3 }}><FusionIcon name="undo" size={14} color={FT.textDim} /></span>
-        <span style={{ display: 'inline-flex', padding: 3 }}><FusionIcon name="redo" size={14} color={FT.textDim} /></span>
-        <div style={{ flex: 1, textAlign: 'center', fontSize: 11, color: FT.text }}>
-          Pathfinder Design v3 — Autodesk Fusion (Education)
-        </div>
-        <span style={{ fontSize: 10, color: FT.textDim }}>SW</span>
+        <div style={{ flex: 1, textAlign: 'center', letterSpacing: '0.02em' }}>Autodesk Fusion 360</div>
+        <span style={{ color: FT.titleText, fontSize: 10 }}>Pathfinder Engineering ▾</span>
       </div>
 
-      {/* Ribbon */}
+      {/* Document tab strip */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'flex-end',
+          height: 22,
+          background: FT.appBar,
+          padding: '0 10px',
+          borderBottom: `1px solid ${FT.divider}`,
+          gap: 4,
+        }}
+      >
+        <span
+          style={{
+            padding: '3px 14px 3px 10px',
+            background: FT.ribbon,
+            border: `1px solid ${FT.divider}`,
+            borderBottom: 'none',
+            borderRadius: '3px 3px 0 0',
+            fontSize: 10.5,
+            color: FT.text,
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 6,
+          }}
+        >
+          Pathfinder Design v3*
+          <span style={{ color: FT.textDim, marginLeft: 4 }}>×</span>
+        </span>
+      </div>
+
+      {/* Ribbon: workspace pill + tabs row + tools row */}
       <div style={{ background: FT.ribbon, borderBottom: `1px solid ${FT.divider}` }}>
-        {/* Tab strip */}
-        <div style={{ display: 'flex', gap: 4, padding: '4px 10px 0', alignItems: 'flex-end' }}>
-          {ribbon.tabs.map((t) => {
-            const active = t === ribbon.activeTab
-            return (
-              <span
-                key={t}
+        <div style={{ display: 'flex', alignItems: 'stretch' }}>
+          {/* Workspace pill (MODEL / SKETCH / etc.) */}
+          <div
+            style={{
+              display: 'inline-flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '4px 14px',
+              background: FT.workspacePill,
+              color: '#FFFFFF',
+              borderRight: `1px solid ${FT.divider}`,
+              minWidth: 64,
+            }}
+          >
+            <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.04em' }}>
+              {ws === 'Design' ? 'MODEL' : ws.toUpperCase()}
+            </span>
+            <FusionIcon name="chevronD" size={9} color="#FFFFFF" />
+          </div>
+          {/* Tools row */}
+          <div style={{ display: 'flex', alignItems: 'flex-end', flex: 1, padding: '2px 4px 2px 0', overflowX: 'auto' }}>
+            {ribbon.groups.map((g) => (
+              <div key={g.name} style={{ display: 'flex', alignItems: 'flex-end', borderRight: `1px solid ${FT.divider}`, padding: '0 2px' }}>
+                {g.tools.map((tool, ti) => (
+                  <motion.div
+                    key={`${g.name}-${tool.label}`}
+                    whileHover={{ background: FT.ribbonHover }}
+                    animate={{ opacity: [0.95, 1, 0.95] }}
+                    transition={{ duration: 4 + ti * 0.2, repeat: Infinity, delay: ti * 0.08 }}
+                    style={{
+                      display: 'inline-flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: 1,
+                      padding: '4px 6px 2px',
+                      minWidth: 40,
+                    }}
+                  >
+                    <FusionIcon name={tool.icon} size={22} color={FT.text} />
+                    <span style={{ fontSize: 9, color: FT.text }}>{tool.label}</span>
+                    {ti === 0 && g.tools.length > 1 && (
+                      <FusionIcon name="chevronD" size={7} color={FT.textSubtle} />
+                    )}
+                  </motion.div>
+                ))}
+                <div style={{ alignSelf: 'flex-end', fontSize: 8, color: FT.textSubtle, letterSpacing: '0.1em', padding: '0 4px 2px' }}>{g.name}</div>
+              </div>
+            ))}
+            {ws === 'Sketch' && (
+              <div
                 style={{
-                  position: 'relative',
-                  fontSize: 10,
-                  letterSpacing: '0.08em',
+                  marginLeft: 'auto',
+                  alignSelf: 'center',
+                  padding: '6px 14px',
+                  background: FT.accent,
+                  color: '#FFFFFF',
+                  fontSize: 11,
                   fontWeight: 600,
-                  color: active ? FT.text : FT.textDim,
-                  padding: '4px 10px 6px',
-                  background: active ? FT.ribbon : 'transparent',
-                  borderRadius: '3px 3px 0 0',
+                  letterSpacing: '0.06em',
+                  borderRadius: 2,
+                  marginRight: 6,
                 }}
               >
-                {t}
-                {active && (
-                  <motion.span
-                    layoutId="ribbon-underline"
-                    style={{
-                      position: 'absolute',
-                      left: 4,
-                      right: 4,
-                      bottom: 0,
-                      height: 2,
-                      background: FT.accent,
-                    }}
-                  />
-                )}
-              </span>
-            )
-          })}
-        </div>
-        {/* Groups */}
-        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 0, padding: '4px 6px', overflowX: 'auto' }}>
-          {ribbon.groups.map((g, gi) => (
-            <div key={g.name} style={{ display: 'flex', alignItems: 'flex-end' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '0 4px' }}>
-                <div style={{ display: 'flex', gap: 2 }}>
-                  {g.tools.map((tool, ti) => (
-                    <motion.span
-                      key={tool.label}
-                      whileHover={{ background: FT.ribbonHover }}
-                      animate={{ opacity: [0.92, 1, 0.92] }}
-                      transition={{ duration: 4 + ti * 0.2, repeat: Infinity, delay: gi * 0.15 + ti * 0.08 }}
-                      style={{
-                        display: 'inline-flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        gap: 2,
-                        padding: '4px 5px 3px',
-                        borderRadius: 3,
-                        minWidth: 36,
-                      }}
-                    >
-                      <FusionIcon name={tool.icon} size={20} color={FT.text} />
-                      <span style={{ fontSize: 8.5, color: FT.textDim, letterSpacing: '0.02em' }}>{tool.label}</span>
-                    </motion.span>
-                  ))}
-                </div>
-                <div style={{ fontSize: 8, color: FT.textSubtle, letterSpacing: '0.12em', marginTop: 2 }}>{g.name}</div>
+                STOP SKETCH
               </div>
-              {gi < ribbon.groups.length - 1 && (
-                <span style={{ width: 1, alignSelf: 'stretch', margin: '4px 4px 18px', background: FT.divider }} />
-              )}
-            </div>
-          ))}
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Body: browser + canvas */}
-      <div style={{ display: 'grid', gridTemplateColumns: '180px minmax(0, 1fr)', minHeight: 320 }}>
+      {/* Body: browser + canvas (+ optional sketch palette) */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: showSketchPalette ? '160px minmax(0, 1fr) 168px' : '180px minmax(0, 1fr)',
+          minHeight: 360,
+        }}
+      >
         {/* Browser */}
         <div
           style={{
-            background: '#FFFFFF',
+            background: FT.panel,
             borderRight: `1px solid ${FT.divider}`,
             fontSize: 11,
             color: FT.text,
@@ -981,39 +1086,40 @@ function FusionUiShell({
         >
           <div
             style={{
-              fontSize: 9,
-              letterSpacing: '0.12em',
-              color: FT.textDim,
-              padding: '6px 10px',
-              borderBottom: `1px solid ${FT.strokeSoft}`,
-              background: FT.panel,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              fontSize: 10,
+              letterSpacing: '0.08em',
+              color: FT.text,
+              padding: '5px 8px',
+              borderBottom: `1px solid ${FT.divider}`,
+              background: FT.panelDeep,
+              fontWeight: 600,
             }}
           >
+            <span style={{ color: FT.tabBlue }}>▸</span>
             BROWSER
           </div>
           <div style={{ padding: '4px 0' }}>
             {tree.map((n, i) => (
               <motion.div
                 key={`${n.label}-${i}`}
-                animate={n.selected ? { background: ['#E5F1FB', '#D5EAF8', '#E5F1FB'] } : {}}
+                animate={n.selected ? { background: ['#D4E6F4', '#C0DCEF', '#D4E6F4'] } : {}}
                 transition={{ duration: 3, repeat: Infinity }}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
                   gap: 4,
-                  padding: '2px 6px 2px',
+                  padding: '2px 6px',
                   paddingLeft: 6 + n.level * 12,
-                  background: n.selected ? '#E5F1FB' : 'transparent',
-                  color: n.selected ? FT.selBlue : FT.text,
+                  background: n.selected ? '#D4E6F4' : 'transparent',
+                  color: FT.text,
                 }}
               >
-                <FusionIcon
-                  name={n.expanded ? 'chevronD' : 'chevronR'}
-                  size={10}
-                  color={FT.textDim}
-                />
+                <FusionIcon name={n.expanded ? 'chevronD' : 'chevronR'} size={9} color={FT.textDim} />
                 {n.eye && <FusionIcon name="eye" size={11} color={FT.textDim} />}
-                <FusionIcon name={n.icon} size={12} color={n.selected ? FT.selBlue : FT.textDim} />
+                <FusionIcon name={n.icon} size={12} color={n.icon === 'sketchNode' ? FT.tabBlue : FT.textDim} />
                 <span style={{ fontSize: 11, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{n.label}</span>
               </motion.div>
             ))}
@@ -1027,73 +1133,73 @@ function FusionUiShell({
             minWidth: 0,
             background: `linear-gradient(180deg, ${FT.canvasA} 0%, ${FT.canvasB} 100%)`,
             overflow: 'hidden',
-            minHeight: 320,
           }}
         >
-          <Horizon />
-          <OriginTriad />
+          <OriginGizmo />
           {/* ViewCube */}
           <div style={{ position: 'absolute', top: 8, right: 10, zIndex: 4 }}>
             <ViewCube face="home" />
           </div>
           {/* Inner scene */}
           <div style={{ position: 'absolute', inset: 0, zIndex: 2 }}>{children}</div>
-          {/* Navigation bar */}
+          {/* Bottom view toolbar */}
           <div
             style={{
               position: 'absolute',
               left: '50%',
               transform: 'translateX(-50%)',
-              bottom: 8,
+              bottom: 0,
               zIndex: 5,
             }}
           >
-            <NavBar />
+            <BottomViewBar />
+          </div>
+          {/* COMMENTS strip */}
+          <div
+            style={{
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              bottom: 0,
+              padding: '3px 10px',
+              background: FT.panel,
+              borderTop: `1px solid ${FT.divider}`,
+              color: FT.textDim,
+              fontSize: 9,
+              letterSpacing: '0.08em',
+              zIndex: 1,
+            }}
+          >
+            COMMENTS
           </div>
         </div>
+
+        {showSketchPalette && <SketchPalette />}
       </div>
 
       {/* Timeline */}
       <div
         style={{
-          background: '#FAFAFA',
+          background: '#F5F5F5',
           borderTop: `1px solid ${FT.divider}`,
           display: 'flex',
           alignItems: 'center',
           gap: 6,
-          padding: '6px 10px',
+          padding: '4px 10px',
           fontSize: 10,
           color: FT.textDim,
         }}
       >
         <span style={{ display: 'inline-flex', gap: 2 }}>
-          <FusionIcon name="toStart" size={12} color={FT.textDim} />
-          <FusionIcon name="stepB" size={12} color={FT.textDim} />
-          <FusionIcon name="play" size={12} color={FT.text} />
-          <FusionIcon name="stepF" size={12} color={FT.textDim} />
-          <FusionIcon name="toEnd" size={12} color={FT.textDim} />
+          <FusionIcon name="toStart" size={11} color={FT.textDim} />
+          <FusionIcon name="stepB" size={11} color={FT.textDim} />
+          <FusionIcon name="play" size={11} color={FT.text} />
+          <FusionIcon name="stepF" size={11} color={FT.textDim} />
+          <FusionIcon name="toEnd" size={11} color={FT.textDim} />
         </span>
-        <span style={{ width: 1, height: 16, background: FT.divider, margin: '0 4px' }} />
-        <div
-          style={{
-            position: 'relative',
-            flex: 1,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-            height: 26,
-          }}
-        >
-          <div
-            style={{
-              position: 'absolute',
-              left: 8,
-              right: 30,
-              top: '50%',
-              height: 1,
-              background: FT.divider,
-            }}
-          />
+        <span style={{ width: 1, height: 14, background: FT.divider, margin: '0 4px' }} />
+        <div style={{ position: 'relative', flex: 1, display: 'flex', alignItems: 'center', gap: 6, height: 22 }}>
+          <div style={{ position: 'absolute', left: 6, right: 60, top: '50%', height: 1, background: FT.divider }} />
           {timeline.map((f, i) => (
             <motion.div
               key={`${f.label}-${i}`}
@@ -1105,22 +1211,22 @@ function FusionUiShell({
                 alignItems: 'center',
                 gap: 4,
                 padding: '2px 6px',
-                borderRadius: 3,
+                borderRadius: 2,
                 background: '#FFFFFF',
                 border: `1px solid ${FT.strokeSoft}`,
                 color: FT.text,
                 zIndex: 1,
               }}
             >
-              <FusionIcon name={f.icon} size={12} color={FT.text} />
+              <FusionIcon name={f.icon} size={11} color={FT.text} />
               <span style={{ fontSize: 10 }}>{f.label}</span>
             </motion.div>
           ))}
           <span style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: 4, color: FT.textSubtle, fontSize: 10 }}>
-            <FusionIcon name="plus" size={12} color={FT.textSubtle} /> end
+            <FusionIcon name="plus" size={11} color={FT.textSubtle} /> end
           </span>
         </div>
-        <span style={{ width: 1, height: 16, background: FT.divider }} />
+        <span style={{ width: 1, height: 14, background: FT.divider }} />
         <span style={{ fontSize: 9, letterSpacing: '0.06em', color: FT.textDim }}>Units: mm</span>
         <span style={{ fontSize: 9, color: FT.accent, letterSpacing: '0.06em' }}>● Parametric</span>
       </div>
@@ -1347,80 +1453,178 @@ function InterfaceTour() {
 /* ============================================================== */
 
 function SketchConstraints() {
-  // Top-down sketch on XY: 4 segments start loose (gray), then snap to a
-  // fully-constrained rectangle with constraint glyphs popping up + a
-  // dimension callout.
-  const cycle = 6
+  // Replica of the classic Fusion 360 sketch view: angled L-shape profile with
+  // cream fill, blue dimension lines (60.00 / 80.00 / 25.00 x2 / 50.0°),
+  // black sketch outline, right-angle corner squares, midpoint markers,
+  // small fix-pin icon at lower-left origin.
+  //
+  // Profile vertices (matches the screenshot proportions):
+  //   A (60, 240)   lower-left  (origin / fixed)
+  //   B (340, 240)  lower-right
+  //   C (340, 170)  inner-corner
+  //   D (430,  90)  upper-right (50° wedge tip)
+  //   E (370,  30)  upper-left of wedge
+  //   F (60,  170)  inner-top-left
+  //
+  // Animation: profile fades in → black outlines snap → cream fill blooms →
+  // dimensions draw → constraint glyphs appear.
+  const cycle = 7
+  const profile = '60,240 340,240 430,90 370,30 60,170'
   return (
-    <svg viewBox="0 0 480 320" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 3 }}>
-      {/* sketch grid square indicating active sketch plane */}
-      <rect x="80" y="60" width="320" height="200" fill="rgba(79,163,230,0.06)" stroke={FT.sketchBlue} strokeOpacity="0.45" strokeDasharray="3 3" />
-      {/* loose lines that snap to constrained rectangle */}
-      <motion.path
-        animate={{
-          d: [
-            'M120 240 L360 230',
-            'M120 240 L360 240',
-            'M120 240 L360 240',
-          ],
-        }}
-        transition={{ duration: cycle, repeat: Infinity, times: [0, 0.4, 1] }}
-        stroke={FT.sketchBlue}
-        strokeWidth="2"
-        fill="none"
+    <svg viewBox="0 0 540 320" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 3 }}>
+      {/* cream profile fill */}
+      <motion.polygon
+        points={profile}
+        animate={{ opacity: [0, 0, 1, 1] }}
+        transition={{ duration: cycle, repeat: Infinity, times: [0, 0.25, 0.45, 1] }}
+        fill={FT.profileFill}
+        stroke={FT.profileEdge}
+        strokeWidth="0.6"
       />
-      <motion.path
-        animate={{ d: ['M120 240 L130 100', 'M120 240 L120 100', 'M120 240 L120 100'] }}
-        transition={{ duration: cycle, repeat: Infinity, times: [0, 0.5, 1] }}
-        stroke={FT.sketchBlue}
-        strokeWidth="2"
+
+      {/* sketch lines (black) */}
+      <motion.polygon
+        points={profile}
+        animate={{ opacity: [0.3, 1, 1, 1] }}
+        transition={{ duration: cycle, repeat: Infinity, times: [0, 0.3, 0.45, 1] }}
         fill="none"
+        stroke="#1F1F1F"
+        strokeWidth="1.2"
+        strokeLinejoin="miter"
       />
-      <motion.path
-        animate={{ d: ['M360 230 L356 100', 'M360 240 L360 100', 'M360 240 L360 100'] }}
-        transition={{ duration: cycle, repeat: Infinity, times: [0, 0.55, 1] }}
-        stroke={FT.sketchBlue}
-        strokeWidth="2"
-        fill="none"
-      />
-      <motion.path
-        animate={{ d: ['M130 100 L356 100', 'M120 100 L360 100', 'M120 100 L360 100'] }}
-        transition={{ duration: cycle, repeat: Infinity, times: [0, 0.6, 1] }}
-        stroke={FT.sketchBlue}
-        strokeWidth="2"
-        fill="none"
-      />
-      {/* end-points (sketch dots) */}
+
+      {/* sketch endpoints (small white squares) */}
       {[
-        [120, 240],
-        [360, 240],
-        [120, 100],
-        [360, 100],
+        [60, 240], [340, 240], [430, 90], [370, 30], [60, 170],
       ].map(([x, y], i) => (
-        <rect key={i} x={x - 3} y={y - 3} width="6" height="6" fill="#0D0F12" stroke={FT.sketchBlue} strokeWidth="1.4" />
+        <rect key={i} x={x - 3} y={y - 3} width="6" height="6" fill="#FFFFFF" stroke="#1F1F1F" strokeWidth="0.8" />
       ))}
-      {/* horizontal constraint glyph */}
-      <motion.g initial={{ opacity: 0 }} animate={{ opacity: [0, 0, 1, 1] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.4, 0.5, 1] }}>
-        <rect x="232" y="248" width="16" height="12" fill="#1F2227" stroke="#E6E7EA" />
-        <line x1="236" y1="254" x2="244" y2="254" stroke="#E6E7EA" strokeWidth="1.4" />
+
+      {/* fix pin (orange tack) at lower-left origin */}
+      <motion.g animate={{ opacity: [0, 0, 1, 1] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.3, 0.4, 1] }}>
+        <line x1="60" y1="248" x2="60" y2="265" stroke={FT.accent} strokeWidth="1.4" strokeDasharray="2 2" />
+        <line x1="55" y1="248" x2="65" y2="248" stroke={FT.accent} strokeWidth="1.4" strokeDasharray="2 2" />
+        <circle cx="60" cy="240" r="3" fill="#FFFFFF" stroke={FT.accent} strokeWidth="1.4" />
       </motion.g>
-      {/* vertical constraint glyph */}
-      <motion.g initial={{ opacity: 0 }} animate={{ opacity: [0, 0, 1, 1] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.5, 0.6, 1] }}>
-        <rect x="98" y="164" width="12" height="16" fill="#1F2227" stroke="#E6E7EA" />
-        <line x1="104" y1="168" x2="104" y2="176" stroke="#E6E7EA" strokeWidth="1.4" />
+
+      {/* perpendicular corner squares (small) */}
+      {[
+        { x: 60, y: 240, dx: 1, dy: -1 },
+        { x: 340, y: 240, dx: -1, dy: -1 },
+        { x: 340, y: 170, dx: -1, dy: 1 },
+        { x: 60, y: 170, dx: 1, dy: 1 },
+      ].map((c, i) => (
+        <motion.rect
+          key={i}
+          x={c.dx > 0 ? c.x + 2 : c.x - 9}
+          y={c.dy > 0 ? c.y + 2 : c.y - 9}
+          width="7"
+          height="7"
+          fill="#FFFFFF"
+          stroke={FT.text}
+          strokeWidth="0.8"
+          animate={{ opacity: [0, 0, 1, 1] }}
+          transition={{ duration: cycle, repeat: Infinity, times: [0, 0.45, 0.55, 1] }}
+        />
+      ))}
+
+      {/* midpoint markers (small black triangles) */}
+      <motion.polygon
+        animate={{ opacity: [0, 0, 1, 1] }}
+        transition={{ duration: cycle, repeat: Infinity, times: [0, 0.5, 0.6, 1] }}
+        points="200,234 196,228 204,228"
+        fill="#1F1F1F"
+      />
+      <motion.polygon
+        animate={{ opacity: [0, 0, 1, 1] }}
+        transition={{ duration: cycle, repeat: Infinity, times: [0, 0.5, 0.6, 1] }}
+        points="200,176 196,170 204,170"
+        fill="#1F1F1F"
+      />
+
+      {/* DIMENSIONS (blue) */}
+      {/* 25.00 — left side of wedge (vertical block on left) */}
+      <motion.g
+        animate={{ opacity: [0, 0, 0, 1, 1] }}
+        transition={{ duration: cycle, repeat: Infinity, times: [0, 0.5, 0.6, 0.7, 1] }}
+        stroke={FT.dimLine}
+        fill={FT.dimLine}
+        strokeWidth="0.9"
+      >
+        {/* extension lines */}
+        <line x1="60" y1="170" x2="20" y2="170" />
+        <line x1="60" y1="240" x2="20" y2="240" />
+        {/* dim line w/ arrows */}
+        <line x1="28" y1="170" x2="28" y2="240" />
+        <polygon points="28,170 25,177 31,177" />
+        <polygon points="28,240 25,233 31,233" />
+        <text x="32" y="207" fontSize="11" fontFamily="var(--font-sans)" fill={FT.dimText}>25.00</text>
       </motion.g>
-      {/* dimension callout */}
-      <motion.g initial={{ opacity: 0 }} animate={{ opacity: [0, 0, 0, 1] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.6, 0.75, 1] }}>
-        <line x1="120" y1="280" x2="360" y2="280" stroke="#E6E7EA" strokeWidth="1" />
-        <line x1="120" y1="276" x2="120" y2="284" stroke="#E6E7EA" strokeWidth="1" />
-        <line x1="360" y1="276" x2="360" y2="284" stroke="#E6E7EA" strokeWidth="1" />
-        <rect x="218" y="270" width="44" height="16" fill="#1F2227" stroke="#E6E7EA" />
-        <text x="240" y="282" fontSize="11" fontFamily="var(--font-mono)" textAnchor="middle" fill="#E6E7EA">120.00</text>
+
+      {/* 25.00 — angled along the upper-right wedge */}
+      <motion.g
+        animate={{ opacity: [0, 0, 0, 1, 1] }}
+        transition={{ duration: cycle, repeat: Infinity, times: [0, 0.5, 0.65, 0.75, 1] }}
+        stroke={FT.dimLine}
+        fill={FT.dimLine}
+        strokeWidth="0.9"
+      >
+        <line x1="370" y1="30" x2="395" y2="0" />
+        <line x1="430" y1="90" x2="455" y2="60" />
+        <line x1="383" y1="15" x2="442" y2="75" />
+        <polygon points="383,15 388,20 380,22" />
+        <polygon points="442,75 437,70 445,68" />
+        <text x="408" y="35" fontSize="11" fontFamily="var(--font-sans)" fill={FT.dimText} transform="rotate(45 410 38)">25.00</text>
       </motion.g>
-      {/* fully constrained pip */}
-      <motion.g initial={{ opacity: 0 }} animate={{ opacity: [0, 0, 0, 1] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.7, 0.85, 1] }}>
-        <circle cx="400" cy="44" r="6" fill={FT.originY} />
-        <text x="412" y="48" fontSize="10" fontFamily={FT.font} fill="#E6E7EA">Fully constrained</text>
+
+      {/* 60.00 — bottom horizontal */}
+      <motion.g
+        animate={{ opacity: [0, 0, 0, 1, 1] }}
+        transition={{ duration: cycle, repeat: Infinity, times: [0, 0.55, 0.7, 0.8, 1] }}
+        stroke={FT.dimLine}
+        fill={FT.dimLine}
+        strokeWidth="0.9"
+      >
+        <line x1="60" y1="240" x2="60" y2="262" />
+        <line x1="340" y1="240" x2="340" y2="262" />
+        <line x1="60" y1="258" x2="340" y2="258" />
+        <polygon points="60,258 67,255 67,261" />
+        <polygon points="340,258 333,255 333,261" />
+        <text x="200" y="255" fontSize="11" fontFamily="var(--font-sans)" textAnchor="middle" fill={FT.dimText}>60.00</text>
+      </motion.g>
+
+      {/* 80.00 — full bottom horizontal */}
+      <motion.g
+        animate={{ opacity: [0, 0, 0, 1, 1] }}
+        transition={{ duration: cycle, repeat: Infinity, times: [0, 0.6, 0.75, 0.85, 1] }}
+        stroke={FT.dimLine}
+        fill={FT.dimLine}
+        strokeWidth="0.9"
+      >
+        <line x1="60" y1="240" x2="60" y2="290" />
+        <line x1="430" y1="90" x2="430" y2="290" />
+        <line x1="60" y1="286" x2="430" y2="286" />
+        <polygon points="60,286 67,283 67,289" />
+        <polygon points="430,286 423,283 423,289" />
+        <text x="245" y="282" fontSize="11" fontFamily="var(--font-sans)" textAnchor="middle" fill={FT.dimText}>80.00</text>
+      </motion.g>
+
+      {/* 50.0° angle */}
+      <motion.g
+        animate={{ opacity: [0, 0, 0, 1, 1] }}
+        transition={{ duration: cycle, repeat: Infinity, times: [0, 0.65, 0.78, 0.88, 1] }}
+        stroke={FT.dimLine}
+        fill={FT.dimLine}
+        strokeWidth="0.9"
+      >
+        <path d="M 410 165 A 70 70 0 0 0 430 95" fill="none" />
+        <text x="430" y="155" fontSize="11" fontFamily="var(--font-sans)" fill={FT.dimText}>50.0°</text>
+      </motion.g>
+
+      {/* fully constrained badge */}
+      <motion.g initial={{ opacity: 0 }} animate={{ opacity: [0, 0, 0, 1] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.8, 0.9, 1] }}>
+        <rect x="370" y="265" width="120" height="18" rx="2" fill={FT.profileFill} stroke={FT.profileEdge} />
+        <text x="430" y="278" fontSize="10" fontFamily={FT.font} textAnchor="middle" fill={FT.text}>● Fully constrained</text>
       </motion.g>
     </svg>
   )
@@ -1441,7 +1645,7 @@ function SolidExtrude() {
   const sketchProfile = '260,200 347,250 260,300 173,250'
   return (
     <>
-      {/* Right-docked Extrude dialog */}
+      {/* Right-docked Extrude dialog (classic light Fusion) */}
       <motion.div
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
@@ -1449,21 +1653,22 @@ function SolidExtrude() {
         style={{
           position: 'absolute',
           top: 18,
-          right: 80,
+          right: 24,
           zIndex: 5,
-          width: 168,
-          background: '#2A2D33',
-          border: `1px solid #43474F`,
-          borderRadius: 4,
-          boxShadow: '0 4px 16px rgba(0,0,0,0.45)',
+          width: 178,
+          background: FT.panel,
+          border: `1px solid ${FT.divider}`,
+          borderRadius: 2,
+          boxShadow: '0 4px 14px rgba(0,0,0,0.18)',
           fontSize: 10,
-          color: '#E6E7EA',
+          color: FT.text,
+          fontFamily: FT.font,
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 8px', borderBottom: `1px solid #1F2227`, background: '#1F2227' }}>
-          <FusionIcon name="extrude" size={14} color="#E6E7EA" />
-          <span style={{ fontWeight: 500, letterSpacing: '0.04em' }}>EXTRUDE</span>
-          <span style={{ marginLeft: 'auto', color: '#9CA1AB', fontSize: 11 }}>×</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '5px 8px', borderBottom: `1px solid ${FT.divider}`, background: FT.panelDeep }}>
+          <FusionIcon name="extrude" size={14} color={FT.text} />
+          <span style={{ fontWeight: 600, letterSpacing: '0.02em', textTransform: 'uppercase' }}>Extrude</span>
+          <span style={{ marginLeft: 'auto', color: FT.textDim, fontSize: 12 }}>×</span>
         </div>
         {[
           ['Type', 'Distance'],
@@ -1480,30 +1685,32 @@ function SolidExtrude() {
               display: 'flex',
               justifyContent: 'space-between',
               padding: '4px 8px',
-              borderTop: i === 0 ? 'none' : '1px solid #34383F',
+              borderTop: i === 0 ? 'none' : `1px solid ${FT.strokeSoft}`,
+              background: i % 2 === 0 ? FT.panel : '#F4F4F4',
             }}
           >
-            <span style={{ color: '#9CA1AB' }}>{k}</span>
-            <span style={{ color: k === 'Distance' ? FT.accent : '#E6E7EA' }}>{v}</span>
+            <span style={{ color: FT.textDim }}>{k}</span>
+            <span style={{ color: k === 'Distance' ? FT.dimLine : FT.text, fontWeight: k === 'Distance' ? 600 : 400 }}>{v}</span>
           </div>
         ))}
-        <div style={{ display: 'flex', gap: 6, padding: 8, borderTop: '1px solid #1F2227', background: '#1F2227' }}>
-          <span style={{ flex: 1, textAlign: 'center', padding: '4px 0', background: FT.accent, color: '#FFF', borderRadius: 3, fontWeight: 600 }}>OK</span>
-          <span style={{ flex: 1, textAlign: 'center', padding: '4px 0', background: '#2A2D33', color: '#E6E7EA', border: '1px solid #43474F', borderRadius: 3 }}>Cancel</span>
+        <div style={{ display: 'flex', gap: 6, padding: 8, borderTop: `1px solid ${FT.divider}`, background: FT.panelDeep }}>
+          <span style={{ flex: 1, textAlign: 'center', padding: '4px 0', background: FT.tabBlue, color: '#FFF', borderRadius: 2, fontWeight: 600 }}>OK</span>
+          <span style={{ flex: 1, textAlign: 'center', padding: '4px 0', background: FT.panel, color: FT.text, border: `1px solid ${FT.divider}`, borderRadius: 2 }}>Cancel</span>
         </div>
       </motion.div>
 
       {/* Canvas scene */}
       <svg viewBox="0 0 480 320" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 3 }}>
-        {/* Stage 1: sketch profile (rectangle on XY plane) */}
+        {/* Stage 1: sketch profile (cream filled rectangle on XY plane) */}
         <motion.g
           animate={{ opacity: [1, 1, 0.4, 0.4] }}
           transition={{ duration: cycle, repeat: Infinity, times: [0, 0.25, 0.4, 1] }}
         >
-          <polygon points={sketchProfile} fill="rgba(79,163,230,0.10)" stroke={FT.sketchBlue} strokeWidth="1.4" />
+          <polygon points={sketchProfile} fill={FT.profileFill} stroke={FT.profileEdge} strokeWidth="0.6" />
+          <polygon points={sketchProfile} fill="none" stroke="#1F1F1F" strokeWidth="1.2" />
           {sketchProfile.split(' ').map((pt, i) => {
             const [x, y] = pt.split(',').map(Number)
-            return <rect key={i} x={x - 2.5} y={y - 2.5} width="5" height="5" fill="#0D0F12" stroke={FT.sketchBlue} strokeWidth="1.2" />
+            return <rect key={i} x={x - 3} y={y - 3} width="6" height="6" fill="#FFFFFF" stroke="#1F1F1F" strokeWidth="0.8" />
           })}
         </motion.g>
 
@@ -1512,15 +1719,15 @@ function SolidExtrude() {
           animate={{ opacity: [0, 0, 0.95, 0.95, 0] }}
           transition={{ duration: cycle, repeat: Infinity, times: [0, 0.3, 0.4, 0.55, 0.6] }}
         >
-          <polygon points={top} fill="rgba(79,163,230,0.05)" stroke={FT.ghostEdge} strokeDasharray="3 3" strokeWidth="1.2" />
-          <polygon points={front} fill="rgba(79,163,230,0.05)" stroke={FT.ghostEdge} strokeDasharray="3 3" strokeWidth="1.2" />
-          <polygon points={right} fill="rgba(79,163,230,0.05)" stroke={FT.ghostEdge} strokeDasharray="3 3" strokeWidth="1.2" />
+          <polygon points={top} fill={FT.ghost} stroke={FT.ghostEdge} strokeDasharray="3 3" strokeWidth="1.2" />
+          <polygon points={front} fill={FT.ghost} stroke={FT.ghostEdge} strokeDasharray="3 3" strokeWidth="1.2" />
+          <polygon points={right} fill={FT.ghost} stroke={FT.ghostEdge} strokeDasharray="3 3" strokeWidth="1.2" />
           {/* extrude direction arrow */}
           <line x1="260" y1="195" x2="260" y2="115" stroke={FT.accent} strokeWidth="2" />
           <polygon points="254,123 260,108 266,123" fill={FT.accent} />
           {/* distance pill */}
-          <rect x="270" y="140" width="56" height="18" rx="2" fill="#1F2227" stroke={FT.accent} />
-          <text x="298" y="153" fontSize="11" fontFamily="var(--font-mono)" textAnchor="middle" fill={FT.accent}>25.00</text>
+          <rect x="270" y="140" width="56" height="18" rx="2" fill="#FFFFFF" stroke={FT.accent} />
+          <text x="298" y="153" fontSize="11" fontFamily={FT.font} textAnchor="middle" fill={FT.accent} fontWeight="600">25.00</text>
         </motion.g>
 
         {/* Stage 3: committed shaded body */}
