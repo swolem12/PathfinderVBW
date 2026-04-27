@@ -176,42 +176,673 @@ export function Fusion360Mock({
   )
 }
 
-function workspaceForVariant(variant: Fusion360MockVariant) {
+/* ============================================================== */
+/*  Fusion 360 visual system — palette, icons, ViewCube, primitives */
+/* ============================================================== */
+
+const FT = {
+  appBar: '#F2F2F2',
+  ribbon: '#ECECEC',
+  ribbonHover: '#DDE3EB',
+  panel: '#F5F5F5',
+  panelDeep: '#E0E0E0',
+  divider: '#C8C8C8',
+  stroke: '#B8B8B8',
+  strokeSoft: '#D6D6D6',
+  text: '#2E2E2E',
+  textDim: '#6E6E6E',
+  textSubtle: '#9A9A9A',
+  accent: '#FF7A00',
+  accentSoft: '#FFC089',
+  selBlue: '#0696D7',
+  selBlueSoft: '#B7E1F1',
+  sketchBlue: '#1F8EE6',
+  bodyFill: '#CFD3D8',
+  bodyEdge: '#3A3F46',
+  bodyHi: '#FFFFFF',
+  ghost: 'rgba(31,142,230,0.18)',
+  ghostEdge: '#1F8EE6',
+  originX: '#E14B4B',
+  originY: '#34B859',
+  originZ: '#2E8FD6',
+  canvasA: '#FFFFFF',
+  canvasB: '#E8E9EB',
+  shadow: '0 1px 0 rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.08)',
+  font: 'var(--font-sans)',
+} as const
+
+type IconName =
+  | 'sketch' | 'extrude' | 'revolve' | 'sweep' | 'loft'
+  | 'hole' | 'fillet' | 'chamfer' | 'shell' | 'pattern' | 'mirror' | 'combine'
+  | 'line' | 'rect' | 'circle' | 'arc' | 'polygon' | 'slot'
+  | 'trim' | 'extend' | 'offset' | 'dimension'
+  | 'box' | 'cylinder' | 'sphere' | 'torus'
+  | 'plane' | 'axis' | 'point' | 'measure' | 'section'
+  | 'joint' | 'rigid' | 'revolute' | 'slider'
+  | 'orbit' | 'pan' | 'zoom' | 'fit' | 'lookAt' | 'display' | 'grid' | 'viewports'
+  | 'save' | 'undo' | 'redo' | 'newFile' | 'file'
+  | 'eye' | 'chevronR' | 'chevronD' | 'folder' | 'component' | 'body' | 'sketchNode'
+  | 'play' | 'stepF' | 'stepB' | 'toStart' | 'toEnd' | 'transform' | 'storyboard' | 'annotation' | 'publish' | 'view'
+  | 'render' | 'appearance' | 'scene' | 'output'
+  | 'meshCreate' | 'meshModify' | 'meshRepair' | 'meshPrepare' | 'meshInspect'
+  | 'horiz' | 'vert' | 'coincident' | 'parallel' | 'perp' | 'tangent' | 'equal' | 'fix'
+  | 'plus' | 'check'
+
+function FusionIcon({
+  name,
+  size = 16,
+  color = FT.text,
+}: {
+  name: IconName
+  size?: number
+  color?: string
+}) {
+  const s = size
+  const sw = 1.4
+  const common = {
+    width: s,
+    height: s,
+    viewBox: '0 0 24 24',
+    fill: 'none',
+    stroke: color,
+    strokeWidth: sw,
+    strokeLinecap: 'round' as const,
+    strokeLinejoin: 'round' as const,
+  }
+  switch (name) {
+    case 'sketch':
+      return (
+        <svg {...common}>
+          <path d="M4 18 L20 4" />
+          <circle cx="4" cy="18" r="1.6" fill={color} />
+          <circle cx="20" cy="4" r="1.6" fill={color} />
+          <path d="M9 18 L18 18" stroke={FT.sketchBlue} />
+        </svg>
+      )
+    case 'extrude':
+      return (
+        <svg {...common}>
+          <rect x="4" y="11" width="9" height="9" />
+          <path d="M4 11 L8 7 L17 7 L13 11" />
+          <path d="M13 20 L17 16 L17 7" />
+          <path d="M13 11 L17 7" stroke={FT.textDim} />
+          <path d="M9 4 L9 9" stroke={FT.accent} />
+          <path d="M7 6 L9 4 L11 6" stroke={FT.accent} />
+        </svg>
+      )
+    case 'revolve':
+      return (
+        <svg {...common}>
+          <ellipse cx="12" cy="12" rx="6" ry="3" />
+          <path d="M6 12 L6 6" />
+          <path d="M18 12 L18 18" />
+          <path d="M3 4 L3 20" stroke={FT.accent} />
+        </svg>
+      )
+    case 'sweep':
+      return (
+        <svg {...common}>
+          <path d="M3 18 C 8 18 8 6 14 6 S 21 14 21 14" />
+          <circle cx="3" cy="18" r="1.6" fill={color} />
+          <rect x="11" y="3" width="6" height="6" transform="rotate(15 14 6)" />
+        </svg>
+      )
+    case 'loft':
+      return (
+        <svg {...common}>
+          <ellipse cx="6" cy="18" rx="3" ry="1.4" />
+          <ellipse cx="18" cy="6" rx="3" ry="1.4" />
+          <path d="M3 18 L15 6 M9 18 L21 6" />
+        </svg>
+      )
+    case 'hole':
+      return (
+        <svg {...common}>
+          <rect x="3" y="6" width="18" height="14" />
+          <circle cx="12" cy="13" r="3" fill={FT.panelDeep} />
+          <path d="M12 3 L12 7" stroke={FT.accent} />
+          <path d="M10 5 L12 3 L14 5" stroke={FT.accent} />
+        </svg>
+      )
+    case 'fillet':
+      return (
+        <svg {...common}>
+          <path d="M4 20 L4 10 Q 4 4 10 4 L20 4" />
+          <path d="M4 4 L10 4 L10 10" stroke={FT.textDim} strokeDasharray="2 2" />
+        </svg>
+      )
+    case 'chamfer':
+      return (
+        <svg {...common}>
+          <path d="M4 20 L4 10 L10 4 L20 4" />
+          <path d="M4 4 L10 4 L10 10" stroke={FT.textDim} strokeDasharray="2 2" />
+        </svg>
+      )
+    case 'shell':
+      return (
+        <svg {...common}>
+          <rect x="3" y="3" width="18" height="18" />
+          <rect x="6" y="6" width="12" height="12" stroke={FT.textDim} />
+        </svg>
+      )
+    case 'pattern':
+      return (
+        <svg {...common}>
+          <rect x="3" y="3" width="6" height="6" />
+          <rect x="15" y="3" width="6" height="6" />
+          <rect x="3" y="15" width="6" height="6" />
+          <rect x="15" y="15" width="6" height="6" />
+        </svg>
+      )
+    case 'mirror':
+      return (
+        <svg {...common}>
+          <path d="M12 3 L12 21" strokeDasharray="2 2" />
+          <path d="M9 7 L4 12 L9 17 Z" />
+          <path d="M15 7 L20 12 L15 17 Z" />
+        </svg>
+      )
+    case 'combine':
+      return (
+        <svg {...common}>
+          <circle cx="9" cy="12" r="5" />
+          <circle cx="15" cy="12" r="5" />
+        </svg>
+      )
+    case 'line':
+      return <svg {...common}><path d="M4 20 L20 4" /><circle cx="4" cy="20" r="1.4" fill={color} /><circle cx="20" cy="4" r="1.4" fill={color} /></svg>
+    case 'rect':
+      return <svg {...common}><rect x="4" y="6" width="16" height="12" /></svg>
+    case 'circle':
+      return <svg {...common}><circle cx="12" cy="12" r="7" /><circle cx="12" cy="12" r="1" fill={color} /></svg>
+    case 'arc':
+      return <svg {...common}><path d="M4 18 A 8 8 0 0 1 20 18" /><circle cx="4" cy="18" r="1.4" fill={color} /><circle cx="20" cy="18" r="1.4" fill={color} /></svg>
+    case 'polygon':
+      return <svg {...common}><path d="M12 4 L20 9 L17 19 L7 19 L4 9 Z" /></svg>
+    case 'slot':
+      return <svg {...common}><path d="M8 8 L16 8 A 4 4 0 0 1 16 16 L8 16 A 4 4 0 0 1 8 8 Z" /></svg>
+    case 'trim':
+      return <svg {...common}><path d="M4 20 L20 4" /><circle cx="9" cy="15" r="2" stroke={FT.accent} /><circle cx="15" cy="9" r="2" stroke={FT.accent} /></svg>
+    case 'extend':
+      return <svg {...common}><path d="M3 12 L17 12" /><path d="M14 9 L17 12 L14 15" /><path d="M19 6 L19 18" stroke={FT.accent} /></svg>
+    case 'offset':
+      return <svg {...common}><rect x="6" y="6" width="12" height="12" /><rect x="3" y="3" width="18" height="18" stroke={FT.textDim} strokeDasharray="2 2" /></svg>
+    case 'dimension':
+      return <svg {...common}><path d="M4 8 L4 16" /><path d="M20 8 L20 16" /><path d="M4 12 L20 12" /><path d="M6 10 L4 12 L6 14" /><path d="M18 10 L20 12 L18 14" /></svg>
+    case 'box':
+      return <svg {...common}><path d="M4 8 L12 4 L20 8 L20 18 L12 22 L4 18 Z" /><path d="M4 8 L12 12 L20 8 M12 12 L12 22" /></svg>
+    case 'cylinder':
+      return <svg {...common}><ellipse cx="12" cy="6" rx="6" ry="2" /><path d="M6 6 L6 18" /><path d="M18 6 L18 18" /><ellipse cx="12" cy="18" rx="6" ry="2" /></svg>
+    case 'sphere':
+      return <svg {...common}><circle cx="12" cy="12" r="8" /><ellipse cx="12" cy="12" rx="8" ry="3" stroke={FT.textDim} /></svg>
+    case 'torus':
+      return <svg {...common}><ellipse cx="12" cy="12" rx="9" ry="4" /><ellipse cx="12" cy="12" rx="3" ry="1.4" stroke={FT.textDim} /></svg>
+    case 'plane':
+      return <svg {...common}><path d="M4 8 L20 4 L20 16 L4 20 Z" /></svg>
+    case 'axis':
+      return <svg {...common}><path d="M4 20 L20 4" /><path d="M16 4 L20 4 L20 8" /></svg>
+    case 'point':
+      return <svg {...common}><circle cx="12" cy="12" r="2" fill={color} /><path d="M12 4 L12 8 M12 16 L12 20 M4 12 L8 12 M16 12 L20 12" /></svg>
+    case 'measure':
+      return <svg {...common}><path d="M3 14 L14 3 L21 10 L10 21 Z" /><path d="M7 12 L9 14 M11 8 L14 11 M14 16 L17 13" /></svg>
+    case 'section':
+      return <svg {...common}><rect x="4" y="4" width="16" height="16" /><path d="M4 4 L20 20" stroke={FT.accent} strokeDasharray="2 2" /></svg>
+    case 'joint':
+    case 'rigid':
+      return <svg {...common}><circle cx="8" cy="12" r="3" /><circle cx="16" cy="12" r="3" /><path d="M11 12 L13 12" /></svg>
+    case 'revolute':
+      return <svg {...common}><circle cx="12" cy="12" r="6" /><path d="M12 6 L12 18 M6 12 L18 12" stroke={FT.accent} /></svg>
+    case 'slider':
+      return <svg {...common}><rect x="3" y="10" width="18" height="4" /><circle cx="14" cy="12" r="3" fill={FT.panel} /></svg>
+    case 'orbit':
+      return <svg {...common}><circle cx="12" cy="12" r="7" /><ellipse cx="12" cy="12" rx="7" ry="3" stroke={FT.textDim} /><circle cx="12" cy="12" r="1.4" fill={color} /></svg>
+    case 'pan':
+      return <svg {...common}><path d="M12 4 L12 20 M4 12 L20 12" /><path d="M9 7 L12 4 L15 7 M9 17 L12 20 L15 17 M7 9 L4 12 L7 15 M17 9 L20 12 L17 15" /></svg>
+    case 'zoom':
+      return <svg {...common}><circle cx="11" cy="11" r="6" /><path d="M16 16 L21 21" /><path d="M8 11 L14 11 M11 8 L11 14" /></svg>
+    case 'fit':
+      return <svg {...common}><path d="M4 8 L4 4 L8 4 M16 4 L20 4 L20 8 M20 16 L20 20 L16 20 M8 20 L4 20 L4 16" /></svg>
+    case 'lookAt':
+      return <svg {...common}><path d="M2 12 C 6 5 18 5 22 12 C 18 19 6 19 2 12 Z" /><circle cx="12" cy="12" r="3" /></svg>
+    case 'display':
+      return <svg {...common}><circle cx="12" cy="12" r="3" /><path d="M12 4 L12 6 M12 18 L12 20 M4 12 L6 12 M18 12 L20 12 M6 6 L7.5 7.5 M16.5 16.5 L18 18 M6 18 L7.5 16.5 M16.5 7.5 L18 6" /></svg>
+    case 'grid':
+      return <svg {...common}><path d="M4 9 L20 9 M4 15 L20 15 M9 4 L9 20 M15 4 L15 20" /><rect x="4" y="4" width="16" height="16" /></svg>
+    case 'viewports':
+      return <svg {...common}><rect x="3" y="3" width="18" height="18" /><path d="M12 3 L12 21 M3 12 L21 12" /></svg>
+    case 'save':
+      return <svg {...common}><path d="M4 4 L17 4 L20 7 L20 20 L4 20 Z" /><rect x="7" y="4" width="9" height="6" /><rect x="7" y="14" width="10" height="6" /></svg>
+    case 'undo':
+      return <svg {...common}><path d="M9 7 L4 12 L9 17" /><path d="M4 12 L15 12 A 5 5 0 0 1 15 22" /></svg>
+    case 'redo':
+      return <svg {...common}><path d="M15 7 L20 12 L15 17" /><path d="M20 12 L9 12 A 5 5 0 0 0 9 22" /></svg>
+    case 'newFile':
+    case 'file':
+      return <svg {...common}><path d="M6 3 L14 3 L19 8 L19 21 L6 21 Z" /><path d="M14 3 L14 8 L19 8" /></svg>
+    case 'eye':
+      return <svg {...common}><path d="M2 12 C 6 5 18 5 22 12 C 18 19 6 19 2 12 Z" /><circle cx="12" cy="12" r="3" /></svg>
+    case 'chevronR':
+      return <svg {...common}><path d="M9 5 L15 12 L9 19" /></svg>
+    case 'chevronD':
+      return <svg {...common}><path d="M5 9 L12 15 L19 9" /></svg>
+    case 'folder':
+      return <svg {...common}><path d="M3 6 L9 6 L11 8 L21 8 L21 19 L3 19 Z" /></svg>
+    case 'component':
+      return <svg {...common}><path d="M4 8 L12 4 L20 8 L20 16 L12 20 L4 16 Z" /><circle cx="12" cy="12" r="2" fill={FT.selBlue} /></svg>
+    case 'body':
+      return <svg {...common}><path d="M4 8 L12 4 L20 8 L20 16 L12 20 L4 16 Z" fill={FT.bodyFill} /></svg>
+    case 'sketchNode':
+      return <svg {...common}><path d="M4 18 L20 6" stroke={FT.sketchBlue} /><circle cx="4" cy="18" r="1.6" fill={FT.sketchBlue} /><circle cx="20" cy="6" r="1.6" fill={FT.sketchBlue} /></svg>
+    case 'play':
+      return <svg {...common}><path d="M7 4 L20 12 L7 20 Z" fill={color} /></svg>
+    case 'stepF':
+      return <svg {...common}><path d="M5 4 L16 12 L5 20 Z" fill={color} /><path d="M18 4 L18 20" /></svg>
+    case 'stepB':
+      return <svg {...common}><path d="M19 4 L8 12 L19 20 Z" fill={color} /><path d="M6 4 L6 20" /></svg>
+    case 'toStart':
+      return <svg {...common}><path d="M21 4 L10 12 L21 20 Z" fill={color} /><path d="M6 4 L6 20" /></svg>
+    case 'toEnd':
+      return <svg {...common}><path d="M3 4 L14 12 L3 20 Z" fill={color} /><path d="M18 4 L18 20" /></svg>
+    case 'transform':
+      return <svg {...common}><path d="M12 3 L12 21 M3 12 L21 12" /><path d="M9 6 L12 3 L15 6 M9 18 L12 21 L15 18 M6 9 L3 12 L6 15 M18 9 L21 12 L18 15" /></svg>
+    case 'storyboard':
+      return <svg {...common}><rect x="3" y="6" width="6" height="12" /><rect x="11" y="6" width="6" height="12" /><rect x="19" y="6" width="2" height="12" /></svg>
+    case 'annotation':
+      return <svg {...common}><path d="M3 5 L21 5 L21 16 L13 16 L9 20 L9 16 L3 16 Z" /></svg>
+    case 'publish':
+      return <svg {...common}><path d="M12 3 L12 16 M7 8 L12 3 L17 8" /><path d="M4 17 L4 21 L20 21 L20 17" /></svg>
+    case 'view':
+      return <svg {...common}><circle cx="12" cy="12" r="8" /><path d="M12 4 L12 20 M4 12 L20 12" stroke={FT.textDim} /></svg>
+    case 'render':
+      return <svg {...common}><circle cx="12" cy="12" r="8" /><path d="M12 4 A 8 8 0 0 1 20 12" stroke={FT.accent} strokeWidth="2.4" /></svg>
+    case 'appearance':
+      return <svg {...common}><circle cx="12" cy="12" r="8" /><path d="M6 12 A 6 6 0 0 1 18 12" stroke={FT.selBlue} /><path d="M6 12 A 6 6 0 0 0 18 12" stroke={FT.accent} /></svg>
+    case 'scene':
+      return <svg {...common}><rect x="3" y="6" width="18" height="12" /><path d="M3 14 L8 10 L13 13 L21 6" /><circle cx="17" cy="9" r="1.5" fill={FT.accent} /></svg>
+    case 'output':
+      return <svg {...common}><path d="M4 14 L4 20 L20 20 L20 14" /><path d="M12 4 L12 16 M7 9 L12 4 L17 9" /></svg>
+    case 'meshCreate':
+      return <svg {...common}><path d="M4 18 L12 4 L20 18 Z" /><path d="M4 18 L12 12 L20 18 M12 4 L12 12" /></svg>
+    case 'meshModify':
+      return <svg {...common}><path d="M4 18 L12 4 L20 18 Z" /><circle cx="12" cy="12" r="2" fill={FT.accent} /></svg>
+    case 'meshRepair':
+      return <svg {...common}><path d="M4 18 L12 4 L20 18 Z" /><path d="M9 13 L12 16 L17 9" stroke={FT.accent} strokeWidth="2" /></svg>
+    case 'meshPrepare':
+      return <svg {...common}><path d="M4 18 L12 4 L20 18 Z" /><path d="M8 18 L16 18" stroke={FT.accent} /></svg>
+    case 'meshInspect':
+      return <svg {...common}><path d="M4 18 L12 4 L20 18 Z" /><circle cx="12" cy="13" r="3" /></svg>
+    case 'horiz':
+      return <svg {...common}><path d="M4 12 L20 12" /><path d="M4 8 L4 16 M20 8 L20 16" stroke={FT.textDim} /></svg>
+    case 'vert':
+      return <svg {...common}><path d="M12 4 L12 20" /><path d="M8 4 L16 4 M8 20 L16 20" stroke={FT.textDim} /></svg>
+    case 'coincident':
+      return <svg {...common}><circle cx="12" cy="12" r="3" /><circle cx="12" cy="12" r="6" stroke={FT.textDim} /></svg>
+    case 'parallel':
+      return <svg {...common}><path d="M6 4 L18 12" /><path d="M6 12 L18 20" /></svg>
+    case 'perp':
+      return <svg {...common}><path d="M4 20 L20 20 M12 20 L12 4" /><rect x="12" y="16" width="4" height="4" stroke={FT.textDim} /></svg>
+    case 'tangent':
+      return <svg {...common}><circle cx="12" cy="14" r="6" /><path d="M2 8 L22 8" /></svg>
+    case 'equal':
+      return <svg {...common}><path d="M4 9 L20 9 M4 15 L20 15" /></svg>
+    case 'fix':
+      return <svg {...common}><path d="M5 5 L19 19 M19 5 L5 19" stroke={FT.accent} /></svg>
+    case 'plus':
+      return <svg {...common}><path d="M12 4 L12 20 M4 12 L20 12" /></svg>
+    case 'check':
+      return <svg {...common}><path d="M5 12 L10 17 L20 6" stroke={FT.accent} strokeWidth="2.2" /></svg>
+    default:
+      return <svg {...common}><rect x="4" y="4" width="16" height="16" /></svg>
+  }
+}
+
+/* 3-face isometric ViewCube. `face` chooses the highlighted face. */
+function ViewCube({ face = 'home' as 'home' | 'top' | 'front' | 'right' }) {
+  const hi = (target: string) => (face === target ? FT.selBlueSoft : '#FFFFFF')
+  return (
+    <svg width="62" height="62" viewBox="0 0 62 62" style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.18))' }}>
+      {/* compass ring */}
+      <circle cx="31" cy="31" r="29" fill="none" stroke={FT.divider} strokeDasharray="2 3" />
+      <text x="31" y="6" fill={FT.textDim} fontSize="6" fontFamily="var(--font-mono)" textAnchor="middle">N</text>
+      {/* top face (rhombus) */}
+      <path d="M31 10 L52 22 L31 34 L10 22 Z" fill={hi('top')} stroke={FT.text} strokeWidth="1" strokeLinejoin="round" />
+      {/* front face */}
+      <path d="M10 22 L31 34 L31 54 L10 42 Z" fill={hi('front')} stroke={FT.text} strokeWidth="1" strokeLinejoin="round" />
+      {/* right face */}
+      <path d="M52 22 L31 34 L31 54 L52 42 Z" fill={hi('right')} stroke={FT.text} strokeWidth="1" strokeLinejoin="round" />
+      <text x="31" y="25" fill={FT.text} fontSize="6.5" fontFamily="var(--font-mono)" textAnchor="middle">TOP</text>
+      <text x="20" y="40" fill={FT.text} fontSize="6" fontFamily="var(--font-mono)" textAnchor="middle">FRONT</text>
+      <text x="42" y="40" fill={FT.text} fontSize="6" fontFamily="var(--font-mono)" textAnchor="middle">RIGHT</text>
+      {/* axis arrows */}
+      <g>
+        <path d="M52 22 L58 18" stroke={FT.originX} strokeWidth="1.6" />
+        <text x="60" y="18" fill={FT.originX} fontSize="6" fontFamily="var(--font-mono)">X</text>
+        <path d="M10 22 L4 18" stroke={FT.originY} strokeWidth="1.6" />
+        <text x="2" y="18" fill={FT.originY} fontSize="6" fontFamily="var(--font-mono)">Y</text>
+        <path d="M31 10 L31 2" stroke={FT.originZ} strokeWidth="1.6" />
+        <text x="34" y="6" fill={FT.originZ} fontSize="6" fontFamily="var(--font-mono)">Z</text>
+      </g>
+    </svg>
+  )
+}
+
+function NavBar() {
+  const items: IconName[] = ['orbit', 'lookAt', 'pan', 'zoom', 'fit', 'display', 'grid', 'viewports']
+  return (
+    <div
+      style={{
+        display: 'inline-flex',
+        gap: 1,
+        padding: 3,
+        borderRadius: 4,
+        background: '#FFFFFF',
+        border: `1px solid ${FT.divider}`,
+        boxShadow: FT.shadow,
+      }}
+    >
+      {items.map((n) => (
+        <span
+          key={n}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 22,
+            height: 22,
+            borderRadius: 3,
+          }}
+        >
+          <FusionIcon name={n} size={14} color={FT.textDim} />
+        </span>
+      ))}
+    </div>
+  )
+}
+
+function GroundGrid() {
+  // Perspective grid: vanishing toward horizon.
+  const lines: ReactNode[] = []
+  for (let i = 0; i <= 10; i++) {
+    const x = (i / 10) * 100
+    lines.push(<line key={`v${i}`} x1={`${x}%`} y1="55%" x2={`${50 + (x - 50) * 0.35}%`} y2="100%" stroke={FT.divider} strokeWidth="0.5" />)
+  }
+  for (let i = 0; i <= 8; i++) {
+    const t = i / 8
+    const y = 55 + t * 45
+    const inset = 50 - 50 * (1 - t * 0.65)
+    lines.push(<line key={`h${i}`} x1={`${inset}%`} y1={`${y}%`} x2={`${100 - inset}%`} y2={`${y}%`} stroke={FT.divider} strokeWidth="0.5" />)
+  }
+  return (
+    <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
+      {lines}
+    </svg>
+  )
+}
+
+function OriginTriad({ x = 28, y = 232 }: { x?: number; y?: number }) {
+  return (
+    <svg width="60" height="60" viewBox="0 0 60 60" style={{ position: 'absolute', left: x - 30, top: y - 30, pointerEvents: 'none' }}>
+      <line x1="30" y1="30" x2="54" y2="30" stroke={FT.originX} strokeWidth="1.6" />
+      <line x1="30" y1="30" x2="14" y2="42" stroke={FT.originY} strokeWidth="1.6" />
+      <line x1="30" y1="30" x2="30" y2="6" stroke={FT.originZ} strokeWidth="1.6" />
+      <text x="56" y="32" fill={FT.originX} fontSize="7" fontFamily="var(--font-mono)">X</text>
+      <text x="6" y="46" fill={FT.originY} fontSize="7" fontFamily="var(--font-mono)">Y</text>
+      <text x="32" y="6" fill={FT.originZ} fontSize="7" fontFamily="var(--font-mono)">Z</text>
+      <circle cx="30" cy="30" r="1.5" fill={FT.text} />
+    </svg>
+  )
+}
+
+/* ============================================================== */
+/*  Workspace + ribbon + browser + timeline maps                   */
+/* ============================================================== */
+
+type Workspace = 'Design' | 'Sketch' | 'Mesh' | 'Animation' | 'Render' | 'Drawing'
+
+function workspaceForVariant(variant: Fusion360MockVariant): Workspace {
   if (variant.startsWith('mesh') || variant === 'plane-cut-mesh') return 'Mesh'
+  if (variant === 'animation-render-output' || variant === 'export-formats') return 'Render'
   if (variant.startsWith('animation')) return 'Animation'
-  if (variant === 'animation-render-output' || variant === 'export-formats') return 'Render / Output'
   if (
-    variant.includes('sketch') ||
-    variant === 'pattern-mirror' ||
-    variant === 'parameters-dialog'
+    variant === 'sketch-constraints' ||
+    variant === 'sketch-tools' ||
+    variant === 'sketch-shape-suite' ||
+    variant === 'sketch-edit-suite'
   ) {
     return 'Sketch'
   }
   return 'Design'
 }
 
-function toolbarForVariant(variant: Fusion360MockVariant) {
-  const workspace = workspaceForVariant(variant)
-  if (workspace === 'Mesh') return ['Create', 'Modify', 'Repair', 'Prepare', 'Inspect']
-  if (workspace === 'Animation') return ['Transform', 'Trail Line', 'Annotation', 'Storyboard', 'Publish']
-  if (workspace === 'Render / Output') return ['Setup', 'Appearance', 'Scene', 'Render', 'Output']
-  if (workspace === 'Sketch') return ['Create', 'Modify', 'Constraints', 'Inspect', 'Finish Sketch']
-  return ['Create', 'Modify', 'Assemble', 'Construct', 'Inspect', 'Insert']
+type RibbonGroup = { name: string; tools: { icon: IconName; label: string }[] }
+
+function ribbonForWorkspace(ws: Workspace): { tabs: string[]; activeTab: string; groups: RibbonGroup[] } {
+  if (ws === 'Sketch') {
+    return {
+      tabs: ['SKETCH'],
+      activeTab: 'SKETCH',
+      groups: [
+        { name: 'CREATE', tools: [
+          { icon: 'line', label: 'Line' },
+          { icon: 'rect', label: 'Rect' },
+          { icon: 'circle', label: 'Circle' },
+          { icon: 'arc', label: 'Arc' },
+          { icon: 'polygon', label: 'Poly' },
+          { icon: 'slot', label: 'Slot' },
+        ] },
+        { name: 'MODIFY', tools: [
+          { icon: 'fillet', label: 'Fillet' },
+          { icon: 'trim', label: 'Trim' },
+          { icon: 'extend', label: 'Extend' },
+          { icon: 'offset', label: 'Offset' },
+        ] },
+        { name: 'CONSTRAIN', tools: [
+          { icon: 'horiz', label: 'H' },
+          { icon: 'vert', label: 'V' },
+          { icon: 'coincident', label: 'Coinc' },
+          { icon: 'parallel', label: 'Par' },
+          { icon: 'perp', label: 'Perp' },
+          { icon: 'tangent', label: 'Tan' },
+          { icon: 'equal', label: 'Equal' },
+          { icon: 'fix', label: 'Fix' },
+        ] },
+        { name: 'INSPECT', tools: [
+          { icon: 'dimension', label: 'Sketch Dim' },
+        ] },
+        { name: 'FINISH', tools: [
+          { icon: 'check', label: 'Finish Sketch' },
+        ] },
+      ],
+    }
+  }
+  if (ws === 'Mesh') {
+    return {
+      tabs: ['SOLID', 'SURFACE', 'MESH', 'SHEET METAL', 'PLASTIC', 'UTILITIES'],
+      activeTab: 'MESH',
+      groups: [
+        { name: 'CREATE', tools: [
+          { icon: 'meshCreate', label: 'Create' },
+          { icon: 'plane', label: 'Plane' },
+        ] },
+        { name: 'MODIFY', tools: [
+          { icon: 'meshModify', label: 'Modify' },
+          { icon: 'section', label: 'Plane Cut' },
+          { icon: 'combine', label: 'Combine' },
+        ] },
+        { name: 'REPAIR', tools: [
+          { icon: 'meshRepair', label: 'Repair' },
+        ] },
+        { name: 'PREPARE', tools: [
+          { icon: 'meshPrepare', label: 'Reduce' },
+        ] },
+        { name: 'INSPECT', tools: [
+          { icon: 'meshInspect', label: 'Inspect' },
+          { icon: 'measure', label: 'Measure' },
+        ] },
+      ],
+    }
+  }
+  if (ws === 'Animation') {
+    return {
+      tabs: ['ANIMATION'],
+      activeTab: 'ANIMATION',
+      groups: [
+        { name: 'STORYBOARD', tools: [{ icon: 'storyboard', label: 'New' }] },
+        { name: 'TRANSFORM', tools: [
+          { icon: 'transform', label: 'Transform' },
+          { icon: 'orbit', label: 'Restore' },
+        ] },
+        { name: 'ANNOTATION', tools: [{ icon: 'annotation', label: 'Callout' }] },
+        { name: 'VIEW', tools: [{ icon: 'view', label: 'View' }] },
+        { name: 'PUBLISH', tools: [{ icon: 'publish', label: 'Publish' }] },
+      ],
+    }
+  }
+  if (ws === 'Render') {
+    return {
+      tabs: ['RENDER'],
+      activeTab: 'RENDER',
+      groups: [
+        { name: 'SETUP', tools: [{ icon: 'scene', label: 'Scene' }] },
+        { name: 'APPEARANCE', tools: [
+          { icon: 'appearance', label: 'Appearance' },
+          { icon: 'display', label: 'Decals' },
+        ] },
+        { name: 'RENDER', tools: [
+          { icon: 'render', label: 'In‑canvas' },
+          { icon: 'play', label: 'Render' },
+        ] },
+        { name: 'OUTPUT', tools: [
+          { icon: 'output', label: 'Export' },
+        ] },
+      ],
+    }
+  }
+  // Design (default)
+  return {
+    tabs: ['SOLID', 'SURFACE', 'MESH', 'SHEET METAL', 'PLASTIC', 'UTILITIES'],
+    activeTab: 'SOLID',
+    groups: [
+      { name: 'CREATE', tools: [
+        { icon: 'sketch', label: 'Sketch' },
+        { icon: 'extrude', label: 'Extrude' },
+        { icon: 'revolve', label: 'Revolve' },
+        { icon: 'sweep', label: 'Sweep' },
+        { icon: 'loft', label: 'Loft' },
+        { icon: 'box', label: 'Box' },
+        { icon: 'cylinder', label: 'Cyl' },
+        { icon: 'hole', label: 'Hole' },
+      ] },
+      { name: 'MODIFY', tools: [
+        { icon: 'fillet', label: 'Fillet' },
+        { icon: 'chamfer', label: 'Chamfer' },
+        { icon: 'shell', label: 'Shell' },
+        { icon: 'pattern', label: 'Pattern' },
+        { icon: 'mirror', label: 'Mirror' },
+        { icon: 'combine', label: 'Combine' },
+      ] },
+      { name: 'ASSEMBLE', tools: [
+        { icon: 'joint', label: 'Joint' },
+        { icon: 'rigid', label: 'Rigid' },
+      ] },
+      { name: 'CONSTRUCT', tools: [
+        { icon: 'plane', label: 'Plane' },
+        { icon: 'axis', label: 'Axis' },
+        { icon: 'point', label: 'Point' },
+      ] },
+      { name: 'INSPECT', tools: [
+        { icon: 'measure', label: 'Measure' },
+        { icon: 'section', label: 'Section' },
+      ] },
+    ],
+  }
 }
 
-function browserItemsForVariant(variant: Fusion360MockVariant) {
-  if (variant.startsWith('animation')) return ['Storyboards', 'Components', 'Trail Lines', 'Annotations']
-  if (variant.startsWith('mesh') || variant === 'plane-cut-mesh') return ['Mesh Bodies', 'Sections', 'Repairs', 'Converted Solids']
-  if (variant.includes('sketch') || variant === 'pattern-mirror') return ['Origin', 'Sketches', 'Profiles', 'Constraints']
-  return ['Document Settings', 'Named Views', 'Origin', 'Bodies', 'Components']
+type BrowserNode = { icon: IconName; label: string; level: number; expanded?: boolean; eye?: boolean; selected?: boolean }
+
+function browserTreeForVariant(variant: Fusion360MockVariant): BrowserNode[] {
+  const ws = workspaceForVariant(variant)
+  if (ws === 'Animation') {
+    return [
+      { icon: 'folder', label: 'Pathfinder Design v3', level: 0, expanded: true, eye: true },
+      { icon: 'storyboard', label: 'Storyboard1', level: 1, expanded: true, eye: true, selected: true },
+      { icon: 'view', label: 'View', level: 2, eye: true },
+      { icon: 'component', label: 'Components', level: 2, expanded: true, eye: true },
+      { icon: 'body', label: 'Bezel_v1', level: 3, eye: true },
+      { icon: 'body', label: 'Battery_v1', level: 3, eye: true },
+      { icon: 'body', label: 'Enclosure_v1', level: 3, eye: true },
+    ]
+  }
+  if (ws === 'Mesh') {
+    return [
+      { icon: 'folder', label: 'Pathfinder Design v3', level: 0, expanded: true, eye: true },
+      { icon: 'folder', label: 'Document Settings', level: 1, eye: true },
+      { icon: 'folder', label: 'Named Views', level: 1, eye: true },
+      { icon: 'point', label: 'Origin', level: 1, eye: true },
+      { icon: 'body', label: 'Mesh Bodies', level: 1, expanded: true, eye: true },
+      { icon: 'body', label: 'Scan_input', level: 2, eye: true, selected: true },
+    ]
+  }
+  if (ws === 'Sketch') {
+    return [
+      { icon: 'folder', label: 'Pathfinder Design v3', level: 0, expanded: true, eye: true },
+      { icon: 'point', label: 'Origin', level: 1, expanded: true, eye: true },
+      { icon: 'plane', label: 'XY', level: 2, eye: true },
+      { icon: 'plane', label: 'XZ', level: 2, eye: true },
+      { icon: 'plane', label: 'YZ', level: 2, eye: true },
+      { icon: 'sketchNode', label: 'Sketches', level: 1, expanded: true, eye: true },
+      { icon: 'sketchNode', label: 'Sketch1', level: 2, eye: true, selected: true },
+    ]
+  }
+  return [
+    { icon: 'folder', label: 'Pathfinder Design v3', level: 0, expanded: true, eye: true },
+    { icon: 'folder', label: 'Document Settings', level: 1, eye: true },
+    { icon: 'folder', label: 'Named Views', level: 1, eye: true },
+    { icon: 'point', label: 'Origin', level: 1, eye: true },
+    { icon: 'body', label: 'Bodies', level: 1, expanded: true, eye: true },
+    { icon: 'body', label: 'Body1', level: 2, eye: true, selected: true },
+    { icon: 'sketchNode', label: 'Sketches', level: 1, expanded: true, eye: true },
+    { icon: 'sketchNode', label: 'Sketch1', level: 2, eye: true },
+  ]
 }
 
-function timelineGlyphsForVariant(variant: Fusion360MockVariant) {
-  if (variant.startsWith('animation')) return ['0s', '1s', '2s', '3s', '4s', 'play']
-  if (variant.includes('sketch')) return ['L', 'R', 'C', 'D', '∥', '✓']
-  if (variant.startsWith('mesh') || variant === 'plane-cut-mesh') return ['insert', 'repair', 'reduce', 'cut', 'convert']
-  return ['sketch', 'extrude', 'hole', 'fillet', 'inspect']
+type TimelineFeature = { icon: IconName; label: string }
+
+function timelineFeaturesForVariant(variant: Fusion360MockVariant): TimelineFeature[] {
+  const ws = workspaceForVariant(variant)
+  if (ws === 'Animation') {
+    return [
+      { icon: 'storyboard', label: '0.0' },
+      { icon: 'transform', label: '1.0' },
+      { icon: 'transform', label: '2.0' },
+      { icon: 'view', label: '3.0' },
+    ]
+  }
+  if (ws === 'Mesh') {
+    return [
+      { icon: 'meshCreate', label: 'Insert' },
+      { icon: 'meshRepair', label: 'Repair' },
+      { icon: 'meshPrepare', label: 'Reduce' },
+      { icon: 'section', label: 'Plane Cut' },
+    ]
+  }
+  if (ws === 'Sketch') {
+    return [
+      { icon: 'sketch', label: 'Sketch1' },
+      { icon: 'dimension', label: 'Dim' },
+    ]
+  }
+  return [
+    { icon: 'sketch', label: 'Sketch1' },
+    { icon: 'extrude', label: 'Extrude1' },
+    { icon: 'fillet', label: 'Fillet1' },
+    { icon: 'hole', label: 'Hole1' },
+  ]
 }
+
+/* ============================================================== */
+/*  FusionUiShell — light Fusion 360 chrome                        */
+/* ============================================================== */
 
 function FusionUiShell({
   variant,
@@ -220,192 +851,283 @@ function FusionUiShell({
   variant: Fusion360MockVariant
   children: ReactNode
 }) {
-  const workspace = workspaceForVariant(variant)
-  const toolbar = toolbarForVariant(variant)
-  const browserItems = browserItemsForVariant(variant)
-  const timeline = timelineGlyphsForVariant(variant)
+  const ws = workspaceForVariant(variant)
+  const ribbon = ribbonForWorkspace(ws)
+  const tree = browserTreeForVariant(variant)
+  const timeline = timelineFeaturesForVariant(variant)
 
   return (
     <div
       style={{
-        border: '1px solid var(--edge)',
-        borderRadius: 10,
+        border: `1px solid ${FT.divider}`,
+        borderRadius: 6,
         overflow: 'hidden',
-        background: 'var(--bg)',
-        boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.02)',
+        background: FT.panel,
+        color: FT.text,
+        fontFamily: FT.font,
+        boxShadow: FT.shadow,
       }}
     >
+      {/* Application bar */}
       <div
         style={{
           display: 'flex',
           alignItems: 'center',
           gap: 8,
-          minHeight: 42,
+          height: 30,
           padding: '0 10px',
-          borderBottom: '1px solid var(--edge)',
-          background: 'linear-gradient(180deg, var(--bg-2), var(--bg))',
+          background: FT.appBar,
+          borderBottom: `1px solid ${FT.divider}`,
         }}
       >
-        <span
-          style={{
-            width: 18,
-            height: 18,
-            borderRadius: 4,
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'var(--bg)',
-            background: 'var(--accent)',
-            fontFamily: 'var(--font-mono)',
-            fontSize: 10,
-            fontWeight: 700,
-          }}
-        >
-          F
+        <div style={{ display: 'flex', gap: 5 }}>
+          <span style={{ width: 9, height: 9, borderRadius: 9, background: '#FF5F57' }} />
+          <span style={{ width: 9, height: 9, borderRadius: 9, background: '#FEBC2E' }} />
+          <span style={{ width: 9, height: 9, borderRadius: 9, background: '#28C840' }} />
+        </div>
+        <span style={{ width: 1, height: 16, background: FT.divider, marginLeft: 6 }} />
+        <span title="Show Data Panel" style={{ display: 'inline-flex', padding: 3 }}>
+          <FusionIcon name="folder" size={14} color={FT.textDim} />
         </span>
-        <span
-          style={{
-            color: 'var(--ink)',
-            fontFamily: 'var(--font-mono)',
-            fontSize: 11,
-            whiteSpace: 'nowrap',
-          }}
-        >
-          {workspace}
-        </span>
-        <span style={{ width: 1, height: 22, background: 'var(--edge)' }} />
-        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-          {toolbar.map((item, i) => (
-            <motion.span
-              key={item}
-              animate={{ opacity: [0.55, 1, 0.55] }}
-              transition={{ duration: 4.2, repeat: Infinity, delay: i * 0.18 }}
-              style={{
-                border: '1px solid var(--edge)',
-                borderRadius: 4,
-                padding: '3px 7px',
-                color: item.includes('Finish') || item === 'Transform' ? 'var(--accent)' : 'var(--ink-dim)',
-                background: 'var(--bg-2)',
-                fontFamily: 'var(--font-mono)',
-                fontSize: 9,
-                letterSpacing: '0.04em',
-              }}
-            >
-              {item}
-            </motion.span>
+        <span style={{ display: 'inline-flex', padding: 3 }}><FusionIcon name="save" size={14} color={FT.textDim} /></span>
+        <span style={{ display: 'inline-flex', padding: 3 }}><FusionIcon name="undo" size={14} color={FT.textDim} /></span>
+        <span style={{ display: 'inline-flex', padding: 3 }}><FusionIcon name="redo" size={14} color={FT.textDim} /></span>
+        <div style={{ flex: 1, textAlign: 'center', fontSize: 11, color: FT.text }}>
+          Pathfinder Design v3 — Autodesk Fusion (Education)
+        </div>
+        <span style={{ fontSize: 10, color: FT.textDim }}>SW</span>
+      </div>
+
+      {/* Ribbon */}
+      <div style={{ background: FT.ribbon, borderBottom: `1px solid ${FT.divider}` }}>
+        {/* Tab strip */}
+        <div style={{ display: 'flex', gap: 4, padding: '4px 10px 0', alignItems: 'flex-end' }}>
+          {ribbon.tabs.map((t) => {
+            const active = t === ribbon.activeTab
+            return (
+              <span
+                key={t}
+                style={{
+                  position: 'relative',
+                  fontSize: 10,
+                  letterSpacing: '0.08em',
+                  fontWeight: 600,
+                  color: active ? FT.text : FT.textDim,
+                  padding: '4px 10px 6px',
+                  background: active ? FT.ribbon : 'transparent',
+                  borderRadius: '3px 3px 0 0',
+                }}
+              >
+                {t}
+                {active && (
+                  <motion.span
+                    layoutId="ribbon-underline"
+                    style={{
+                      position: 'absolute',
+                      left: 4,
+                      right: 4,
+                      bottom: 0,
+                      height: 2,
+                      background: FT.accent,
+                    }}
+                  />
+                )}
+              </span>
+            )
+          })}
+        </div>
+        {/* Groups */}
+        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 0, padding: '4px 6px', overflowX: 'auto' }}>
+          {ribbon.groups.map((g, gi) => (
+            <div key={g.name} style={{ display: 'flex', alignItems: 'flex-end' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '0 4px' }}>
+                <div style={{ display: 'flex', gap: 2 }}>
+                  {g.tools.map((tool, ti) => (
+                    <motion.span
+                      key={tool.label}
+                      whileHover={{ background: FT.ribbonHover }}
+                      animate={{ opacity: [0.92, 1, 0.92] }}
+                      transition={{ duration: 4 + ti * 0.2, repeat: Infinity, delay: gi * 0.15 + ti * 0.08 }}
+                      style={{
+                        display: 'inline-flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: 2,
+                        padding: '4px 5px 3px',
+                        borderRadius: 3,
+                        minWidth: 36,
+                      }}
+                    >
+                      <FusionIcon name={tool.icon} size={20} color={FT.text} />
+                      <span style={{ fontSize: 8.5, color: FT.textDim, letterSpacing: '0.02em' }}>{tool.label}</span>
+                    </motion.span>
+                  ))}
+                </div>
+                <div style={{ fontSize: 8, color: FT.textSubtle, letterSpacing: '0.12em', marginTop: 2 }}>{g.name}</div>
+              </div>
+              {gi < ribbon.groups.length - 1 && (
+                <span style={{ width: 1, alignSelf: 'stretch', margin: '4px 4px 18px', background: FT.divider }} />
+              )}
+            </div>
           ))}
         </div>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '150px minmax(0, 1fr)' }}>
+
+      {/* Body: browser + canvas */}
+      <div style={{ display: 'grid', gridTemplateColumns: '180px minmax(0, 1fr)', minHeight: 320 }}>
+        {/* Browser */}
         <div
           style={{
-            borderRight: '1px solid var(--edge)',
-            background: 'var(--bg-2)',
-            padding: 10,
-            minHeight: 342,
-            color: 'var(--ink-dim)',
-            fontFamily: 'var(--font-mono)',
-            fontSize: 10,
+            background: '#FFFFFF',
+            borderRight: `1px solid ${FT.divider}`,
+            fontSize: 11,
+            color: FT.text,
           }}
         >
-          <div style={{ color: 'var(--ink)', marginBottom: 8 }}>▾ Pathfinder Design</div>
-          {browserItems.map((item, i) => (
-            <motion.div
-              key={item}
-              animate={{ x: [0, i === 2 ? 2 : 0, 0] }}
-              transition={{ duration: 3.8, repeat: Infinity, delay: i * 0.25 }}
-              style={{ padding: '3px 0 3px 10px' }}
-            >
-              {i % 2 === 0 ? '▾' : '▸'} {item}
-            </motion.div>
-          ))}
+          <div
+            style={{
+              fontSize: 9,
+              letterSpacing: '0.12em',
+              color: FT.textDim,
+              padding: '6px 10px',
+              borderBottom: `1px solid ${FT.strokeSoft}`,
+              background: FT.panel,
+            }}
+          >
+            BROWSER
+          </div>
+          <div style={{ padding: '4px 0' }}>
+            {tree.map((n, i) => (
+              <motion.div
+                key={`${n.label}-${i}`}
+                animate={n.selected ? { background: ['#E5F1FB', '#D5EAF8', '#E5F1FB'] } : {}}
+                transition={{ duration: 3, repeat: Infinity }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 4,
+                  padding: '2px 6px 2px',
+                  paddingLeft: 6 + n.level * 12,
+                  background: n.selected ? '#E5F1FB' : 'transparent',
+                  color: n.selected ? FT.selBlue : FT.text,
+                }}
+              >
+                <FusionIcon
+                  name={n.expanded ? 'chevronD' : 'chevronR'}
+                  size={10}
+                  color={FT.textDim}
+                />
+                {n.eye && <FusionIcon name="eye" size={11} color={FT.textDim} />}
+                <FusionIcon name={n.icon} size={12} color={n.selected ? FT.selBlue : FT.textDim} />
+                <span style={{ fontSize: 11, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{n.label}</span>
+              </motion.div>
+            ))}
+          </div>
         </div>
-        <div style={{ position: 'relative', minWidth: 0, padding: 12 }}>
+
+        {/* Canvas */}
+        <div
+          style={{
+            position: 'relative',
+            minWidth: 0,
+            background: `linear-gradient(180deg, ${FT.canvasA} 0%, ${FT.canvasB} 100%)`,
+            overflow: 'hidden',
+            minHeight: 320,
+          }}
+        >
+          <GroundGrid />
+          <OriginTriad />
+          {/* ViewCube */}
+          <div style={{ position: 'absolute', top: 8, right: 10, zIndex: 4 }}>
+            <ViewCube face="home" />
+          </div>
+          {/* Inner scene */}
+          <div style={{ position: 'absolute', inset: 0, zIndex: 2 }}>{children}</div>
+          {/* Navigation bar */}
           <div
             style={{
               position: 'absolute',
-              top: 18,
-              right: 18,
-              zIndex: 3,
-              width: 42,
-              height: 42,
-              border: '1px solid var(--edge)',
-              borderRadius: 6,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              background: 'rgba(255,255,255,0.04)',
-              color: 'var(--ink-dim)',
-              fontFamily: 'var(--font-mono)',
-              fontSize: 9,
-              pointerEvents: 'none',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              bottom: 8,
+              zIndex: 5,
             }}
           >
-            TOP
-          </div>
-          <div
-            style={{
-              position: 'relative',
-              overflow: 'hidden',
-              borderRadius: 8,
-              background:
-                'linear-gradient(135deg, rgba(100,150,200,0.06), rgba(255,255,255,0.015))',
-            }}
-          >
-            {children}
+            <NavBar />
           </div>
         </div>
       </div>
+
+      {/* Timeline */}
       <div
         style={{
-          borderTop: '1px solid var(--edge)',
-          background: 'var(--bg-2)',
+          background: '#FAFAFA',
+          borderTop: `1px solid ${FT.divider}`,
           display: 'flex',
           alignItems: 'center',
-          gap: 7,
-          padding: '8px 10px',
-          overflowX: 'auto',
+          gap: 6,
+          padding: '6px 10px',
+          fontSize: 10,
+          color: FT.textDim,
         }}
       >
-        <span
+        <span style={{ display: 'inline-flex', gap: 2 }}>
+          <FusionIcon name="toStart" size={12} color={FT.textDim} />
+          <FusionIcon name="stepB" size={12} color={FT.textDim} />
+          <FusionIcon name="play" size={12} color={FT.text} />
+          <FusionIcon name="stepF" size={12} color={FT.textDim} />
+          <FusionIcon name="toEnd" size={12} color={FT.textDim} />
+        </span>
+        <span style={{ width: 1, height: 16, background: FT.divider, margin: '0 4px' }} />
+        <div
           style={{
-            color: 'var(--ink-dim)',
-            fontFamily: 'var(--font-mono)',
-            fontSize: 9,
-            letterSpacing: '0.12em',
-            textTransform: 'uppercase',
-            whiteSpace: 'nowrap',
+            position: 'relative',
+            flex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            height: 26,
           }}
         >
-          {workspace === 'Animation' ? 'Storyboard' : 'Timeline'}
-        </span>
-        {timeline.map((glyph, i) => (
-          <motion.span
-            key={`${glyph}-${i}`}
-            animate={{ opacity: [0.45, 1, 0.45], y: [0, -1, 0] }}
-            transition={{ duration: 3.6, repeat: Infinity, delay: i * 0.2 }}
+          <div
             style={{
-              minWidth: 42,
-              height: 22,
-              border: '1px solid var(--edge)',
-              borderRadius: 4,
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'var(--ink-dim)',
-              background: 'var(--bg)',
-              fontFamily: 'var(--font-mono)',
-              fontSize: 9,
-              whiteSpace: 'nowrap',
+              position: 'absolute',
+              left: 8,
+              right: 30,
+              top: '50%',
+              height: 1,
+              background: FT.divider,
             }}
-          >
-            {glyph}
-          </motion.span>
-        ))}
-        <div style={{ flex: 1 }} />
-        <span style={{ color: 'var(--accent)', fontFamily: 'var(--font-mono)', fontSize: 10 }}>
-          ▷ replay
-        </span>
+          />
+          {timeline.map((f, i) => (
+            <motion.div
+              key={`${f.label}-${i}`}
+              animate={{ y: [0, -1, 0] }}
+              transition={{ duration: 3, repeat: Infinity, delay: i * 0.25 }}
+              style={{
+                position: 'relative',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 4,
+                padding: '2px 6px',
+                borderRadius: 3,
+                background: '#FFFFFF',
+                border: `1px solid ${FT.strokeSoft}`,
+                color: FT.text,
+                zIndex: 1,
+              }}
+            >
+              <FusionIcon name={f.icon} size={12} color={FT.text} />
+              <span style={{ fontSize: 10 }}>{f.label}</span>
+            </motion.div>
+          ))}
+          <span style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: 4, color: FT.textSubtle, fontSize: 10 }}>
+            <FusionIcon name="plus" size={12} color={FT.textSubtle} /> end
+          </span>
+        </div>
+        <span style={{ width: 1, height: 16, background: FT.divider }} />
+        <span style={{ fontSize: 9, letterSpacing: '0.06em', color: FT.textDim }}>Units: mm</span>
+        <span style={{ fontSize: 9, color: FT.accent, letterSpacing: '0.06em' }}>● Parametric</span>
       </div>
     </div>
   )
@@ -476,493 +1198,342 @@ function renderVariant(variant: Fusion360MockVariant) {
   }
 }
 
-/* ------------------------------------------------------------------ */
-/*  Variant: workspace-map                                            */
-/* ------------------------------------------------------------------ */
+/* ============================================================== */
+/*  Hero variant: workspace-map                                    */
+/* ============================================================== */
 
 function WorkspaceMap() {
-  const tiles = [
-    { name: 'Design', sub: 'Solid · Surface · Sheet metal' },
-    { name: 'Generative', sub: 'Goal-driven shape studies' },
-    { name: 'Render', sub: 'Materials & ray-traced views' },
-    { name: 'Animation', sub: 'Exploded views & motion' },
-    { name: 'Simulation', sub: 'Stress · modal · thermal' },
-    { name: 'Manufacture', sub: 'CAM · toolpaths · post' },
-    { name: 'Drawing', sub: '2D drafting & sheets' },
-    { name: 'Mesh', sub: 'STL repair & conversion' },
+  const items = [
+    { name: 'Design', icon: 'extrude' as IconName, sub: 'Solid · Surface · Sheet metal' },
+    { name: 'Generative Design', icon: 'sphere' as IconName, sub: 'Goal-driven shape studies' },
+    { name: 'Render', icon: 'render' as IconName, sub: 'Materials · ray-traced views' },
+    { name: 'Animation', icon: 'transform' as IconName, sub: 'Exploded views · motion' },
+    { name: 'Simulation', icon: 'measure' as IconName, sub: 'Stress · modal · thermal' },
+    { name: 'Manufacture', icon: 'meshPrepare' as IconName, sub: 'CAM · toolpaths · post' },
+    { name: 'Drawing', icon: 'file' as IconName, sub: '2D drafting · sheets' },
+    { name: 'Mesh', icon: 'meshCreate' as IconName, sub: 'STL repair · conversion' },
   ]
   return (
-    <div
-      style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(4, 1fr)',
-        gap: 10,
-      }}
-    >
-      {tiles.map((t, i) => (
-        <motion.div
-          key={t.name}
-          initial={{ opacity: 0, y: 8 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: i * 0.05, duration: 0.35, ease: EASE }}
-          style={{
-            border: '1px solid var(--edge)',
-            borderRadius: 8,
-            padding: '12px 12px 14px',
-            background: 'var(--bg)',
-            position: 'relative',
-            overflow: 'hidden',
-          }}
-        >
-          <motion.span
-            aria-hidden
-            animate={{ opacity: [0, 0.18, 0] }}
-            transition={{ duration: 3.6, repeat: Infinity, delay: i * 0.45, ease: 'easeInOut' }}
+    <div style={{ position: 'absolute', top: 24, left: 24, zIndex: 3 }}>
+      {/* Switcher pill */}
+      <div
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 6,
+          padding: '5px 10px',
+          border: `1px solid ${FT.stroke}`,
+          background: '#FFFFFF',
+          borderRadius: 4,
+          fontSize: 12,
+          color: FT.text,
+          boxShadow: FT.shadow,
+        }}
+      >
+        <FusionIcon name="extrude" size={14} color={FT.text} />
+        Design
+        <FusionIcon name="chevronD" size={11} color={FT.textDim} />
+      </div>
+      {/* Dropdown menu */}
+      <motion.div
+        initial={{ opacity: 0, y: -4 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: EASE }}
+        style={{
+          marginTop: 4,
+          background: '#FFFFFF',
+          border: `1px solid ${FT.stroke}`,
+          borderRadius: 4,
+          width: 280,
+          boxShadow: '0 6px 20px rgba(0,0,0,0.12)',
+          overflow: 'hidden',
+        }}
+      >
+        {items.map((it, i) => (
+          <motion.div
+            key={it.name}
+            animate={{ background: ['#FFFFFF', i === 3 ? '#FEEAD3' : '#FFFFFF', '#FFFFFF'] }}
+            transition={{ duration: 6, repeat: Infinity, delay: i * 0.5, times: [0, 0.5, 1] }}
             style={{
-              position: 'absolute',
-              inset: 0,
-              background: 'var(--accent)',
-              pointerEvents: 'none',
-            }}
-          />
-          <div
-            style={{
-              fontFamily: 'var(--font-display, var(--font-mono))',
-              color: 'var(--ink)',
-              fontSize: 13,
-              fontWeight: 600,
-              letterSpacing: '0.02em',
-            }}
-          >
-            {t.name}
-          </div>
-          <div
-            style={{
-              fontFamily: 'var(--font-mono)',
-              color: 'var(--ink-dim)',
-              fontSize: 10,
-              marginTop: 4,
-              letterSpacing: '0.04em',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 10,
+              padding: '8px 12px',
+              borderTop: i === 0 ? 'none' : `1px solid ${FT.strokeSoft}`,
+              fontSize: 12,
+              color: FT.text,
             }}
           >
-            {t.sub}
-          </div>
-        </motion.div>
-      ))}
+            <FusionIcon name={it.icon} size={18} color={i === 3 ? FT.accent : FT.text} />
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <span style={{ fontWeight: 500 }}>{it.name}</span>
+              <span style={{ fontSize: 10, color: FT.textDim }}>{it.sub}</span>
+            </div>
+          </motion.div>
+        ))}
+      </motion.div>
     </div>
   )
 }
 
-/* ------------------------------------------------------------------ */
-/*  Variant: interface-tour                                           */
-/* ------------------------------------------------------------------ */
+/* ============================================================== */
+/*  Hero variant: interface-tour                                   */
+/* ============================================================== */
 
 function InterfaceTour() {
-  // Cursor cycles through 5 hotspots (toolbar, browser, canvas, viewcube, timeline)
-  const hotspots = [
-    { x: 30, y: 18 },
-    { x: 12, y: 55 },
-    { x: 55, y: 55 },
-    { x: 88, y: 32 },
-    { x: 50, y: 90 },
+  // Annotated callouts pointing at shell regions visible behind us.
+  const stops = [
+    { x: 18, y: 12, label: '1 · Application bar', text: 'File, save, undo · workspace switcher' },
+    { x: 42, y: 14, label: '2 · Ribbon', text: 'Grouped tool icons for the active workspace' },
+    { x: 6, y: 60, label: '3 · Browser', text: 'Document tree: origin, bodies, sketches, components' },
+    { x: 88, y: 18, label: '4 · ViewCube', text: 'Click faces to snap to standard views' },
+    { x: 50, y: 92, label: '5 · Navigation bar', text: 'Orbit · pan · zoom · fit' },
+    { x: 50, y: 100, label: '6 · Timeline', text: 'Parametric history of every feature' },
   ]
-  const dur = 8
+  const cycle = stops.length * 1.6
   return (
-    <div
-      style={{
-        position: 'relative',
-        border: '1px solid var(--edge)',
-        borderRadius: 8,
-        background: 'var(--bg)',
-        height: 280,
-        overflow: 'hidden',
-      }}
-    >
-      {/* Toolbar */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          height: 36,
-          borderBottom: '1px solid var(--edge)',
-          display: 'flex',
-          gap: 6,
-          alignItems: 'center',
-          padding: '0 10px',
-          background: 'var(--bg-2)',
-        }}
-      >
-        {['Sketch', 'Create', 'Modify', 'Assemble', 'Construct', 'Inspect'].map((t) => (
-          <span
-            key={t}
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: 10,
-              color: 'var(--ink-dim)',
-              padding: '4px 8px',
-              border: '1px solid var(--edge)',
-              borderRadius: 4,
-            }}
-          >
-            {t}
-          </span>
-        ))}
-      </div>
-      {/* Browser */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 36,
-          bottom: 36,
-          left: 0,
-          width: 130,
-          borderRight: '1px solid var(--edge)',
-          padding: 8,
-          fontFamily: 'var(--font-mono)',
-          fontSize: 10,
-          color: 'var(--ink-dim)',
-          background: 'var(--bg-2)',
-        }}
-      >
-        <div style={{ color: 'var(--ink)', marginBottom: 4 }}>▾ Untitled</div>
-        <div style={{ paddingLeft: 8 }}>▸ Origin</div>
-        <div style={{ paddingLeft: 8 }}>▸ Bodies</div>
-        <div style={{ paddingLeft: 8 }}>▸ Sketches</div>
-        <div style={{ paddingLeft: 8 }}>▸ Components</div>
-      </div>
-      {/* Canvas */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 36,
-          bottom: 36,
-          left: 130,
-          right: 0,
-          background:
-            'linear-gradient(135deg, rgba(120,160,200,0.10) 0%, rgba(40,60,90,0.04) 100%)',
-        }}
-      >
-        {/* origin */}
-        <svg width="100%" height="100%" style={{ position: 'absolute', inset: 0 }}>
-          <line x1="50%" y1="0" x2="50%" y2="100%" stroke="var(--edge)" strokeDasharray="3 4" />
-          <line x1="0" y1="50%" x2="100%" y2="50%" stroke="var(--edge)" strokeDasharray="3 4" />
-          {/* sample box */}
-          <motion.rect
-            x="38%"
-            y="35%"
-            width="24%"
-            height="30%"
-            fill="var(--bg-2)"
-            stroke="var(--accent)"
-            strokeWidth="1.5"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: [0, 1, 1, 0.6] }}
-            transition={{ duration: dur, repeat: Infinity }}
-          />
-        </svg>
-        {/* viewcube */}
-        <div
+    <>
+      {stops.map((s, i) => (
+        <motion.div
+          key={s.label}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 1, 1, 0] }}
+          transition={{ duration: cycle, repeat: Infinity, times: [i / stops.length, (i + 0.05) / stops.length, (i + 0.95) / stops.length, (i + 1) / stops.length], delay: 0 }}
           style={{
             position: 'absolute',
-            top: 8,
-            right: 8,
-            width: 36,
-            height: 36,
-            border: '1px solid var(--edge)',
-            background: 'var(--bg-2)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontFamily: 'var(--font-mono)',
-            fontSize: 9,
-            color: 'var(--ink-dim)',
+            left: `${s.x}%`,
+            top: `${s.y}%`,
+            transform: 'translate(-50%, -50%)',
+            background: '#FFFFFF',
+            border: `1px solid ${FT.stroke}`,
+            borderRadius: 4,
+            padding: '6px 10px',
+            boxShadow: '0 4px 14px rgba(0,0,0,0.14)',
+            zIndex: 6,
+            minWidth: 150,
           }}
         >
-          TOP
-        </div>
-      </div>
-      {/* Timeline */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          height: 36,
-          borderTop: '1px solid var(--edge)',
-          display: 'flex',
-          alignItems: 'center',
-          padding: '0 10px',
-          gap: 6,
-          background: 'var(--bg-2)',
-        }}
-      >
-        {['◐', '▭', '⬡', '⌒', '◍'].map((g, i) => (
+          <div style={{ fontSize: 9, letterSpacing: '0.08em', color: FT.accent, fontWeight: 600 }}>{s.label}</div>
+          <div style={{ fontSize: 10.5, color: FT.text, marginTop: 2 }}>{s.text}</div>
           <span
-            key={i}
             style={{
-              width: 22,
-              height: 22,
-              border: '1px solid var(--edge)',
-              borderRadius: 3,
-              fontSize: 12,
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'var(--ink-dim)',
-            }}
-          >
-            {g}
-          </span>
-        ))}
-        <div style={{ flex: 1 }} />
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--ink-dim)' }}>
-          ▷ play history
-        </span>
-      </div>
-      {/* Animated cursor */}
-      <motion.div
-        aria-hidden
-        animate={{
-          left: hotspots.map((h) => `${h.x}%`),
-          top: hotspots.map((h) => `${h.y}%`),
-        }}
-        transition={{ duration: dur, repeat: Infinity, ease: 'easeInOut', times: [0, 0.2, 0.45, 0.7, 0.95] }}
-        style={{
-          position: 'absolute',
-          width: 14,
-          height: 14,
-          marginLeft: -7,
-          marginTop: -7,
-          borderRadius: '50%',
-          border: '2px solid var(--accent)',
-          background: 'rgba(255,255,255,0.6)',
-          pointerEvents: 'none',
-        }}
-      />
-    </div>
-  )
-}
-
-/* ------------------------------------------------------------------ */
-/*  Variant: sketch-constraints                                       */
-/* ------------------------------------------------------------------ */
-
-function SketchConstraints() {
-  // Animated rectangle: lines draw in blue, then turn black (constrained), with dimension labels.
-  const cycle = 6
-  return (
-    <div
-      style={{
-        border: '1px solid var(--edge)',
-        borderRadius: 8,
-        background: 'var(--bg)',
-        height: 280,
-        position: 'relative',
-        overflow: 'hidden',
-      }}
-    >
-      <svg viewBox="0 0 400 280" width="100%" height="100%">
-        {/* origin */}
-        <line x1="0" y1="140" x2="400" y2="140" stroke="var(--edge)" strokeDasharray="3 4" />
-        <line x1="200" y1="0" x2="200" y2="280" stroke="var(--edge)" strokeDasharray="3 4" />
-        <circle cx="200" cy="140" r="3" fill="var(--accent)" />
-        {/* rectangle lines — drawn one by one, then color shifts to black */}
-        {[
-          { x1: 200, y1: 140, x2: 320, y2: 140, key: 'top' },
-          { x1: 320, y1: 140, x2: 320, y2: 220, key: 'right' },
-          { x1: 320, y1: 220, x2: 200, y2: 220, key: 'bottom' },
-          { x1: 200, y1: 220, x2: 200, y2: 140, key: 'left' },
-        ].map((l, i) => (
-          <motion.line
-            key={l.key}
-            x1={l.x1}
-            y1={l.y1}
-            x2={l.x2}
-            y2={l.y2}
-            strokeWidth="2"
-            initial={{ pathLength: 0, stroke: '#3b82f6' }}
-            animate={{
-              pathLength: [0, 1, 1, 1, 1],
-              stroke: ['#3b82f6', '#3b82f6', '#3b82f6', '#3b82f6', 'var(--ink)'],
-            }}
-            transition={{
-              duration: cycle,
-              repeat: Infinity,
-              ease: 'easeInOut',
-              times: [0, 0.15 + i * 0.08, 0.5, 0.65, 0.85],
-              delay: i * 0.4,
+              position: 'absolute',
+              left: '50%',
+              bottom: -5,
+              transform: 'translateX(-50%) rotate(45deg)',
+              width: 8,
+              height: 8,
+              background: '#FFFFFF',
+              borderRight: `1px solid ${FT.stroke}`,
+              borderBottom: `1px solid ${FT.stroke}`,
             }}
           />
-        ))}
-        {/* dimension labels appear in the second half */}
-        <motion.g
-          initial={{ opacity: 0 }}
-          animate={{ opacity: [0, 0, 1, 1] }}
-          transition={{ duration: cycle, repeat: Infinity, times: [0, 0.55, 0.7, 1] }}
-        >
-          <text x="260" y="132" fill="var(--accent)" fontSize="11" fontFamily="var(--font-mono)" textAnchor="middle">
-            120 mm
-          </text>
-          <text x="334" y="184" fill="var(--accent)" fontSize="11" fontFamily="var(--font-mono)">
-            80 mm
-          </text>
-        </motion.g>
-        {/* status */}
-        <motion.text
-          x="20"
-          y="30"
-          fill="var(--ink-dim)"
-          fontSize="11"
-          fontFamily="var(--font-mono)"
-          animate={{
-            opacity: [1, 1, 1, 1],
-          }}
-          transition={{ duration: cycle, repeat: Infinity }}
-        >
-          status:
-        </motion.text>
-        <motion.text
-          x="78"
-          y="30"
-          fontSize="11"
-          fontFamily="var(--font-mono)"
-          animate={{
-            // text content cycles via opacity of two stacked labels below
-            opacity: [1, 1, 0, 0],
-          }}
-          fill="#3b82f6"
-          transition={{ duration: cycle, repeat: Infinity, times: [0, 0.6, 0.65, 1] }}
-        >
-          under-constrained
-        </motion.text>
-        <motion.text
-          x="78"
-          y="30"
-          fontSize="11"
-          fontFamily="var(--font-mono)"
-          animate={{ opacity: [0, 0, 1, 1] }}
-          fill="var(--ink)"
-          transition={{ duration: cycle, repeat: Infinity, times: [0, 0.6, 0.7, 1] }}
-        >
-          fully constrained ✓
-        </motion.text>
-      </svg>
-    </div>
+        </motion.div>
+      ))}
+      {/* Cursor */}
+      <motion.div
+        animate={{
+          left: stops.map((s) => `${s.x}%`),
+          top: stops.map((s) => `${s.y}%`),
+        }}
+        transition={{ duration: cycle, repeat: Infinity, ease: 'easeInOut' }}
+        style={{ position: 'absolute', zIndex: 7, pointerEvents: 'none' }}
+      >
+        <svg width="18" height="22" viewBox="0 0 18 22">
+          <path d="M2 2 L2 18 L7 14 L10 20 L13 19 L10 13 L16 13 Z" fill="#FFFFFF" stroke="#000" strokeWidth="1" />
+        </svg>
+      </motion.div>
+    </>
   )
 }
 
-/* ------------------------------------------------------------------ */
-/*  Variant: solid-extrude                                            */
-/* ------------------------------------------------------------------ */
+/* ============================================================== */
+/*  Hero variant: sketch-constraints                               */
+/* ============================================================== */
+
+function SketchConstraints() {
+  // Top-down sketch on XY: 4 segments start loose (gray), then snap to a
+  // fully-constrained rectangle with constraint glyphs popping up + a
+  // dimension callout.
+  const cycle = 6
+  return (
+    <svg viewBox="0 0 480 320" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 3 }}>
+      {/* sketch grid square indicating active sketch plane */}
+      <rect x="80" y="60" width="320" height="200" fill="rgba(31,142,230,0.04)" stroke={FT.sketchBlue} strokeOpacity="0.35" strokeDasharray="3 3" />
+      {/* loose lines that snap to constrained rectangle */}
+      <motion.path
+        animate={{
+          d: [
+            'M120 240 L360 230',
+            'M120 240 L360 240',
+            'M120 240 L360 240',
+          ],
+        }}
+        transition={{ duration: cycle, repeat: Infinity, times: [0, 0.4, 1] }}
+        stroke={FT.sketchBlue}
+        strokeWidth="2"
+        fill="none"
+      />
+      <motion.path
+        animate={{ d: ['M120 240 L130 100', 'M120 240 L120 100', 'M120 240 L120 100'] }}
+        transition={{ duration: cycle, repeat: Infinity, times: [0, 0.5, 1] }}
+        stroke={FT.sketchBlue}
+        strokeWidth="2"
+        fill="none"
+      />
+      <motion.path
+        animate={{ d: ['M360 230 L356 100', 'M360 240 L360 100', 'M360 240 L360 100'] }}
+        transition={{ duration: cycle, repeat: Infinity, times: [0, 0.55, 1] }}
+        stroke={FT.sketchBlue}
+        strokeWidth="2"
+        fill="none"
+      />
+      <motion.path
+        animate={{ d: ['M130 100 L356 100', 'M120 100 L360 100', 'M120 100 L360 100'] }}
+        transition={{ duration: cycle, repeat: Infinity, times: [0, 0.6, 1] }}
+        stroke={FT.sketchBlue}
+        strokeWidth="2"
+        fill="none"
+      />
+      {/* end-points (sketch dots) */}
+      {[
+        [120, 240],
+        [360, 240],
+        [120, 100],
+        [360, 100],
+      ].map(([x, y], i) => (
+        <circle key={i} cx={x} cy={y} r="3" fill="#FFFFFF" stroke={FT.sketchBlue} strokeWidth="1.4" />
+      ))}
+      {/* horizontal constraint glyph */}
+      <motion.g initial={{ opacity: 0 }} animate={{ opacity: [0, 0, 1, 1] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.4, 0.5, 1] }}>
+        <rect x="232" y="248" width="16" height="12" fill="#FFFFFF" stroke={FT.text} />
+        <line x1="236" y1="254" x2="244" y2="254" stroke={FT.text} strokeWidth="1.4" />
+      </motion.g>
+      {/* vertical constraint glyph */}
+      <motion.g initial={{ opacity: 0 }} animate={{ opacity: [0, 0, 1, 1] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.5, 0.6, 1] }}>
+        <rect x="98" y="164" width="12" height="16" fill="#FFFFFF" stroke={FT.text} />
+        <line x1="104" y1="168" x2="104" y2="176" stroke={FT.text} strokeWidth="1.4" />
+      </motion.g>
+      {/* dimension callout */}
+      <motion.g initial={{ opacity: 0 }} animate={{ opacity: [0, 0, 0, 1] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.6, 0.75, 1] }}>
+        <line x1="120" y1="280" x2="360" y2="280" stroke={FT.text} strokeWidth="1" />
+        <line x1="120" y1="276" x2="120" y2="284" stroke={FT.text} strokeWidth="1" />
+        <line x1="360" y1="276" x2="360" y2="284" stroke={FT.text} strokeWidth="1" />
+        <rect x="218" y="270" width="44" height="16" fill="#FFFFFF" stroke={FT.text} />
+        <text x="240" y="282" fontSize="11" fontFamily="var(--font-mono)" textAnchor="middle" fill={FT.text}>120.00</text>
+      </motion.g>
+      {/* fully constrained pip */}
+      <motion.g initial={{ opacity: 0 }} animate={{ opacity: [0, 0, 0, 1] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.7, 0.85, 1] }}>
+        <circle cx="400" cy="44" r="6" fill={FT.originY} />
+        <text x="412" y="48" fontSize="10" fontFamily={FT.font} fill={FT.text}>Fully constrained</text>
+      </motion.g>
+    </svg>
+  )
+}
+
+/* ============================================================== */
+/*  Hero variant: solid-extrude                                    */
+/* ============================================================== */
 
 function SolidExtrude() {
   const cycle = 7
   return (
-    <div
-      style={{
-        border: '1px solid var(--edge)',
-        borderRadius: 8,
-        background: 'var(--bg)',
-        height: 280,
-        position: 'relative',
-        overflow: 'hidden',
-      }}
-    >
-      <svg viewBox="0 0 400 280" width="100%" height="100%">
-        <line x1="0" y1="200" x2="400" y2="200" stroke="var(--edge)" strokeDasharray="3 4" />
-        {/* base profile (rectangle) */}
-        <motion.rect
-          x="140"
-          y="170"
-          width="120"
-          height="30"
-          fill="rgba(120,160,200,0.10)"
-          stroke="var(--accent)"
-          strokeWidth="1.5"
-          animate={{ opacity: [0, 1, 1, 1, 0.4] }}
-          transition={{ duration: cycle, repeat: Infinity, times: [0, 0.1, 0.3, 0.6, 1] }}
-        />
-        {/* extruded top face */}
-        <motion.polygon
-          fill="rgba(120,160,200,0.18)"
-          stroke="var(--ink)"
-          strokeWidth="1.5"
-          animate={{
-            points: [
-              '140,170 260,170 260,170 140,170',
-              '140,170 260,170 290,140 170,140',
-              '140,170 260,170 290,80 170,80',
-              '140,170 260,170 290,80 170,80',
-            ],
-            opacity: [0, 1, 1, 1],
-          }}
-          transition={{ duration: cycle, repeat: Infinity, times: [0, 0.25, 0.55, 1], ease: 'easeInOut' }}
-        />
-        {/* right face */}
-        <motion.polygon
-          fill="rgba(80,120,160,0.30)"
-          stroke="var(--ink)"
-          strokeWidth="1.5"
-          animate={{
-            points: [
-              '260,170 260,170 260,170 260,170',
-              '260,170 290,140 290,140 260,170',
-              '260,170 290,80 290,80 260,170',
-              '260,170 290,80 290,80 260,170',
-            ],
-            opacity: [0, 1, 1, 1],
-          }}
-          transition={{ duration: cycle, repeat: Infinity, times: [0, 0.25, 0.55, 1], ease: 'easeInOut' }}
-        />
-        {/* extrude direction arrow */}
+    <>
+      {/* Right-docked Extrude dialog */}
+      <motion.div
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5, ease: EASE }}
+        style={{
+          position: 'absolute',
+          top: 80,
+          right: 12,
+          zIndex: 5,
+          width: 168,
+          background: '#FFFFFF',
+          border: `1px solid ${FT.stroke}`,
+          borderRadius: 4,
+          boxShadow: '0 4px 16px rgba(0,0,0,0.16)',
+          fontSize: 10,
+          color: FT.text,
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 8px', borderBottom: `1px solid ${FT.strokeSoft}`, background: FT.panel }}>
+          <FusionIcon name="extrude" size={14} color={FT.text} />
+          <span style={{ fontWeight: 500 }}>EXTRUDE</span>
+          <span style={{ marginLeft: 'auto', color: FT.textDim, fontSize: 11 }}>×</span>
+        </div>
+        {[
+          ['Type', 'Distance'],
+          ['Profile', '1 selected'],
+          ['Start', 'Profile Plane'],
+          ['Direction', 'One Side'],
+          ['Distance', '25.00 mm'],
+          ['Taper Angle', '0.0 deg'],
+          ['Operation', 'New Body'],
+        ].map(([k, v], i) => (
+          <div key={k} style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 8px', borderTop: i === 0 ? 'none' : `1px solid ${FT.strokeSoft}` }}>
+            <span style={{ color: FT.textDim }}>{k}</span>
+            <span style={{ color: k === 'Distance' ? FT.accent : FT.text }}>{v}</span>
+          </div>
+        ))}
+        <div style={{ display: 'flex', gap: 6, padding: 8, borderTop: `1px solid ${FT.strokeSoft}`, background: FT.panel }}>
+          <span style={{ flex: 1, textAlign: 'center', padding: '4px 0', background: FT.accent, color: '#FFF', borderRadius: 3, fontWeight: 600 }}>OK</span>
+          <span style={{ flex: 1, textAlign: 'center', padding: '4px 0', background: '#FFFFFF', color: FT.text, border: `1px solid ${FT.stroke}`, borderRadius: 3 }}>Cancel</span>
+        </div>
+      </motion.div>
+
+      {/* Canvas scene: profile rectangle + extruded prism */}
+      <svg viewBox="0 0 480 320" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 3 }}>
+        {/* sketch profile */}
         <motion.g
-          animate={{ opacity: [0, 1, 1, 0, 0] }}
-          transition={{ duration: cycle, repeat: Infinity, times: [0, 0.15, 0.5, 0.6, 1] }}
+          animate={{ opacity: [1, 1, 0.55, 0.55] }}
+          transition={{ duration: cycle, repeat: Infinity, times: [0, 0.25, 0.4, 1] }}
         >
-          <line x1="200" y1="170" x2="200" y2="80" stroke="var(--accent)" strokeWidth="1.5" />
-          <polygon points="195,90 205,90 200,75" fill="var(--accent)" />
-          <text x="208" y="130" fill="var(--accent)" fontSize="11" fontFamily="var(--font-mono)">
-            extrude 60 mm
-          </text>
+          <polygon points="120,220 240,250 240,180 120,150" fill="rgba(31,142,230,0.15)" stroke={FT.sketchBlue} strokeWidth="1.6" />
         </motion.g>
-        {/* fillet highlight */}
-        <motion.circle
-          cx="290"
-          cy="80"
-          r="10"
-          fill="none"
-          stroke="var(--accent)"
-          strokeWidth="1.5"
-          strokeDasharray="3 3"
-          animate={{ opacity: [0, 0, 0, 1, 0] }}
-          transition={{ duration: cycle, repeat: Infinity, times: [0, 0.55, 0.7, 0.85, 1] }}
-        />
-        <motion.text
-          x="305"
-          y="78"
-          fill="var(--accent)"
-          fontSize="11"
-          fontFamily="var(--font-mono)"
-          animate={{ opacity: [0, 0, 0, 1, 0] }}
-          transition={{ duration: cycle, repeat: Infinity, times: [0, 0.55, 0.7, 0.85, 1] }}
+        {/* ghost preview pulling up */}
+        <motion.g
+          animate={{ opacity: [0, 0.9, 0.9, 0] }}
+          transition={{ duration: cycle, repeat: Infinity, times: [0.2, 0.4, 0.55, 0.6] }}
         >
-          fillet 5 mm
-        </motion.text>
-        {/* step labels */}
-        <text x="20" y="30" fill="var(--ink-dim)" fontSize="11" fontFamily="var(--font-mono)">
-          1. sketch profile  →  2. extrude  →  3. fillet edges
-        </text>
+          <polygon points="120,150 240,180 240,80 120,50" fill={FT.ghost} stroke={FT.ghostEdge} strokeDasharray="3 3" strokeWidth="1.4" />
+          <polygon points="120,220 240,250 240,180 120,150" fill="none" stroke={FT.ghostEdge} strokeDasharray="3 3" strokeWidth="1.4" />
+          <polygon points="120,220 120,50 120,150" fill="rgba(31,142,230,0.1)" stroke={FT.ghostEdge} strokeDasharray="3 3" strokeWidth="1.4" />
+          {/* arrow showing direction */}
+          <line x1="180" y1="200" x2="180" y2="100" stroke={FT.accent} strokeWidth="2" />
+          <polygon points="174,108 180,98 186,108" fill={FT.accent} />
+          <text x="190" y="150" fontSize="11" fontFamily="var(--font-mono)" fill={FT.accent}>25.00</text>
+        </motion.g>
+        {/* committed solid */}
+        <motion.g
+          animate={{ opacity: [0, 0, 1, 1] }}
+          transition={{ duration: cycle, repeat: Infinity, times: [0, 0.55, 0.65, 1] }}
+        >
+          {/* bottom face */}
+          <polygon points="120,220 240,250 240,180 120,150" fill={FT.bodyFill} stroke={FT.bodyEdge} strokeWidth="1.4" />
+          {/* right side */}
+          <polygon points="240,250 240,80 240,180 240,250" fill="#B5BAC1" stroke={FT.bodyEdge} strokeWidth="1.4" />
+          {/* front side */}
+          <polygon points="120,220 240,250 240,80 120,50" fill="#DDE0E5" stroke={FT.bodyEdge} strokeWidth="1.4" />
+          {/* top face */}
+          <polygon points="120,50 240,80 240,80 120,50" fill="#FFFFFF" stroke={FT.bodyEdge} strokeWidth="1.4" />
+          <polygon points="120,150 240,180 240,80 120,50" fill="#FFFFFF" stroke={FT.bodyEdge} strokeWidth="1.4" />
+          {/* fillet highlight */}
+          <motion.path
+            animate={{ opacity: [0, 0, 0, 1] }}
+            transition={{ duration: cycle, repeat: Infinity, times: [0, 0.7, 0.85, 1] }}
+            d="M236 80 Q 240 78 244 82"
+            stroke={FT.accent}
+            strokeWidth="2"
+            fill="none"
+          />
+        </motion.g>
       </svg>
-    </div>
+    </>
   )
 }
 
-/* ------------------------------------------------------------------ */
-/*  Variant: mesh-cleanup                                             */
 /* ------------------------------------------------------------------ */
 
 function MeshCleanup() {
