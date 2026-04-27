@@ -118,7 +118,7 @@ export function Fusion360Mock({
           viewport={{ once: true, margin: '-10%' }}
           transition={{ duration: 0.35, ease: EASE }}
         >
-          {renderVariant(variant)}
+          <FusionUiShell variant={variant}>{renderVariant(variant)}</FusionUiShell>
         </motion.div>
         {(helpUrl || tutorialUrl) && (
           <div
@@ -173,6 +173,241 @@ export function Fusion360Mock({
         </figcaption>
       )}
     </figure>
+  )
+}
+
+function workspaceForVariant(variant: Fusion360MockVariant) {
+  if (variant.startsWith('mesh') || variant === 'plane-cut-mesh') return 'Mesh'
+  if (variant.startsWith('animation')) return 'Animation'
+  if (variant === 'animation-render-output' || variant === 'export-formats') return 'Render / Output'
+  if (
+    variant.includes('sketch') ||
+    variant === 'pattern-mirror' ||
+    variant === 'parameters-dialog'
+  ) {
+    return 'Sketch'
+  }
+  return 'Design'
+}
+
+function toolbarForVariant(variant: Fusion360MockVariant) {
+  const workspace = workspaceForVariant(variant)
+  if (workspace === 'Mesh') return ['Create', 'Modify', 'Repair', 'Prepare', 'Inspect']
+  if (workspace === 'Animation') return ['Transform', 'Trail Line', 'Annotation', 'Storyboard', 'Publish']
+  if (workspace === 'Render / Output') return ['Setup', 'Appearance', 'Scene', 'Render', 'Output']
+  if (workspace === 'Sketch') return ['Create', 'Modify', 'Constraints', 'Inspect', 'Finish Sketch']
+  return ['Create', 'Modify', 'Assemble', 'Construct', 'Inspect', 'Insert']
+}
+
+function browserItemsForVariant(variant: Fusion360MockVariant) {
+  if (variant.startsWith('animation')) return ['Storyboards', 'Components', 'Trail Lines', 'Annotations']
+  if (variant.startsWith('mesh') || variant === 'plane-cut-mesh') return ['Mesh Bodies', 'Sections', 'Repairs', 'Converted Solids']
+  if (variant.includes('sketch') || variant === 'pattern-mirror') return ['Origin', 'Sketches', 'Profiles', 'Constraints']
+  return ['Document Settings', 'Named Views', 'Origin', 'Bodies', 'Components']
+}
+
+function timelineGlyphsForVariant(variant: Fusion360MockVariant) {
+  if (variant.startsWith('animation')) return ['0s', '1s', '2s', '3s', '4s', 'play']
+  if (variant.includes('sketch')) return ['L', 'R', 'C', 'D', '∥', '✓']
+  if (variant.startsWith('mesh') || variant === 'plane-cut-mesh') return ['insert', 'repair', 'reduce', 'cut', 'convert']
+  return ['sketch', 'extrude', 'hole', 'fillet', 'inspect']
+}
+
+function FusionUiShell({
+  variant,
+  children,
+}: {
+  variant: Fusion360MockVariant
+  children: ReactNode
+}) {
+  const workspace = workspaceForVariant(variant)
+  const toolbar = toolbarForVariant(variant)
+  const browserItems = browserItemsForVariant(variant)
+  const timeline = timelineGlyphsForVariant(variant)
+
+  return (
+    <div
+      style={{
+        border: '1px solid var(--edge)',
+        borderRadius: 10,
+        overflow: 'hidden',
+        background: 'var(--bg)',
+        boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.02)',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 8,
+          minHeight: 42,
+          padding: '0 10px',
+          borderBottom: '1px solid var(--edge)',
+          background: 'linear-gradient(180deg, var(--bg-2), var(--bg))',
+        }}
+      >
+        <span
+          style={{
+            width: 18,
+            height: 18,
+            borderRadius: 4,
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'var(--bg)',
+            background: 'var(--accent)',
+            fontFamily: 'var(--font-mono)',
+            fontSize: 10,
+            fontWeight: 700,
+          }}
+        >
+          F
+        </span>
+        <span
+          style={{
+            color: 'var(--ink)',
+            fontFamily: 'var(--font-mono)',
+            fontSize: 11,
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {workspace}
+        </span>
+        <span style={{ width: 1, height: 22, background: 'var(--edge)' }} />
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          {toolbar.map((item, i) => (
+            <motion.span
+              key={item}
+              animate={{ opacity: [0.55, 1, 0.55] }}
+              transition={{ duration: 4.2, repeat: Infinity, delay: i * 0.18 }}
+              style={{
+                border: '1px solid var(--edge)',
+                borderRadius: 4,
+                padding: '3px 7px',
+                color: item.includes('Finish') || item === 'Transform' ? 'var(--accent)' : 'var(--ink-dim)',
+                background: 'var(--bg-2)',
+                fontFamily: 'var(--font-mono)',
+                fontSize: 9,
+                letterSpacing: '0.04em',
+              }}
+            >
+              {item}
+            </motion.span>
+          ))}
+        </div>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: '150px minmax(0, 1fr)' }}>
+        <div
+          style={{
+            borderRight: '1px solid var(--edge)',
+            background: 'var(--bg-2)',
+            padding: 10,
+            minHeight: 342,
+            color: 'var(--ink-dim)',
+            fontFamily: 'var(--font-mono)',
+            fontSize: 10,
+          }}
+        >
+          <div style={{ color: 'var(--ink)', marginBottom: 8 }}>▾ Pathfinder Design</div>
+          {browserItems.map((item, i) => (
+            <motion.div
+              key={item}
+              animate={{ x: [0, i === 2 ? 2 : 0, 0] }}
+              transition={{ duration: 3.8, repeat: Infinity, delay: i * 0.25 }}
+              style={{ padding: '3px 0 3px 10px' }}
+            >
+              {i % 2 === 0 ? '▾' : '▸'} {item}
+            </motion.div>
+          ))}
+        </div>
+        <div style={{ position: 'relative', minWidth: 0, padding: 12 }}>
+          <div
+            style={{
+              position: 'absolute',
+              top: 18,
+              right: 18,
+              zIndex: 3,
+              width: 42,
+              height: 42,
+              border: '1px solid var(--edge)',
+              borderRadius: 6,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: 'rgba(255,255,255,0.04)',
+              color: 'var(--ink-dim)',
+              fontFamily: 'var(--font-mono)',
+              fontSize: 9,
+              pointerEvents: 'none',
+            }}
+          >
+            TOP
+          </div>
+          <div
+            style={{
+              position: 'relative',
+              overflow: 'hidden',
+              borderRadius: 8,
+              background:
+                'linear-gradient(135deg, rgba(100,150,200,0.06), rgba(255,255,255,0.015))',
+            }}
+          >
+            {children}
+          </div>
+        </div>
+      </div>
+      <div
+        style={{
+          borderTop: '1px solid var(--edge)',
+          background: 'var(--bg-2)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 7,
+          padding: '8px 10px',
+          overflowX: 'auto',
+        }}
+      >
+        <span
+          style={{
+            color: 'var(--ink-dim)',
+            fontFamily: 'var(--font-mono)',
+            fontSize: 9,
+            letterSpacing: '0.12em',
+            textTransform: 'uppercase',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {workspace === 'Animation' ? 'Storyboard' : 'Timeline'}
+        </span>
+        {timeline.map((glyph, i) => (
+          <motion.span
+            key={`${glyph}-${i}`}
+            animate={{ opacity: [0.45, 1, 0.45], y: [0, -1, 0] }}
+            transition={{ duration: 3.6, repeat: Infinity, delay: i * 0.2 }}
+            style={{
+              minWidth: 42,
+              height: 22,
+              border: '1px solid var(--edge)',
+              borderRadius: 4,
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'var(--ink-dim)',
+              background: 'var(--bg)',
+              fontFamily: 'var(--font-mono)',
+              fontSize: 9,
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {glyph}
+          </motion.span>
+        ))}
+        <div style={{ flex: 1 }} />
+        <span style={{ color: 'var(--accent)', fontFamily: 'var(--font-mono)', fontSize: 10 }}>
+          ▷ replay
+        </span>
+      </div>
+    </div>
   )
 }
 

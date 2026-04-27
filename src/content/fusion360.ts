@@ -738,6 +738,13 @@ export const fusion360Lessons: LessonDef[] = [
       { type: 'jargon', term: 'Component', plain: 'A part or assembly container with its own origin, sketches, bodies, joints, and timeline references. Use components for anything that might move or be manufactured separately.' },
       { type: 'jargon', term: 'Body', plain: 'A single chunk of geometry inside a component. Bodies are usually intermediate solids until you decide how the product is assembled.' },
       { type: 'jargon', term: 'Timeline', plain: 'The row of feature icons at the bottom. It records modeling history so earlier sketches and features can be edited later.' },
+      {
+        type: 'fusion360Mock',
+        variant: 'joint-types',
+        caption: 'Components become meaningful assemblies when joints define how they lock, rotate, slide, or move together.',
+        helpUrl: HELP_SEARCH('components joints rigid revolute slider cylindrical planar ball'),
+        tutorialQuery: 'components joints rigid revolute slider cylindrical planar ball',
+      },
       { type: 'step', n: 1, title: 'Create the course project', body: 'Open Fusion 360, create a project named Pathfinder Fusion 360, then create a new design named Tool Practice.' },
       { type: 'step', n: 2, title: 'Set units and navigation', body: 'Open Document Settings, set units to millimeters or inches based on your shop standard, and practice orbit, pan, zoom, home view, and fit view.' },
       { type: 'step', n: 3, title: 'Make the first component', body: 'Right-click the top design node, choose New Component, and name it Practice Bracket. Activate the component before sketching.' },
