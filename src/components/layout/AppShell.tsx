@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
+import { Link, NavLink, Outlet } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import { StartButton } from '../ui/StartButton'
 
@@ -13,12 +13,6 @@ const NAV_LINKS = [
 
 export function AppShell() {
   const [menuOpen, setMenuOpen] = useState(false)
-  const location = useLocation()
-
-  // Close mobile menu whenever the route changes
-  useEffect(() => {
-    setMenuOpen(false)
-  }, [location.pathname])
 
   // Prevent body scroll while mobile menu is open
   useEffect(() => {
@@ -38,7 +32,7 @@ export function AppShell() {
         }}
       >
         <div className="mx-auto flex w-full max-w-[1200px] items-center justify-between px-6 py-4 sm:px-10">
-          <Link to="/" className="flex items-center gap-2.5">
+          <Link to="/" className="flex items-center gap-2.5" onClick={() => setMenuOpen(false)}>
             <span
               className="inline-block h-2 w-2 rounded-full"
               style={{ background: 'var(--accent)' }}
@@ -105,6 +99,7 @@ export function AppShell() {
               <li key={to} style={{ borderBottom: '1px solid var(--edge)' }}>
                 <NavLink
                   to={to}
+                  onClick={() => setMenuOpen(false)}
                   className={({ isActive }) =>
                     `block py-5 uppercase tracking-[0.22em] ${
                       isActive ? 'text-[color:var(--ink)]' : 'text-[color:var(--ink-dim)]'

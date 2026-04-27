@@ -6,6 +6,7 @@ import { palantirLessons } from '../../content/palantir'
 import { palantirAdvancedLessons } from '../../content/palantir-advanced'
 import { palantirAipLessons } from '../../content/palantir-aip'
 import { powerAppsLessons } from '../../content/powerapps'
+import { fusion360Lessons } from '../../content/fusion360'
 
 interface StartButtonProps {
   children: ReactNode
@@ -130,6 +131,8 @@ export function StartButton({ children, className = 'btn btn-primary' }: StartBu
   const palantirAipMinutes = palantirAipCritical.reduce((n, l) => n + l.estMinutes, 0)
   const powerAppsCritical = powerAppsLessons.filter((l) => !l.optional)
   const powerAppsMinutes = powerAppsCritical.reduce((n, l) => n + l.estMinutes, 0)
+  const fusion360Critical = fusion360Lessons.filter((l) => !l.optional)
+  const fusion360Minutes = fusion360Critical.reduce((n, l) => n + l.estMinutes, 0)
 
   const palantirTotalLessons = palantirCritical.length + palantirAdvCritical.length + palantirAipCritical.length
   const palantirTotalMinutes = palantirMinutes + palantirAdvMinutes + palantirAipMinutes
@@ -139,6 +142,7 @@ export function StartButton({ children, className = 'btn btn-primary' }: StartBu
   const firstPalantirAdv = palantirAdvancedLessons[0]
   const firstPalantirAip = palantirAipLessons[0]
   const firstPowerApps = powerAppsLessons[0]
+  const firstFusion360 = fusion360Lessons[0]
 
   const close = () => setOpen(false)
 
@@ -233,7 +237,7 @@ export function StartButton({ children, className = 'btn btn-primary' }: StartBu
               style={{ background: 'var(--edge)', borderTop: '1px solid var(--edge)' }}
             >
               {view === 'tracks' ? (
-                <div className="grid gap-px sm:grid-cols-3">
+                <div className="grid gap-px sm:grid-cols-2 lg:grid-cols-4">
                   <Tile
                     eyebrow="Track 01 · Beginner"
                     title="Vibe coding on your Desktop"
@@ -259,6 +263,15 @@ export function StartButton({ children, className = 'btn btn-primary' }: StartBu
                     lessons={powerAppsCritical.length}
                     minutes={powerAppsMinutes}
                     to={`/powerapps/${firstPowerApps.id}`}
+                    onClick={close}
+                  />
+                  <Tile
+                    eyebrow="Track 04 · Autodesk"
+                    title="Intro to Fusion 360"
+                    body="Solid, Mesh, and Sketch tools with guided projects and media references."
+                    lessons={fusion360Critical.length}
+                    minutes={fusion360Minutes}
+                    to={`/fusion360/${firstFusion360.id}`}
                     onClick={close}
                   />
                 </div>

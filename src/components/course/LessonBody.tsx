@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import type { CodeBlock, LessonBlock } from '../../content/course'
+import type { CodeBlock, LessonBlock, MediaBlock } from '../../content/course'
 import { CopyButton } from '../ui/CopyButton'
 import { GithubMock } from './GithubMock'
 
@@ -177,6 +177,76 @@ function CalloutCard({
       </p>
       <p style={{ color: 'var(--paper)', lineHeight: 1.6 }}>{body}</p>
     </aside>
+  )
+}
+
+function MediaCard({ media }: { media: MediaBlock }) {
+  const label =
+    media.kind === 'gif'
+      ? 'Animated GIF'
+      : media.kind === 'video'
+        ? 'Footage'
+        : media.kind === 'image'
+          ? 'Picture'
+          : 'Reference graphic'
+
+  return (
+    <figure
+      className="my-8 overflow-hidden rounded-lg border"
+      style={{ borderColor: 'var(--edge)', background: 'var(--bg-2)' }}
+    >
+      <div
+        className="flex items-center justify-between border-b px-4 py-2"
+        style={{ borderColor: 'var(--edge)' }}
+      >
+        <span
+          className="uppercase"
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: 10,
+            letterSpacing: '0.22em',
+            color: 'var(--ink-dim)',
+          }}
+        >
+          {label} — {media.title}
+        </span>
+      </div>
+
+      {media.src ? (
+        media.kind === 'video' ? (
+          <video className="w-full" controls preload="metadata" aria-label={media.alt}>
+            <source src={media.src} />
+          </video>
+        ) : (
+          <img className="w-full" src={media.src} alt={media.alt} loading="lazy" />
+        )
+      ) : (
+        <div className="grid min-h-[220px] place-items-center p-6 text-center">
+          <div>
+            <div
+              className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full border"
+              style={{ borderColor: 'var(--edge)', color: 'var(--accent)', fontFamily: 'var(--font-display)', fontSize: 24 }}
+              aria-hidden
+            >
+              {media.kind === 'gif' ? 'GIF' : media.kind === 'video' ? 'VID' : media.kind === 'image' ? 'IMG' : 'REF'}
+            </div>
+            <p style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)', fontSize: 18 }}>
+              {media.title}
+            </p>
+            <p className="mx-auto mt-2 max-w-[520px]" style={{ color: 'var(--paper)', lineHeight: 1.6, fontSize: 14 }}>
+              Asset slot ready: add a {label.toLowerCase()} to public/fusion360 and set this block’s src when media is available.
+            </p>
+          </div>
+        </div>
+      )}
+
+      <figcaption
+        className="border-t px-4 py-2 text-center"
+        style={{ borderColor: 'var(--edge)', fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-dim)' }}
+      >
+        {media.caption}
+      </figcaption>
+    </figure>
   )
 }
 
@@ -5090,6 +5160,8 @@ function renderBlock(block: LessonBlock, i: number): React.ReactNode {
       )
     case 'code':
       return <CodeCard key={i} block={block.block} />
+    case 'media':
+      return <MediaCard key={i} media={block.media} />
     case 'callout':
       return (
         <CalloutCard

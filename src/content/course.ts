@@ -13,12 +13,21 @@ export interface Callout {
   body: string
 }
 
+export interface MediaBlock {
+  kind: 'gif' | 'video' | 'image' | 'reference'
+  title: string
+  alt: string
+  caption: string
+  src?: string
+}
+
 export type LessonBlock =
   | { type: 'p'; body: string }
   | { type: 'h'; body: string }
   | { type: 'list'; items: string[] }
   | { type: 'checklist'; items: string[] }
   | { type: 'code'; block: CodeBlock }
+  | { type: 'media'; media: MediaBlock }
   | { type: 'callout'; callout: Callout }
   | { type: 'shellSession'; lines: { prompt?: string; command?: string; output?: string }[] }
   | { type: 'step'; n: number; title: string; body: string }
