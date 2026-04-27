@@ -196,17 +196,22 @@ const FT = {
   accentSoft: '#FFC089',
   selBlue: '#0696D7',
   selBlueSoft: '#B7E1F1',
-  sketchBlue: '#1F8EE6',
-  bodyFill: '#CFD3D8',
-  bodyEdge: '#3A3F46',
-  bodyHi: '#FFFFFF',
-  ghost: 'rgba(31,142,230,0.18)',
-  ghostEdge: '#1F8EE6',
+  sketchBlue: '#4FA3E6',
+  // Shaded body 3-tone (top/front/side) — matches Fusion's default appearance
+  bodyTop: '#5A6473',
+  bodyFront: '#3F4754',
+  bodySide: '#2C3340',
+  bodyEdge: '#FFFFFF',
+  bodyEdgeDim: '#9AA4B2',
+  ghost: 'rgba(79,163,230,0.10)',
+  ghostEdge: '#4FA3E6',
   originX: '#E14B4B',
   originY: '#34B859',
   originZ: '#2E8FD6',
-  canvasA: '#FFFFFF',
-  canvasB: '#E8E9EB',
+  // Dark canvas — matches Fusion 2025 dark UI
+  canvasA: '#1A1C20',
+  canvasB: '#0D0F12',
+  horizon: 'rgba(255,255,255,0.18)',
   shadow: '0 1px 0 rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.08)',
   font: 'var(--font-sans)',
 } as const
@@ -430,7 +435,7 @@ function FusionIcon({
     case 'component':
       return <svg {...common}><path d="M4 8 L12 4 L20 8 L20 16 L12 20 L4 16 Z" /><circle cx="12" cy="12" r="2" fill={FT.selBlue} /></svg>
     case 'body':
-      return <svg {...common}><path d="M4 8 L12 4 L20 8 L20 16 L12 20 L4 16 Z" fill={FT.bodyFill} /></svg>
+      return <svg {...common}><path d="M4 8 L12 4 L20 8 L20 16 L12 20 L4 16 Z" fill={FT.bodyFront} /></svg>
     case 'sketchNode':
       return <svg {...common}><path d="M4 18 L20 6" stroke={FT.sketchBlue} /><circle cx="4" cy="18" r="1.6" fill={FT.sketchBlue} /><circle cx="20" cy="6" r="1.6" fill={FT.sketchBlue} /></svg>
     case 'play':
@@ -498,21 +503,22 @@ function FusionIcon({
 
 /* 3-face isometric ViewCube. `face` chooses the highlighted face. */
 function ViewCube({ face = 'home' as 'home' | 'top' | 'front' | 'right' }) {
-  const hi = (target: string) => (face === target ? FT.selBlueSoft : '#FFFFFF')
+  // Dark-canvas ViewCube: dark faces, light edges + labels.
+  const hi = (target: string) => (face === target ? '#3F4754' : '#2A2D33')
   return (
-    <svg width="62" height="62" viewBox="0 0 62 62" style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.18))' }}>
+    <svg width="62" height="62" viewBox="0 0 62 62" style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.45))' }}>
       {/* compass ring */}
-      <circle cx="31" cy="31" r="29" fill="none" stroke={FT.divider} strokeDasharray="2 3" />
-      <text x="31" y="6" fill={FT.textDim} fontSize="6" fontFamily="var(--font-mono)" textAnchor="middle">N</text>
+      <circle cx="31" cy="31" r="29" fill="none" stroke="rgba(255,255,255,0.25)" strokeDasharray="2 3" />
+      <text x="31" y="6" fill="rgba(255,255,255,0.5)" fontSize="6" fontFamily="var(--font-mono)" textAnchor="middle">N</text>
       {/* top face (rhombus) */}
-      <path d="M31 10 L52 22 L31 34 L10 22 Z" fill={hi('top')} stroke={FT.text} strokeWidth="1" strokeLinejoin="round" />
+      <path d="M31 10 L52 22 L31 34 L10 22 Z" fill={hi('top')} stroke="#E6E7EA" strokeWidth="1" strokeLinejoin="round" />
       {/* front face */}
-      <path d="M10 22 L31 34 L31 54 L10 42 Z" fill={hi('front')} stroke={FT.text} strokeWidth="1" strokeLinejoin="round" />
+      <path d="M10 22 L31 34 L31 54 L10 42 Z" fill={hi('front')} stroke="#E6E7EA" strokeWidth="1" strokeLinejoin="round" />
       {/* right face */}
-      <path d="M52 22 L31 34 L31 54 L52 42 Z" fill={hi('right')} stroke={FT.text} strokeWidth="1" strokeLinejoin="round" />
-      <text x="31" y="25" fill={FT.text} fontSize="6.5" fontFamily="var(--font-mono)" textAnchor="middle">TOP</text>
-      <text x="20" y="40" fill={FT.text} fontSize="6" fontFamily="var(--font-mono)" textAnchor="middle">FRONT</text>
-      <text x="42" y="40" fill={FT.text} fontSize="6" fontFamily="var(--font-mono)" textAnchor="middle">RIGHT</text>
+      <path d="M52 22 L31 34 L31 54 L52 42 Z" fill={hi('right')} stroke="#E6E7EA" strokeWidth="1" strokeLinejoin="round" />
+      <text x="31" y="25" fill="#E6E7EA" fontSize="6.5" fontFamily="var(--font-mono)" textAnchor="middle">TOP</text>
+      <text x="20" y="46" fill="#E6E7EA" fontSize="6" fontFamily="var(--font-mono)" textAnchor="middle">FRONT</text>
+      <text x="42" y="46" fill="#E6E7EA" fontSize="6" fontFamily="var(--font-mono)" textAnchor="middle">RIGHT</text>
       {/* axis arrows */}
       <g>
         <path d="M52 22 L58 18" stroke={FT.originX} strokeWidth="1.6" />
@@ -535,9 +541,9 @@ function NavBar() {
         gap: 1,
         padding: 3,
         borderRadius: 4,
-        background: '#FFFFFF',
-        border: `1px solid ${FT.divider}`,
-        boxShadow: FT.shadow,
+        background: 'rgba(255,255,255,0.06)',
+        border: '1px solid rgba(255,255,255,0.18)',
+        backdropFilter: 'blur(2px)',
       }}
     >
       {items.map((n) => (
@@ -552,29 +558,18 @@ function NavBar() {
             borderRadius: 3,
           }}
         >
-          <FusionIcon name={n} size={14} color={FT.textDim} />
+          <FusionIcon name={n} size={14} color="rgba(230,231,234,0.85)" />
         </span>
       ))}
     </div>
   )
 }
 
-function GroundGrid() {
-  // Perspective grid: vanishing toward horizon.
-  const lines: ReactNode[] = []
-  for (let i = 0; i <= 10; i++) {
-    const x = (i / 10) * 100
-    lines.push(<line key={`v${i}`} x1={`${x}%`} y1="55%" x2={`${50 + (x - 50) * 0.35}%`} y2="100%" stroke={FT.divider} strokeWidth="0.5" />)
-  }
-  for (let i = 0; i <= 8; i++) {
-    const t = i / 8
-    const y = 55 + t * 45
-    const inset = 50 - 50 * (1 - t * 0.65)
-    lines.push(<line key={`h${i}`} x1={`${inset}%`} y1={`${y}%`} x2={`${100 - inset}%`} y2={`${y}%`} stroke={FT.divider} strokeWidth="0.5" />)
-  }
+function Horizon() {
+  // Single dashed ground line, like Fusion's default dark scene.
   return (
     <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
-      {lines}
+      <line x1="0" y1="78%" x2="100%" y2="78%" stroke={FT.horizon} strokeWidth="1" strokeDasharray="3 5" />
     </svg>
   )
 }
@@ -1035,7 +1030,7 @@ function FusionUiShell({
             minHeight: 320,
           }}
         >
-          <GroundGrid />
+          <Horizon />
           <OriginTriad />
           {/* ViewCube */}
           <div style={{ position: 'absolute', top: 8, right: 10, zIndex: 4 }}>
@@ -1359,7 +1354,7 @@ function SketchConstraints() {
   return (
     <svg viewBox="0 0 480 320" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 3 }}>
       {/* sketch grid square indicating active sketch plane */}
-      <rect x="80" y="60" width="320" height="200" fill="rgba(31,142,230,0.04)" stroke={FT.sketchBlue} strokeOpacity="0.35" strokeDasharray="3 3" />
+      <rect x="80" y="60" width="320" height="200" fill="rgba(79,163,230,0.06)" stroke={FT.sketchBlue} strokeOpacity="0.45" strokeDasharray="3 3" />
       {/* loose lines that snap to constrained rectangle */}
       <motion.path
         animate={{
@@ -1402,30 +1397,30 @@ function SketchConstraints() {
         [120, 100],
         [360, 100],
       ].map(([x, y], i) => (
-        <circle key={i} cx={x} cy={y} r="3" fill="#FFFFFF" stroke={FT.sketchBlue} strokeWidth="1.4" />
+        <rect key={i} x={x - 3} y={y - 3} width="6" height="6" fill="#0D0F12" stroke={FT.sketchBlue} strokeWidth="1.4" />
       ))}
       {/* horizontal constraint glyph */}
       <motion.g initial={{ opacity: 0 }} animate={{ opacity: [0, 0, 1, 1] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.4, 0.5, 1] }}>
-        <rect x="232" y="248" width="16" height="12" fill="#FFFFFF" stroke={FT.text} />
-        <line x1="236" y1="254" x2="244" y2="254" stroke={FT.text} strokeWidth="1.4" />
+        <rect x="232" y="248" width="16" height="12" fill="#1F2227" stroke="#E6E7EA" />
+        <line x1="236" y1="254" x2="244" y2="254" stroke="#E6E7EA" strokeWidth="1.4" />
       </motion.g>
       {/* vertical constraint glyph */}
       <motion.g initial={{ opacity: 0 }} animate={{ opacity: [0, 0, 1, 1] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.5, 0.6, 1] }}>
-        <rect x="98" y="164" width="12" height="16" fill="#FFFFFF" stroke={FT.text} />
-        <line x1="104" y1="168" x2="104" y2="176" stroke={FT.text} strokeWidth="1.4" />
+        <rect x="98" y="164" width="12" height="16" fill="#1F2227" stroke="#E6E7EA" />
+        <line x1="104" y1="168" x2="104" y2="176" stroke="#E6E7EA" strokeWidth="1.4" />
       </motion.g>
       {/* dimension callout */}
       <motion.g initial={{ opacity: 0 }} animate={{ opacity: [0, 0, 0, 1] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.6, 0.75, 1] }}>
-        <line x1="120" y1="280" x2="360" y2="280" stroke={FT.text} strokeWidth="1" />
-        <line x1="120" y1="276" x2="120" y2="284" stroke={FT.text} strokeWidth="1" />
-        <line x1="360" y1="276" x2="360" y2="284" stroke={FT.text} strokeWidth="1" />
-        <rect x="218" y="270" width="44" height="16" fill="#FFFFFF" stroke={FT.text} />
-        <text x="240" y="282" fontSize="11" fontFamily="var(--font-mono)" textAnchor="middle" fill={FT.text}>120.00</text>
+        <line x1="120" y1="280" x2="360" y2="280" stroke="#E6E7EA" strokeWidth="1" />
+        <line x1="120" y1="276" x2="120" y2="284" stroke="#E6E7EA" strokeWidth="1" />
+        <line x1="360" y1="276" x2="360" y2="284" stroke="#E6E7EA" strokeWidth="1" />
+        <rect x="218" y="270" width="44" height="16" fill="#1F2227" stroke="#E6E7EA" />
+        <text x="240" y="282" fontSize="11" fontFamily="var(--font-mono)" textAnchor="middle" fill="#E6E7EA">120.00</text>
       </motion.g>
       {/* fully constrained pip */}
       <motion.g initial={{ opacity: 0 }} animate={{ opacity: [0, 0, 0, 1] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.7, 0.85, 1] }}>
         <circle cx="400" cy="44" r="6" fill={FT.originY} />
-        <text x="412" y="48" fontSize="10" fontFamily={FT.font} fill={FT.text}>Fully constrained</text>
+        <text x="412" y="48" fontSize="10" fontFamily={FT.font} fill="#E6E7EA">Fully constrained</text>
       </motion.g>
     </svg>
   )
@@ -1437,6 +1432,13 @@ function SketchConstraints() {
 
 function SolidExtrude() {
   const cycle = 7
+  // Iso projection (30°): cube w=d=h=100 centred at (260,200).
+  // A (0,0,0)=(260,200) B (100,0,0)=(347,250) C (100,100,0)=(260,300) D (0,100,0)=(173,250)
+  // A'(0,0,100)=(260,100) B'(100,0,100)=(347,150) C'(100,100,100)=(260,200) D'(0,100,100)=(173,150)
+  const top = '260,100 347,150 260,200 173,150'
+  const front = '260,200 347,250 347,150 260,100'
+  const right = '347,250 260,300 260,200 347,150'
+  const sketchProfile = '260,200 347,250 260,300 173,250'
   return (
     <>
       {/* Right-docked Extrude dialog */}
@@ -1446,22 +1448,22 @@ function SolidExtrude() {
         transition={{ duration: 0.5, ease: EASE }}
         style={{
           position: 'absolute',
-          top: 80,
-          right: 12,
+          top: 18,
+          right: 80,
           zIndex: 5,
           width: 168,
-          background: '#FFFFFF',
-          border: `1px solid ${FT.stroke}`,
+          background: '#2A2D33',
+          border: `1px solid #43474F`,
           borderRadius: 4,
-          boxShadow: '0 4px 16px rgba(0,0,0,0.16)',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.45)',
           fontSize: 10,
-          color: FT.text,
+          color: '#E6E7EA',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 8px', borderBottom: `1px solid ${FT.strokeSoft}`, background: FT.panel }}>
-          <FusionIcon name="extrude" size={14} color={FT.text} />
-          <span style={{ fontWeight: 500 }}>EXTRUDE</span>
-          <span style={{ marginLeft: 'auto', color: FT.textDim, fontSize: 11 }}>×</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 8px', borderBottom: `1px solid #1F2227`, background: '#1F2227' }}>
+          <FusionIcon name="extrude" size={14} color="#E6E7EA" />
+          <span style={{ fontWeight: 500, letterSpacing: '0.04em' }}>EXTRUDE</span>
+          <span style={{ marginLeft: 'auto', color: '#9CA1AB', fontSize: 11 }}>×</span>
         </div>
         {[
           ['Type', 'Distance'],
@@ -1472,61 +1474,75 @@ function SolidExtrude() {
           ['Taper Angle', '0.0 deg'],
           ['Operation', 'New Body'],
         ].map(([k, v], i) => (
-          <div key={k} style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 8px', borderTop: i === 0 ? 'none' : `1px solid ${FT.strokeSoft}` }}>
-            <span style={{ color: FT.textDim }}>{k}</span>
-            <span style={{ color: k === 'Distance' ? FT.accent : FT.text }}>{v}</span>
+          <div
+            key={k}
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              padding: '4px 8px',
+              borderTop: i === 0 ? 'none' : '1px solid #34383F',
+            }}
+          >
+            <span style={{ color: '#9CA1AB' }}>{k}</span>
+            <span style={{ color: k === 'Distance' ? FT.accent : '#E6E7EA' }}>{v}</span>
           </div>
         ))}
-        <div style={{ display: 'flex', gap: 6, padding: 8, borderTop: `1px solid ${FT.strokeSoft}`, background: FT.panel }}>
+        <div style={{ display: 'flex', gap: 6, padding: 8, borderTop: '1px solid #1F2227', background: '#1F2227' }}>
           <span style={{ flex: 1, textAlign: 'center', padding: '4px 0', background: FT.accent, color: '#FFF', borderRadius: 3, fontWeight: 600 }}>OK</span>
-          <span style={{ flex: 1, textAlign: 'center', padding: '4px 0', background: '#FFFFFF', color: FT.text, border: `1px solid ${FT.stroke}`, borderRadius: 3 }}>Cancel</span>
+          <span style={{ flex: 1, textAlign: 'center', padding: '4px 0', background: '#2A2D33', color: '#E6E7EA', border: '1px solid #43474F', borderRadius: 3 }}>Cancel</span>
         </div>
       </motion.div>
 
-      {/* Canvas scene: profile rectangle + extruded prism */}
+      {/* Canvas scene */}
       <svg viewBox="0 0 480 320" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 3 }}>
-        {/* sketch profile */}
+        {/* Stage 1: sketch profile (rectangle on XY plane) */}
         <motion.g
-          animate={{ opacity: [1, 1, 0.55, 0.55] }}
+          animate={{ opacity: [1, 1, 0.4, 0.4] }}
           transition={{ duration: cycle, repeat: Infinity, times: [0, 0.25, 0.4, 1] }}
         >
-          <polygon points="120,220 240,250 240,180 120,150" fill="rgba(31,142,230,0.15)" stroke={FT.sketchBlue} strokeWidth="1.6" />
+          <polygon points={sketchProfile} fill="rgba(79,163,230,0.10)" stroke={FT.sketchBlue} strokeWidth="1.4" />
+          {sketchProfile.split(' ').map((pt, i) => {
+            const [x, y] = pt.split(',').map(Number)
+            return <rect key={i} x={x - 2.5} y={y - 2.5} width="5" height="5" fill="#0D0F12" stroke={FT.sketchBlue} strokeWidth="1.2" />
+          })}
         </motion.g>
-        {/* ghost preview pulling up */}
+
+        {/* Stage 2: ghost preview pulling up */}
         <motion.g
-          animate={{ opacity: [0, 0.9, 0.9, 0] }}
-          transition={{ duration: cycle, repeat: Infinity, times: [0.2, 0.4, 0.55, 0.6] }}
+          animate={{ opacity: [0, 0, 0.95, 0.95, 0] }}
+          transition={{ duration: cycle, repeat: Infinity, times: [0, 0.3, 0.4, 0.55, 0.6] }}
         >
-          <polygon points="120,150 240,180 240,80 120,50" fill={FT.ghost} stroke={FT.ghostEdge} strokeDasharray="3 3" strokeWidth="1.4" />
-          <polygon points="120,220 240,250 240,180 120,150" fill="none" stroke={FT.ghostEdge} strokeDasharray="3 3" strokeWidth="1.4" />
-          <polygon points="120,220 120,50 120,150" fill="rgba(31,142,230,0.1)" stroke={FT.ghostEdge} strokeDasharray="3 3" strokeWidth="1.4" />
-          {/* arrow showing direction */}
-          <line x1="180" y1="200" x2="180" y2="100" stroke={FT.accent} strokeWidth="2" />
-          <polygon points="174,108 180,98 186,108" fill={FT.accent} />
-          <text x="190" y="150" fontSize="11" fontFamily="var(--font-mono)" fill={FT.accent}>25.00</text>
+          <polygon points={top} fill="rgba(79,163,230,0.05)" stroke={FT.ghostEdge} strokeDasharray="3 3" strokeWidth="1.2" />
+          <polygon points={front} fill="rgba(79,163,230,0.05)" stroke={FT.ghostEdge} strokeDasharray="3 3" strokeWidth="1.2" />
+          <polygon points={right} fill="rgba(79,163,230,0.05)" stroke={FT.ghostEdge} strokeDasharray="3 3" strokeWidth="1.2" />
+          {/* extrude direction arrow */}
+          <line x1="260" y1="195" x2="260" y2="115" stroke={FT.accent} strokeWidth="2" />
+          <polygon points="254,123 260,108 266,123" fill={FT.accent} />
+          {/* distance pill */}
+          <rect x="270" y="140" width="56" height="18" rx="2" fill="#1F2227" stroke={FT.accent} />
+          <text x="298" y="153" fontSize="11" fontFamily="var(--font-mono)" textAnchor="middle" fill={FT.accent}>25.00</text>
         </motion.g>
-        {/* committed solid */}
+
+        {/* Stage 3: committed shaded body */}
         <motion.g
-          animate={{ opacity: [0, 0, 1, 1] }}
-          transition={{ duration: cycle, repeat: Infinity, times: [0, 0.55, 0.65, 1] }}
+          animate={{ opacity: [0, 0, 0, 1, 1] }}
+          transition={{ duration: cycle, repeat: Infinity, times: [0, 0.55, 0.62, 0.7, 1] }}
         >
-          {/* bottom face */}
-          <polygon points="120,220 240,250 240,180 120,150" fill={FT.bodyFill} stroke={FT.bodyEdge} strokeWidth="1.4" />
-          {/* right side */}
-          <polygon points="240,250 240,80 240,180 240,250" fill="#B5BAC1" stroke={FT.bodyEdge} strokeWidth="1.4" />
-          {/* front side */}
-          <polygon points="120,220 240,250 240,80 120,50" fill="#DDE0E5" stroke={FT.bodyEdge} strokeWidth="1.4" />
-          {/* top face */}
-          <polygon points="120,50 240,80 240,80 120,50" fill="#FFFFFF" stroke={FT.bodyEdge} strokeWidth="1.4" />
-          <polygon points="120,150 240,180 240,80 120,50" fill="#FFFFFF" stroke={FT.bodyEdge} strokeWidth="1.4" />
-          {/* fillet highlight */}
+          {/* Right (mid tone) */}
+          <polygon points={right} fill={FT.bodyFront} stroke={FT.bodyEdge} strokeWidth="1.2" strokeLinejoin="round" />
+          {/* Front (darkest) */}
+          <polygon points={front} fill={FT.bodySide} stroke={FT.bodyEdge} strokeWidth="1.2" strokeLinejoin="round" />
+          {/* Top (lightest) */}
+          <polygon points={top} fill={FT.bodyTop} stroke={FT.bodyEdge} strokeWidth="1.2" strokeLinejoin="round" />
+          {/* fillet edge highlight on the top-front edge */}
           <motion.path
             animate={{ opacity: [0, 0, 0, 1] }}
-            transition={{ duration: cycle, repeat: Infinity, times: [0, 0.7, 0.85, 1] }}
-            d="M236 80 Q 240 78 244 82"
+            transition={{ duration: cycle, repeat: Infinity, times: [0, 0.78, 0.88, 1] }}
+            d="M260 100 Q 305 122 347 150"
             stroke={FT.accent}
-            strokeWidth="2"
+            strokeWidth="2.2"
             fill="none"
+            strokeLinecap="round"
           />
         </motion.g>
       </svg>
