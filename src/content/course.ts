@@ -63,6 +63,10 @@ export type LessonBlock =
         | 'mesh-section-convert'
         | 'sketch-shape-suite'
         | 'sketch-edit-suite'
+        | 'animation-workspace'
+        | 'animation-scratch-zone'
+        | 'animation-transform-components'
+        | 'animation-render-output'
       caption?: string
       helpUrl?: string
       tutorialQuery?: string

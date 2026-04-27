@@ -33,6 +33,10 @@ export type Fusion360MockVariant =
   | 'mesh-section-convert'
   | 'sketch-shape-suite'
   | 'sketch-edit-suite'
+  | 'animation-workspace'
+  | 'animation-scratch-zone'
+  | 'animation-transform-components'
+  | 'animation-render-output'
 
 const LABEL: Record<Fusion360MockVariant, string> = {
   'workspace-map': 'Fusion 360 — workspace map',
@@ -61,6 +65,10 @@ const LABEL: Record<Fusion360MockVariant, string> = {
   'mesh-section-convert': 'Mesh — section sketch + convert',
   'sketch-shape-suite': 'Sketch — shape creation tools',
   'sketch-edit-suite': 'Sketch — edit + reference tools',
+  'animation-workspace': 'Animation — workspace overview',
+  'animation-scratch-zone': 'Animation — scratch zone + camera',
+  'animation-transform-components': 'Animation — transform components',
+  'animation-render-output': 'Render — output animation',
 }
 
 const EASE = [0.22, 1, 0.36, 1] as const
@@ -222,6 +230,14 @@ function renderVariant(variant: Fusion360MockVariant) {
       return <SketchShapeSuite />
     case 'sketch-edit-suite':
       return <SketchEditSuite />
+    case 'animation-workspace':
+      return <AnimationWorkspace />
+    case 'animation-scratch-zone':
+      return <AnimationScratchZone />
+    case 'animation-transform-components':
+      return <AnimationTransformComponents />
+    case 'animation-render-output':
+      return <AnimationRenderOutput />
   }
 }
 
@@ -1841,6 +1857,147 @@ function SketchEditSuite() {
           </motion.g>
         )
       })}
+    </MockCanvas>
+  )
+}
+
+function AnimationWorkspace() {
+  const items = ['Transform', 'Trail Line', 'Annotation', 'Storyboard', 'Publish']
+  return (
+    <div
+      style={{
+        border: '1px solid var(--edge)',
+        borderRadius: 8,
+        background: 'var(--bg)',
+        height: 280,
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      <div
+        style={{
+          position: 'absolute',
+          inset: '0 0 auto 0',
+          height: 42,
+          borderBottom: '1px solid var(--edge)',
+          background: 'var(--bg-2)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 8,
+          padding: '0 12px',
+        }}
+      >
+        <span style={{ color: 'var(--accent)', fontFamily: 'var(--font-mono)', fontSize: 11 }}>Workspace: Animation</span>
+        {items.map((item, i) => (
+          <motion.span
+            key={item}
+            animate={{ opacity: [0.35, 1, 0.35] }}
+            transition={{ duration: 4.5, repeat: Infinity, delay: i * 0.35 }}
+            style={{
+              border: '1px solid var(--edge)',
+              borderRadius: 4,
+              padding: '4px 7px',
+              color: 'var(--ink-dim)',
+              fontFamily: 'var(--font-mono)',
+              fontSize: 9,
+            }}
+          >
+            {item}
+          </motion.span>
+        ))}
+      </div>
+      <svg viewBox="0 0 400 280" width="100%" height="100%" style={{ position: 'absolute', inset: 0 }}>
+        <line x1="0" y1="218" x2="400" y2="218" stroke="var(--edge)" />
+        <motion.g animate={{ x: [0, 0, -18, -18], y: [0, 0, 8, 8] }} transition={{ duration: 5, repeat: Infinity, times: [0, 0.35, 0.7, 1] }}>
+          <rect x="140" y="104" width="120" height="70" fill="rgba(120,160,200,0.16)" stroke="var(--ink)" />
+          <circle cx="176" cy="138" r="18" fill="var(--bg)" stroke="var(--accent)" />
+          <rect x="206" y="122" width="34" height="32" fill="rgba(80,120,160,0.26)" stroke="var(--ink)" />
+        </motion.g>
+        <motion.path d="M176,138 C230,88 285,110 320,70" fill="none" stroke="var(--accent)" strokeDasharray="5 4" animate={{ pathLength: [0, 1, 1] }} transition={{ duration: 5, repeat: Infinity, times: [0, 0.55, 1] }} />
+        <g transform="translate(28 238)">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <motion.rect key={i} x={i * 34} y="0" width="24" height="18" rx="3" fill="var(--bg-2)" stroke="var(--edge)" animate={{ opacity: [0.35, 1, 0.35] }} transition={{ duration: 5, repeat: Infinity, delay: i * 0.18 }} />
+          ))}
+        </g>
+        <text x="200" y="72" fill="var(--ink-dim)" fontSize="11" fontFamily="var(--font-mono)" textAnchor="middle">
+          animation workspace: storyboards, transforms, trail lines, annotations
+        </text>
+      </svg>
+    </div>
+  )
+}
+
+function AnimationScratchZone() {
+  const cycle = 6
+  return (
+    <MockCanvas>
+      <rect x="50" y="226" width="44" height="22" rx="4" fill="rgba(120,160,200,0.12)" stroke="var(--accent)" strokeDasharray="4 3" />
+      <text x="72" y="263" fill="var(--ink-dim)" fontSize="10" fontFamily="var(--font-mono)" textAnchor="middle">scratch zone</text>
+      <line x1="96" y1="237" x2="350" y2="237" stroke="var(--edge)" />
+      <motion.line x1="72" y1="218" x2="72" y2="250" stroke="var(--accent)" strokeWidth="2" animate={{ x1: [0, 0, 112, 236], x2: [0, 0, 112, 236] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.28, 0.58, 1] }} />
+      <motion.g animate={{ scale: [1, 1.28, 1.28, 1], x: [0, -20, -20, 0], y: [0, 12, 12, 0] }} style={{ transformOrigin: '200px 130px' }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.35, 0.75, 1] }}>
+        <rect x="132" y="92" width="136" height="78" fill="rgba(120,160,200,0.16)" stroke="var(--ink)" />
+        <circle cx="174" cy="130" r="18" fill="var(--bg)" stroke="var(--accent)" />
+        <rect x="210" y="112" width="36" height="36" fill="rgba(80,120,160,0.28)" stroke="var(--ink)" />
+      </motion.g>
+      <motion.path d="M318,72 L348,56 L342,92 Z" fill="rgba(120,160,200,0.18)" stroke="var(--accent)" animate={{ rotate: [0, -12, 18, 0] }} style={{ transformOrigin: '330px 72px' }} transition={{ duration: cycle, repeat: Infinity }} />
+      <text x="200" y="36" fill="var(--ink-dim)" fontSize="11" fontFamily="var(--font-mono)" textAnchor="middle">
+        set the starting camera in the scratch zone, then move the playhead forward
+      </text>
+    </MockCanvas>
+  )
+}
+
+function AnimationTransformComponents() {
+  const cycle = 7
+  const parts = [
+    { x: 152, y: 124, dx: -64, dy: -34, label: 'lid' },
+    { x: 202, y: 124, dx: 0, dy: -58, label: 'sphere' },
+    { x: 252, y: 124, dx: 66, dy: -28, label: 'case' },
+  ]
+  return (
+    <MockCanvas>
+      {parts.map((p, i) => (
+        <motion.g key={p.label} animate={{ x: [0, 0, p.dx, p.dx, 0], y: [0, 0, p.dy, p.dy, 0] }} transition={{ duration: cycle, repeat: Infinity, delay: i * 0.15, times: [0, 0.25, 0.58, 0.86, 1] }}>
+          {p.label === 'sphere' ? (
+            <circle cx={p.x} cy={p.y} r="22" fill="rgba(120,160,200,0.18)" stroke="var(--accent)" />
+          ) : (
+            <rect x={p.x - 28} y={p.y - 18} width="56" height="36" fill="rgba(120,160,200,0.16)" stroke="var(--ink)" />
+          )}
+          <text x={p.x} y={p.y + 44} fill="var(--ink-dim)" fontSize="10" fontFamily="var(--font-mono)" textAnchor="middle">{p.label}</text>
+        </motion.g>
+      ))}
+      {parts.map((p, i) => (
+        <motion.line key={p.label} x1={p.x} y1={p.y} x2={p.x + p.dx} y2={p.y + p.dy} stroke="var(--accent)" strokeDasharray="5 4" animate={{ pathLength: [0, 0, 1, 1, 0] }} transition={{ duration: cycle, repeat: Infinity, delay: i * 0.15, times: [0, 0.25, 0.58, 0.86, 1] }} />
+      ))}
+      <text x="200" y="36" fill="var(--ink-dim)" fontSize="11" fontFamily="var(--font-mono)" textAnchor="middle">
+        select component → Transform → pull it out where it is visible → review the timeline
+      </text>
+    </MockCanvas>
+  )
+}
+
+function AnimationRenderOutput() {
+  const cycle = 6
+  return (
+    <MockCanvas>
+      <motion.rect x="78" y="70" width="244" height="138" rx="8" fill="rgba(120,160,200,0.10)" stroke="var(--ink)" animate={{ opacity: [0.45, 1, 1, 0.45] }} transition={{ duration: cycle, repeat: Infinity }} />
+      <motion.g animate={{ x: [0, 0, 34, 64], opacity: [1, 1, 0.8, 0.35] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.35, 0.68, 1] }}>
+        <rect x="118" y="112" width="62" height="40" fill="rgba(120,160,200,0.20)" stroke="var(--ink)" />
+        <circle cx="214" cy="132" r="20" fill="var(--bg)" stroke="var(--accent)" />
+      </motion.g>
+      <motion.rect x="258" y="92" width="40" height="76" rx="5" fill="rgba(80,120,160,0.20)" stroke="var(--accent)" animate={{ opacity: [0, 0.2, 1, 1] }} transition={{ duration: cycle, repeat: Infinity, times: [0, 0.38, 0.7, 1] }} />
+      <g transform="translate(92 226)">
+        {['MP4', 'GIF', 'Image sequence'].map((label, i) => (
+          <motion.g key={label} animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 4, repeat: Infinity, delay: i * 0.4 }}>
+            <rect x={i * 78} y="0" width="66" height="24" rx="4" fill="var(--bg-2)" stroke="var(--edge)" />
+            <text x={i * 78 + 33} y="16" fill="var(--ink-dim)" fontSize="9" fontFamily="var(--font-mono)" textAnchor="middle">{label}</text>
+          </motion.g>
+        ))}
+      </g>
+      <text x="200" y="38" fill="var(--ink-dim)" fontSize="11" fontFamily="var(--font-mono)" textAnchor="middle">
+        render workspace: output the reviewed animation as video, GIF, or image sequence
+      </text>
     </MockCanvas>
   )
 }

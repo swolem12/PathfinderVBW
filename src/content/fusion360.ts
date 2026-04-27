@@ -29,6 +29,10 @@ type FusionTool = {
     | 'mesh-section-convert'
     | 'sketch-shape-suite'
     | 'sketch-edit-suite'
+    | 'animation-workspace'
+    | 'animation-scratch-zone'
+    | 'animation-transform-components'
+    | 'animation-render-output'
 }
 
 const HELP_BASE = 'https://help.autodesk.com/view/fusion360/ENU/'
@@ -1048,6 +1052,153 @@ export const fusion360Lessons: LessonDef[] = [
       },
       { type: 'details', summary: 'Acceptance criteria', blocks: [{ type: 'list', items: ['Parameters resize the hook without breaking the timeline.', 'Sketches are fully constrained.', 'Mounting holes are centered and equal.', 'Edges are comfortable to touch.', 'Exported files use clear names and correct units.'] }] },
       { type: 'checklist', items: ['I completed the wall hook model', 'I changed at least two parameters and the model updated correctly', 'I inspected dimensions before export', 'I exported both STEP and STL/3MF formats'] },
+    ],
+  },
+  {
+    id: 'animation-workspace-exploded-view',
+    number: 7,
+    title: 'Animation workspace: exploded view tutorial',
+    subtitle: 'A GIF-driven tutorial flow modeled after Autodesk’s own animation article structure.',
+    goal: 'You can create a basic exploded-view animation, review it on the timeline, and prepare it for rendering or sharing.',
+    endState: 'A short animation that starts from an assembled design, moves components apart with transform keyframes, shows trail lines/annotations, and exports cleanly.',
+    estMinutes: 50,
+    blocks: [
+      {
+        type: 'p',
+        body: 'This lesson follows the same structure Autodesk uses in its animation tutorial: explain why the workflow matters, show the workspace, then walk through a numbered build with short GIF-style demos after the important actions.',
+      },
+      {
+        type: 'docLink',
+        title: 'Autodesk reference: Animate a design in Fusion',
+        description: 'Official Autodesk article used as the structural reference for this lesson: short context, numbered steps, inline GIF demonstrations, review, and rendering/output guidance.',
+        url: 'https://www.autodesk.com/products/fusion-360/blog/animate-design-fusion-360-tutorial/',
+        source: 'Autodesk Blog',
+      },
+      playlistBlock('Use the Autodesk Fusion tutorial playlist as the video catalog while practicing this animation workflow.'),
+      { type: 'h', body: 'Why animate a CAD design?' },
+      {
+        type: 'p',
+        body: 'Animations explain assembly order, component motion, clearances, product function, and presentation intent faster than a static screenshot. In Fusion, the Animation workspace lets you move components over time without changing the actual model geometry.',
+      },
+      {
+        type: 'fusion360Mock',
+        variant: 'animation-workspace',
+        caption: 'The Animation workspace adds storyboards, transform tools, trail lines, annotations, playback, and publish/export controls.',
+        helpUrl: HELP_SEARCH('animation workspace storyboard transform trail line annotation'),
+        tutorialQuery: 'animation workspace storyboard transform trail line annotation',
+      },
+      { type: 'h', body: 'Before you start' },
+      {
+        type: 'checklist',
+        items: [
+          'The design uses separate components, not one merged body',
+          'Components are named clearly in the browser',
+          'The assembled position is saved before animation work begins',
+          'You know which parts should move first, second, and last',
+        ],
+      },
+      { type: 'h', body: 'Build the animation' },
+      { type: 'step', n: 1, title: 'Open the finished design', body: 'Start from a completed assembly or multi-component design. Do not animate loose sketch geometry; animate components so the storyboard stays readable.' },
+      {
+        type: 'fusion360Mock',
+        variant: 'parametric-timeline',
+        caption: 'Keep the model parametric in Design, then switch to Animation only after the component structure is clean.',
+        helpUrl: HELP_SEARCH('component browser timeline animation workspace'),
+        tutorialQuery: 'components browser timeline animation workspace',
+      },
+      { type: 'step', n: 2, title: 'Switch to the Animation workspace', body: 'Use the workspace picker and choose Animation. Fusion changes the toolbar to animation-specific commands and shows the storyboard timeline.' },
+      {
+        type: 'fusion360Mock',
+        variant: 'animation-workspace',
+        caption: 'Workspace switch: Design tools are replaced by Animation tools such as Transform, Trail Line, Annotation, and Publish.',
+        helpUrl: HELP_SEARCH('switch to animation workspace fusion'),
+        tutorialQuery: 'switch to animation workspace fusion',
+      },
+      { type: 'step', n: 3, title: 'Frame the first camera view', body: 'Orbit, pan, and zoom until the assembly is centered. This becomes the starting composition viewers see before anything moves.' },
+      {
+        type: 'fusion360Mock',
+        variant: 'animation-scratch-zone',
+        caption: 'Set the starting view in the scratch zone, then move the playhead forward before creating motion keyframes.',
+        helpUrl: HELP_SEARCH('animation scratch zone camera view'),
+        tutorialQuery: 'animation scratch zone camera view',
+      },
+      { type: 'step', n: 4, title: 'Move the playhead forward', body: 'Drag the playhead to the first timestamp, such as one second. This tells Fusion where the next transform should land in time.' },
+      { type: 'step', n: 5, title: 'Transform the first component', body: 'Select a component, run Transform, and move it outward so it is visible and not hidden behind other components. Keep the motion direction meaningful: lids move up, fasteners move out, internal parts separate along their assembly axis.' },
+      {
+        type: 'fusion360Mock',
+        variant: 'animation-transform-components',
+        caption: 'Each Transform creates motion on the storyboard: components separate along readable paths while trail lines show where they moved.',
+        helpUrl: HELP_SEARCH('animation transform components trail line'),
+        tutorialQuery: 'animation transform components trail line',
+      },
+      { type: 'step', n: 6, title: 'Repeat for the remaining components', body: 'Move the playhead forward again, transform the next part, and keep repeating until the assembly is exploded clearly. Stagger motion instead of moving everything at once.' },
+      {
+        type: 'fusion360Mock',
+        variant: 'animation-transform-components',
+        caption: 'Staggered transforms make the exploded view easier to follow than one large simultaneous movement.',
+        helpUrl: HELP_SEARCH('exploded view animation storyboard transform'),
+        tutorialQuery: 'exploded view animation storyboard transform',
+      },
+      { type: 'step', n: 7, title: 'Add trail lines and annotations', body: 'Use trail lines to show travel paths and annotations to label important components or assembly notes. Keep labels short and placed away from the model.' },
+      {
+        type: 'fusion360Mock',
+        variant: 'animation-workspace',
+        caption: 'Trail lines and annotations turn movement into instruction: what moved, where it moved, and why it matters.',
+        helpUrl: HELP_SEARCH('animation trail line annotation fusion'),
+        tutorialQuery: 'animation trail line annotation fusion',
+      },
+      { type: 'step', n: 8, title: 'Play back and adjust timing', body: 'Press Play and watch the full storyboard. If motion is too fast, drag keyframes farther apart. If a part hides another part, adjust the transform direction or camera view.' },
+      {
+        type: 'fusion360Mock',
+        variant: 'animation-scratch-zone',
+        caption: 'Review the storyboard timeline, then adjust camera and keyframe timing until the movement reads clearly.',
+        helpUrl: HELP_SEARCH('animation storyboard timeline playback'),
+        tutorialQuery: 'animation storyboard timeline playback keyframes',
+      },
+      { type: 'h', body: 'Render and output' },
+      { type: 'step', n: 9, title: 'Prepare the render', body: 'When the motion is correct, switch to Render or Publish options. Pick a clean camera view, simple environment, and output format appropriate for sharing.' },
+      {
+        type: 'fusion360Mock',
+        variant: 'animation-render-output',
+        caption: 'Output the reviewed animation as a video, GIF, or image sequence for documentation, presentations, or course reference.',
+        helpUrl: HELP_SEARCH('render output animation video image sequence'),
+        tutorialQuery: 'render output animation video gif image sequence',
+      },
+      { type: 'step', n: 10, title: 'Export and share', body: 'Export MP4 for presentations, GIF for quick visual instructions, and image sequences when you need frames for documentation. Use clear file names with version and units.' },
+      {
+        type: 'callout',
+        callout: {
+          kind: 'tip',
+          title: 'Autodesk-style tutorial pattern',
+          body: 'Keep every visual tied to the step immediately before it. A reader should perform one action, watch the mini animation, then move to the next action without hunting around the page.',
+        },
+      },
+      {
+        type: 'details',
+        summary: 'Troubleshooting animation problems',
+        blocks: [
+          {
+            type: 'list',
+            items: [
+              'If a part does not move, confirm it is a component and not just a body inside another component.',
+              'If the camera jumps unexpectedly, reset the starting view in the scratch zone and re-check camera keyframes.',
+              'If the exploded view is confusing, move one component at a time and use consistent directions.',
+              'If the render is too slow, lower quality first, review timing, then export a final version.',
+            ],
+          },
+        ],
+      },
+      {
+        type: 'checklist',
+        items: [
+          'I switched from Design to Animation workspace',
+          'I set a starting camera view in the scratch zone',
+          'I transformed components on the storyboard timeline',
+          'I added trail lines or annotations where they clarify the motion',
+          'I reviewed playback and adjusted timing before export',
+          'I exported or prepared the animation for video/GIF output',
+        ],
+      },
     ],
   },
 ]
