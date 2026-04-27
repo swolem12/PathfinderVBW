@@ -15,6 +15,8 @@ import { PowerAppsLessonPage } from '../pages/PowerAppsLessonPage'
 import { AdvancedIndexPage } from '../pages/AdvancedIndexPage'
 import { AdvancedLessonPage } from '../pages/AdvancedLessonPage'
 import { NotFoundPage } from '../pages/NotFoundPage'
+import { Fusion360IndexPage } from '../pages/Fusion360IndexPage'
+import { Fusion360LessonPage } from '../pages/Fusion360LessonPage'
 
 export const router = createBrowserRouter(
   [
@@ -36,6 +38,8 @@ export const router = createBrowserRouter(
         { path: 'powerapps/:id', element: <PowerAppsLessonPage /> },
         { path: 'advanced', element: <AdvancedIndexPage /> },
         { path: 'advanced/:id', element: <AdvancedLessonPage /> },
+        { path: 'fusion360', element: <Fusion360IndexPage /> },
+        { path: 'fusion360/:id', element: <Fusion360LessonPage /> },
         { path: '*', element: <NotFoundPage /> },
       ],
     },

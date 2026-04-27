@@ -7,6 +7,7 @@ const NAV_LINKS = [
   { to: '/course', label: 'Beginner' },
   { to: '/advanced', label: 'Advanced' },
   { to: '/powerapps', label: 'Microsoft' },
+  { to: '/fusion360', label: 'Autodesk' },
   { to: '/palantir', label: 'Palantir' },
 ]
 
