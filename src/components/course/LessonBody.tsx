@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import type { CodeBlock, LessonBlock, MediaBlock } from '../../content/course'
 import { CopyButton } from '../ui/CopyButton'
 import { GithubMock } from './GithubMock'
+import { Fusion360Mock } from './Fusion360Mock'
 
 /* ------------------------------------------------------------------ */
 /*  Primitives                                                        */
@@ -5306,6 +5307,16 @@ function renderBlock(block: LessonBlock, i: number): React.ReactNode {
           variant={block.variant}
           caption={block.caption}
           annotations={block.annotations}
+        />
+      )
+    case 'fusion360Mock':
+      return (
+        <Fusion360Mock
+          key={i}
+          variant={block.variant}
+          caption={block.caption}
+          helpUrl={block.helpUrl}
+          tutorialQuery={block.tutorialQuery}
         />
       )
     default:

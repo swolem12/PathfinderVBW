@@ -34,6 +34,19 @@ export type LessonBlock =
   | { type: 'checklist'; items: string[] }
   | { type: 'code'; block: CodeBlock }
   | { type: 'media'; media: MediaBlock }
+  | {
+      type: 'fusion360Mock'
+      variant:
+        | 'workspace-map'
+        | 'interface-tour'
+        | 'sketch-constraints'
+        | 'solid-extrude'
+        | 'mesh-cleanup'
+        | 'parametric-timeline'
+      caption?: string
+      helpUrl?: string
+      tutorialQuery?: string
+    }
   | { type: 'callout'; callout: Callout }
   | { type: 'shellSession'; lines: { prompt?: string; command?: string; output?: string }[] }
   | { type: 'step'; n: number; title: string; body: string }
